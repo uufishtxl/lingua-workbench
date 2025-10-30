@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhraseSeeker - Lookup</title>
+    <style>
+        /* --- 全局样式 (和之前一样) --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            display: grid;
+            place-items: center;
+            min-height: 90vh;
+            margin: 0;
+        }
+
+        /* --- 卡片容器 (和之前一样) --- */
+        .form-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+            /* (新增) 添加一个过渡效果，让隐藏/显示更平滑 */
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+        }
+
+        /* --- 表单样式 (和之前一样) --- */
+        form p { margin-bottom: 1.5rem; }
+        form label {
+            display: block;
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 0.5rem;
+        }
+        form input[type="text"],
+        form textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #dfe6e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-family: inherit; /* 继承字体 */
+        }
+        form input[type="text"]:focus,
+        form textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+        form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* --- 提交按钮 (和之前一样) --- */
+        .submit-button {
+            width: 100%;
+            padding: 0.85rem;
+            border: none;
+            border-radius: 8px;
+            background-color: #007bff;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .submit-button:hover { background-color: #0056b3; }
+
+        /* * --- 【新增】 Loading 遮罩层样式 --- 
+         */
+        .loading-overlay {
+            /* 默认隐藏 */
+            display: none; 
+            
+            /* 样式：和卡片一样，但用 grid 居中 */
+            place-items: center;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .loading-overlay p {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #34495e;
+            margin-top: 1.5rem; /* 和 spinnger 拉开距离 */
+        }
+
+        /* --- 【新增】一个简单的 CSS 旋转动画 --- */
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #dfe6e9;
+            border-top-color: #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container" id="form-container">
+        <h1>Phrase Seeker</h1>
+        
+        <form method="post" id="lookup-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" class="submit-button" value="Seek Explanations" />
+        </form>
+    </div>
+
+    <div class="loading-overlay" id="loading-container">
+        <div class="spinner"></div>
+        <p>正在请教 D 老师...<br>请稍候 (可能需要 5-10 秒)</p>
+    </div>
+
+
+    <script>
+        // 1. 获取 DOM 元素
+        const form = document.getElementById('lookup-form');
+        const formContainer = document.getElementById('form-container');
+        const loadingContainer = document.getElementById('loading-container');
+
+        // 2. 监听表单的 "submit" 事件
+        form.addEventListener('submit', function() {
+            // 3. 当提交按钮被点击时：
+            
+            // (可选) 渐隐表单
+            formContainer.style.opacity = '0'; 
+            formContainer.style.transform = 'scale(0.95)';
+            
+            // (重要) 隐藏表单
+            // 用 setTimeout 确保渐隐动画有时间播放
+            setTimeout(function() {
+                formContainer.style.display = 'none';
+            }, 300); // 300ms 对应 CSS 的 transition time
+
+            // (重要) 显示 Loading 画面
+            // display: grid 是因为我们在 CSS 里用 grid 居中
+            loadingContainer.style.display = 'grid'; 
+        });
+    </script>
+
+</body>
+</html>

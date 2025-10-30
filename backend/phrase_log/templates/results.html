@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Explanations</title>
+    <style>
+        /* (你可以加一点CSS让它好看点) */
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; }
+        .card { border: 1px solid #ccc; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+        h2 { color: #005a9c; }
+        .context { font-style: italic; color: #555; }
+        a { color: #005a9c; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>Here are your explanations:</h1>
+
+    {% if results %}
+        
+        {% for item in results %}
+            <div class="card">
+                <h2>{{ item.expression_text }}</h2>
+                <p><strong>中文意思:</strong> {{ item.chinese_meaning }}</p>
+                <p><strong>新例句:</strong> {{ item.example_sentence }}</p>
+                <p class="context">(来自原句: {{ item.original_context }})</p>
+            </div>
+        {% endfor %}
+
+    {% else %}
+        <div class="card">
+            <h2>Oops! Something went wrong.</h2>
+            <p>Sorry, the AI could not process your request. Please try again.</p>
+        </div>
+    {% endif %}
+
+    <hr>
+    <a href="{% url 'home' %}">&laquo; Back to lookup another one</a>
+
+</body>
+</html>
