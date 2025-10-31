@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from .forms import ExpressionLookupForm
 from .services import get_structured_explanations
 from .types import LookupRequestData
 from .models import PhraseLog
 
-# Create your views here.
+
+# Create your views here
+@login_required
 def lookup_view(request):
     if request.method == 'POST':
         # 验证表单
