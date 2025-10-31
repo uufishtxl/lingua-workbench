@@ -27,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,6 +36,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # --- (1) 新增 - DRF 和 Auth 框架 ---
+    'rest_framework',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+
+    # 'dj_rest_auth' 需要 'sites' 框架
+    'django.contrib.sites', 
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth.registration',
     "phrase_log",
 ]
 
@@ -48,7 +58,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # --- 【ADD THIS LINE】 ---
+    'allauth.account.middleware.AccountMiddleware',
 ]
+
+# --- (3) 新增 - 告诉 'sites' 框架你的默认站点ID ---
+# (dj-rest-auth 需要这个)
+SITE_ID = 1
 
 ROOT_URLCONF = 'sample_project.urls'
 
@@ -80,6 +97,33 @@ DATABASES = {
     }
 }
 
+# --- (4) 【核心】新增 - 配置 REST Framework ---
+# 告诉 DRF 我们全局的“认证策略”
+REST_FRAMEWORK = {
+    # 默认的认证方式：我们使用 JWT
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    # 默认的权限：默认情况下，所有 API 都必须是已登录用户才能访问
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
+# --- (5) 新增 - 配置 dj-rest-auth ---
+# 告诉 dj-rest-auth 我们要用 JWT，而不是 Session
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'my-auth-cookie', # (可选) 我们可以把 Token 存在 Cookie 里
+    'JWT_AUTH_REFRESH_COOKIE': 'my-refresh-cookie', # (可选)
+}
+
+# --- (6) 新增 - 配置 allauth ---
+# dj-rest-auth 依赖 allauth 来处理注册逻辑
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False # 我们用 Email 作为用户名
+ACCOUNT_AUTHENTICATION_METHOD = 'email' # 登录方式改成 Email
+ACCOUNT_EMAIL_VERIFICATION = 'none' # (开发时) 暂时关闭邮件验证
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -121,3 +165,18 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# --- 【新增】CORS (跨域资源共享) 配置 ---
+# 我们告诉 Django "厨房"
+# 允许来自 "Vue 大堂" (localhost:5173) 的 API 请求
+
+CORS_ALLOWED_ORIGINS = [
+    # Vue CLI (npm run dev) 默认的开发服务器地址
+    "http://localhost:5173", 
+    "http://127.0.0.1:5173",
+]
+
+# (可选，但推荐) 
+# 如果你想在开发时更宽松一点，允许所有来源
+# (上线时必须换成上面那个)
+# CORS_ALLOW_ALL_ORIGINS = True

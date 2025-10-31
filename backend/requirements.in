@@ -3,3 +3,8 @@ django
 python-decouple
 requests
 openai
+# --- API & Auth Toolkit ---
+djangorestframework
+dj-rest-auth
+djangorestframework-simplejwt
+django-allauth

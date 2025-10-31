@@ -1,3 +1,5 @@
+// 原生文件，回头删除了
+
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 

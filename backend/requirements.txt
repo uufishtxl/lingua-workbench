@@ -11,7 +11,9 @@ anyio==4.11.0
     #   httpx
     #   openai
 asgiref==3.10.0
-    # via django
+    # via
+    #   django
+    #   django-allauth
 certifi==2025.10.5
     # via
     #   httpcore
@@ -23,7 +25,23 @@ colorama==0.4.6
     # via tqdm
 distro==1.9.0
     # via openai
+dj-rest-auth==7.0.1
+    # via -r requirements.in
 django==5.2.7
+    # via
+    #   -r requirements.in
+    #   dj-rest-auth
+    #   django-allauth
+    #   djangorestframework
+    #   djangorestframework-simplejwt
+django-allauth==65.12.1
+    # via -r requirements.in
+djangorestframework==3.16.1
+    # via
+    #   -r requirements.in
+    #   dj-rest-auth
+    #   djangorestframework-simplejwt
+djangorestframework-simplejwt==5.5.1
     # via -r requirements.in
 h11==0.16.0
     # via httpcore
@@ -44,6 +62,8 @@ pydantic==2.12.3
     # via openai
 pydantic-core==2.41.4
     # via pydantic
+pyjwt==2.10.1
+    # via djangorestframework-simplejwt
 python-decouple==3.8
     # via -r requirements.in
 requests==2.32.5

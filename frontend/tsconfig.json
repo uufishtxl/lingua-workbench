@@ -7,5 +7,15 @@
     {
       "path": "./tsconfig.app.json"
     }
-  ]
+  ],
+  "compilerOptions": {
+    // ... (你已有的 "paths", "target", "module" 等...)
+
+    "types": [
+      "node",
+      "pinia-plugin-persistedstate"  // <--- 【【新增这一行】】
+    ]
+
+    // ...
+  }
 }
