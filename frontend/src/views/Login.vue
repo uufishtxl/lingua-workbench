@@ -1,6 +1,6 @@
 <template>
   <div class="w-full max-w-sm p-8 bg-white rounded-lg shadow-md">
-    <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">LOGIN</h2>
+    <h2 class="text-2xl font-bold text-center mb-6 text-gray-600">LOGIN</h2>
     
     <form @submit.prevent="handleLogin">
       <div class="mb-4">
@@ -10,7 +10,7 @@
           id="email"
           placeholder="Email"
           required
-          class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-700"
+          class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-600 text-gray-600"
         />
       </div>
       
@@ -21,7 +21,7 @@
           id="password"
           placeholder="Password"
           required
-          class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-700"
+          class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-600 text-gray-600"
         />
       </div>
       
@@ -31,7 +31,7 @@
       
       <button
         type="submit"
-        class="w-full bg-green-500 text-white font-semibold py-3 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition ease-in-out duration-150"
+        class="w-full bg-sky-600 text-white font-semibold py-3 rounded-lg hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-600 focus:ring-opacity-50 transition ease-in-out duration-150"
         :disabled="isLoading"
       >
         {{ isLoading ? 'LOGGING IN...' : 'LOGIN' }}
@@ -40,7 +40,7 @@
     
     <div class="mt-6 text-center text-sm text-gray-600">
       Not registered? 
-      <RouterLink to="/register" class="text-green-500 hover:text-green-600 font-medium">Create an account</RouterLink>
+      <RouterLink to="/register" class="text-sky-600 hover:text-sky-700 font-medium">Create an account</RouterLink>
     </div>
   </div>
 </template>

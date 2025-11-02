@@ -15,13 +15,13 @@ interface UserDetails {
 
 // dj-rest-auth /login/ 接口返回的数据的 Shape
 interface LoginResponse {
-    access_token: string;
+    access: string;
     refresh_token: string;
     user: UserDetails
 }
 
 // dj-rest-auth 注册/登录 失败时返回的Shape
-interface AuthErrorResponse {
+export interface AuthErrorResponse {
     [key: string]: string[]
 }
 
@@ -51,47 +51,26 @@ export const useAuthStore = defineStore('auth', () => {
    */
   async function login(email:string, password: string): Promise<boolean> {
     try {
-      const response = await axios.post(AUTH_API_URL + 'login/', {
+      const response = await axios.post<LoginResponse>(AUTH_API_URL + 'login/', {
+        username: email,
         email: email,
         password: password
       })
 
       // 登录成功！
-      accessToken.value = response.data.access_token // 从 `dj-rest-auth` 获取 token
+      accessToken.value = response.data.access // 从 `dj-rest-auth` 获取 token
       userEmail.value = response.data.user.email  // (dj-rest-auth 会返回 user 信息)
 
       // (重要) 把 Token 加到 axios 的全局请求头中
       // 这样，*之后*所有的 API 请求都会自动带上这个“通行证”
       axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken.value}`
-
+      console.log(response.data)
       return true // 返回成功
 
     } catch (e) {
       const error = e as AxiosError<AuthErrorResponse>
       console.error('Login failed:', error.response?.data)
       return false // 返回失败
-    }
-  }
-
-  /**
-   * 动作：注册
-   */
-  async function register(email:string, password:string): Promise<boolean> {
-    try {
-      // 注意：dj-rest-auth 的注册接口需要 password1 和 password2
-      await axios.post(AUTH_API_URL + 'registration/', {
-        email: email,
-        password: password,
-        password2: password
-      })
-
-      // 注册成功后，自动帮他登录
-      return await login(email, password)
-
-    } catch (e) {
-      const error = e as AxiosError<AuthErrorResponse>
-      console.error('Registration failed:', error.response?.data)
-      return false
     }
   }
 
@@ -113,7 +92,6 @@ export const useAuthStore = defineStore('auth', () => {
     userEmail,
     isAuthenticated,
     login,
-    register,
     logout
   }
 }, {
