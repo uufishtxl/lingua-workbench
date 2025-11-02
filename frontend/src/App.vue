@@ -28,22 +28,6 @@ const handleLogout = () => {
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <nav>
-        <!-- <RouterLink to="/">Home</RouterLink> -->
-        <RouterLink to="/login">Login</RouterLink>
-        <!-- <RouterLink to="/register">Register</Top_nav_link> -->
-
-        <a v_if="authStore.isAuthenticated" @click="handleLogout" href="#">Logout</a>
-      </nav>
-
-      <div v_if="authStore.isAuthenticated" class="user-info">
-         Logged in as: {{ authStore.userEmail }}
-      </div>
-    </div>
-  </header>
-
   <component :is="layoutComponent">
     <RouterView />
   </component>

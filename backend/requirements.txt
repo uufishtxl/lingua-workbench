@@ -14,6 +14,7 @@ asgiref==3.10.0
     # via
     #   django
     #   django-allauth
+    #   django-cors-headers
 certifi==2025.10.5
     # via
     #   httpcore
@@ -32,9 +33,12 @@ django==5.2.7
     #   -r requirements.in
     #   dj-rest-auth
     #   django-allauth
+    #   django-cors-headers
     #   djangorestframework
     #   djangorestframework-simplejwt
 django-allauth==65.12.1
+    # via -r requirements.in
+django-cors-headers==4.9.0
     # via -r requirements.in
 djangorestframework==3.16.1
     # via

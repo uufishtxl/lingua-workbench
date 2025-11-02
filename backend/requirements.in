@@ -8,3 +8,4 @@ djangorestframework
 dj-rest-auth
 djangorestframework-simplejwt
 django-allauth
+django-cors-headers

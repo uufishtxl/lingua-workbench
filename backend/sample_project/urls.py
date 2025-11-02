@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from dj_rest_auth.registration.views import RegisterView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,8 +29,9 @@ urlpatterns = [
     # /api/auth/register/ (用于注册, 因为我们装了 dj_rest_auth.registration)
     # ...等等
     path('api/auth/', include('dj_rest_auth.urls')),
-    path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
-
+    # path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
+    path('api/auth/registration/', RegisterView.as_view(), name='rest_register'),
+    path('api/auth/accounts/', include('allauth.urls')),
     # --- (2) 【修改】把你 V1 的 App 也移到 API 专区 ---
     # 我们把你 phrase_log App 的所有 URL 也放到 /api/ 下
     # (这样我们的 Vue 以后就知道，所有的数据都去 /api/ 里找)

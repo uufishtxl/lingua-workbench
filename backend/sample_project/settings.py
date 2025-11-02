@@ -47,12 +47,14 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'dj_rest_auth.registration',
-    "phrase_log",
+    'corsheaders',
+    'phrase_log',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -61,6 +63,16 @@ MIDDLEWARE = [
 
     # --- 【ADD THIS LINE】 ---
     'allauth.account.middleware.AccountMiddleware',
+]
+
+# 告诉 Django:
+# 1. 默认的认证后端，*必须*是 allauth 提供的 (它懂 email)
+# 2. (保留) 默认的 ModelBackend (这样你才能用 username 登录 /admin 后台)
+# 【【【 对的！！！】】】
+AUTHENTICATION_BACKENDS = [
+    # 新版本的“正确拼写”是这个:
+    'allauth.account.auth_backends.AuthenticationBackend', # <-- 它现在就叫这个名字
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 # --- (3) 新增 - 告诉 'sites' 框架你的默认站点ID ---
@@ -120,20 +132,28 @@ REST_AUTH = {
 
 # --- (6) 新增 - 配置 allauth ---
 # dj-rest-auth 依赖 allauth 来处理注册逻辑
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False # 我们用 Email 作为用户名
-ACCOUNT_AUTHENTICATION_METHOD = 'email' # 登录方式改成 Email
-ACCOUNT_EMAIL_VERIFICATION = 'none' # (开发时) 暂时关闭邮件验证
+# ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+# ACCOUNT_LOGIN_METHODS = {'email'}
+# ACCOUNT_EMAIL_VERIFICATION = 'mandatory' # 'none' (开发时) 暂时关闭邮件验证
+
+ACCOUNT_AUTHENTICATION_METHODS = ['email'] # 必须用 email 登录
+ACCOUNT_EMAIL_REQUIRED = True           # 注册时 email 必填
+ACCOUNT_UNIQUE_EMAIL = True           # Email 必须是唯一的
+ACCOUNT_USERNAME_REQUIRED = False       # 注册时*不需要*填 username
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -143,6 +163,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# 1. 告诉 allauth：收到 GET 链接就自动验证，不要渲染“你确定吗”页面
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+# 2. 告诉 allauth：验证成功后，把用户“重定向”到哪里
+#    (我们把它指向 Vue 的登录页)
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'http://localhost:5173/login'
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'http://localhost:5173/' # (如果他已经登录了, 就送回首页)
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -180,3 +206,13 @@ CORS_ALLOWED_ORIGINS = [
 # 如果你想在开发时更宽松一点，允许所有来源
 # (上线时必须换成上面那个)
 # CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_CREDENTIALS = True
+
+# --- EMAIL CONFIGURATION (for Development) ---】
+# 我们不“真”发邮件，我们让 Django 把“邮件内容”
+# 打印到你 `runserver` 的那个“终端” (PowerShell) 里
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# 告诉 allauth，我们希望 email 是小写的
+ACCOUNT_EMAIL_NORMALIZATION = True
