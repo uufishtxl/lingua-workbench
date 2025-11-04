@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { Ref, ComputedRef } from 'vue'
 import axios, { type AxiosError } from 'axios'
+import apiClient from '@/api/axios'
 
 // 定义 API 响应的数据的 Shape
 interface UserDetails {
@@ -25,13 +26,8 @@ export interface AuthErrorResponse {
     [key: string]: string[]
 }
 
-// 我们定义 API 的根地址
-// (注意：Django 默认跑在 8000 端口)
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
-if (!API_BASE_URL) {
-    throw new Error("VITE_API_BASE_URL is not set in .env file")
-}
-const AUTH_API_URL = `${API_BASE_URL}/api/auth/`
+// const  API_BASE_URL = '/api'
+// const AUTH_API_URL = `${API_BASE_URL}/auth/` 
 
 // “保安室”
 export const useAuthStore = defineStore('auth', () => {
@@ -51,7 +47,7 @@ export const useAuthStore = defineStore('auth', () => {
    */
   async function login(email:string, password: string): Promise<boolean> {
     try {
-      const response = await axios.post<LoginResponse>(AUTH_API_URL + 'login/', {
+      const response = await apiClient.post<LoginResponse>('auth/login/', {
         username: email,
         email: email,
         password: password

@@ -62,6 +62,7 @@ import { ref } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import axios, { type AxiosError} from 'axios'
 import { useAuthStore, type AuthErrorResponse } from '@/stores/authStore'
+import apiClient from '@/api/axios'
 
 const email = ref('')
 const password = ref('')
@@ -106,8 +107,8 @@ const handleRegister = async () => {
   
   try {
     // 【【【【【【 核心修改在这里 】】】】】】
-    await axios.post(
-        import.meta.env.VITE_API_BASE_URL + '/api/auth/registration/', 
+    await apiClient.post(
+        'auth/registration/', 
         {
           // 1. 后端想要 'username'，我们就把 email 给它
           username: email.value, 

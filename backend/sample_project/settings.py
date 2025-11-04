@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-@v=^omi(x$=hsboew!)#@kyztpw^49=y-15)gvm&!n+_inf!)z
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.31.215', '192.168.31.192', 'localhost']
 
 # Application definition
 
@@ -196,16 +196,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # 我们告诉 Django "厨房"
 # 允许来自 "Vue 大堂" (localhost:5173) 的 API 请求
 
-CORS_ALLOWED_ORIGINS = [
-    # Vue CLI (npm run dev) 默认的开发服务器地址
-    "http://localhost:5173", 
-    "http://127.0.0.1:5173",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     # Vue CLI (npm run dev) 默认的开发服务器地址
+#     "http://localhost:5173", 
+#     "http://127.0.0.1:5173",
+#     "http://192.168.31.215:5173",
+# ]
 
 # (可选，但推荐) 
 # 如果你想在开发时更宽松一点，允许所有来源
 # (上线时必须换成上面那个)
-# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
 

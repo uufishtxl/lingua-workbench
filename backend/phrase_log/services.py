@@ -13,6 +13,7 @@ def get_structured_explanations (lookup: LookupRequestData) -> List[LookupRespon
     # 动态生成 Prompt
     sentence = lookup["original_context"]
     expression_str = lookup["expressions_to_lookup"]
+    remark=lookup["remark"]
     expression_str_list = [exp.strip() for exp in expression_str.split("/")]
     cleaned_exp_str = " / ".join(expression_str_list)
     exp_count = len(expression_str_list)
@@ -39,6 +40,7 @@ def get_structured_explanations (lookup: LookupRequestData) -> List[LookupRespon
        - "expression_text": 对应的被查询的短语：(e.g., "{expression_str_list[0]}")
        - "chinese_meaning": 对该短语的中文解释，控制在500字符以内（如果该短语已不再普遍使用，请说明目前流行的替代语。比如hunk of beef不再流行，取而代之的是hunk。
        - "example_sentence": 一个新的、经典的使用范例（句子）
+       - "remark": 请参考"remark" 列表，比如 {remark}。在处理每个短语时，请检查其 "expression_text"是否与列表中任何对象的 "expression" 字段值匹配。如果匹配，请根据该对象的 "note" 字段内容，为此 "remark" 字段生成一段总结性的个人笔记（尽量短一点）。请您用自己的话总结，而不是照搬“note”里的原话。如果不匹配或 "备注列表" 为空，则返回空字符串""
     """
 
     print("--- Sendinig Prompt to AI ---")

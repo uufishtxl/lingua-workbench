@@ -1,10 +1,12 @@
 from django.urls import path
 from . import views
 
-
 urlpatterns = [
-    # GET (显示表单) 和 POST (处理表单) 
-    path("", views.lookup_view, name="home"),
-    # 显示 home 页处理 POST 表单后的结果
-    path("results/", views.result_view, name="results-page")
+    # (我们把 V1 的 'lookup_view' 删掉了)
+
+    # 1. 指向 V1 (重构后) 的 API View
+    path('lookup/', views.PhraseLookupAPIView.as_view(), name='phrase-lookup'),
+
+    # 2. 【新增】指向 V1.01 的 History API View
+    path('history/', views.HistoryAPIView.as_view(), name='phrase-history'),
 ]
