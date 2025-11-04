@@ -3,6 +3,8 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import axios from 'axios' // <--- 导入 axios
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 import './styles/styles.css'
 import router from './router'
 import { useAuthStore } from './stores/authStore' // <--- 导入 authStore
@@ -15,6 +17,8 @@ const app = createApp(App)
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 app.use(pinia)
+
+app.use(ElementPlus)
 
 // --- 这是新增的关键逻辑 ---
 // 必须在 app.use(pinia) 之后调用，这样 store 才能被正确初始化
