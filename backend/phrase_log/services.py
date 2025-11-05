@@ -35,7 +35,7 @@ def get_structured_explanations (lookup: LookupRequestData) -> List[LookupRespon
     1. 根对象必须有一个唯一的键，名为 "explanations"
     2. "explanations" 的值必须是一个 JSON 列表
     3. 这个列表的长度必须是 {exp_count}
-    4. 列表中的每一个字典元素都必须包含且仅包含以下四个键：
+    4. 列表中的每一个字典元素都必须包含且仅包含以下五个键：
        - "original_context": 必须是 "{sentence}"
        - "expression_text": 对应的被查询的短语：(e.g., "{expression_str_list[0]}")
        - "chinese_meaning": 对该短语的中文解释，控制在500字符以内（如果该短语已不再普遍使用，请说明目前流行的替代语。比如hunk of beef不再流行，取而代之的是hunk。

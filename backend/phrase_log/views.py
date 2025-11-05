@@ -2,14 +2,15 @@ from django.http import JsonResponse
 from rest_framework.views import APIView # 导入 DRF 的 APIView
 from rest_framework.response import Response # 导入 DRF 的 Response
 from rest_framework.permissions import IsAuthenticated # 导入权限
-from rest_framework import status # 导入 HTTP 状态码
+from rest_framework import generics, status # 导入 HTTP 状态码
+from rest_framework.generics import ListAPIView # 导入 ListAPIView
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import ExpressionLookupForm
 from .services import get_structured_explanations
 from .types import LookupRequestData
 from .models import PhraseLog, Tag
-from .serializers import PhraseLogSerializer
+from .serializers import PhraseLogSerializer, TagSerializer
 
 
 class PhraseLookupAPIView(APIView):
@@ -46,7 +47,7 @@ class PhraseLookupAPIView(APIView):
                         expression_text=item.get('expression_text'),
                         chinese_meaning=item.get('chinese_meaning'),
                         example_sentence=item.get('example_sentence'),
-                        remark=item.get('remark')
+                        remark=item.get('remark'),
                     )
                     # Handle tags
                     if lookup_data.get('tags'):
@@ -63,21 +64,50 @@ class PhraseLookupAPIView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class HistoryAPIView(APIView):
+
+
+class HistoryAPIView(ListAPIView): # Inherit from ListAPIView
     """
     处理“获取历史记录”的 GET 请求 (V1.01 功能)。
     """
 
     # --- 【Task 2】 (保护这个 API) ---
     permission_classes = [IsAuthenticated]
+    serializer_class = PhraseLogSerializer # Specify the serializer
+
+    def get_queryset(self):
+        """
+        This view should return a list of all the phrase logs
+        for the currently authenticated user.
+        """
+        return PhraseLog.objects.filter(user=self.request.user).order_by('-created_at')
+
+
+class TagAPIView(APIView):
+    """
+    处理“获取所有标签”的 GET 请求。
+    """
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
-
-        # --- 【Task 3】 (只获取*自己的*数据) ---
-        logs = PhraseLog.objects.filter(user=request.user).order_by('-created_at')
-
-        # 使用“翻译官”把数据转换成 JSON
-        serializer = PhraseLogSerializer(logs, many=True)
-
-        # 返回“OK”和数据
+        # 只获取当前用户的标签
+        tags = Tag.objects.filter(user=request.user).order_by('name')
+        serializer = TagSerializer(tags, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class PhraseLogDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Handles Retrieve, Update, and Destroy for a single PhraseLog entry.
+    - GET: Retrieve a single log.
+    - PUT/PATCH: Update a single log.
+    - DELETE: Delete a single log.
+    """
+    permission_classes = [IsAuthenticated]
+    serializer_class = PhraseLogSerializer
+
+    def get_queryset(self):
+        """
+        This view should return a queryset of all the phrase logs
+        for the currently authenticated user.
+        """
+        return PhraseLog.objects.filter(user=self.request.user)

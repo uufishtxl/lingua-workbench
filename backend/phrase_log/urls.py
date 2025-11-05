@@ -9,4 +9,10 @@ urlpatterns = [
 
     # 2. 【新增】指向 V1.01 的 History API View
     path('history/', views.HistoryAPIView.as_view(), name='phrase-history'),
+
+    # 3. 【新增】获取所有标签的 API View
+    path('tags/', views.TagAPIView.as_view(), name='tag-list'),
+
+    # 4. 【新增】处理单个日志条目的 API View (GET, PUT, PATCH, DELETE)
+    path('phraselogs/<int:pk>/', views.PhraseLogDetailAPIView.as_view(), name='phraselog-detail'),
 ]

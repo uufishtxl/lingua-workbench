@@ -120,6 +120,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    # --- 新增分页配置 ---
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10, # 每页显示 10 条记录
 }
 
 # --- (5) 新增 - 配置 dj-rest-auth ---
