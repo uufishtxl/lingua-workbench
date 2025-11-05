@@ -17,9 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from dj_rest_auth.registration.views import RegisterView
+from dj_rest_auth.jwt_auth import get_refresh_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/token/refresh/', get_refresh_view().as_view(), name='token_refresh'),
 
     # --- (1) 【新增】 dj-rest-auth 的 API 路由 ---
     # 这会“自动”为你创建好以下 URL (都以 /api/auth/ 开头):
