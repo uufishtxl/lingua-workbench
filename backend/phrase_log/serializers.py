@@ -21,6 +21,7 @@ class PhraseLogSerializer(serializers.ModelSerializer):
             'tags',
             'tested',
             'failed',
+            'failed_radio',
             'remark',
             'created_at'
         ]

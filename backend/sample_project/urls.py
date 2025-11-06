@@ -31,7 +31,7 @@ urlpatterns = [
     # /api/auth/register/ (用于注册, 因为我们装了 dj_rest_auth.registration)
     # ...等等
     path('api/auth/', include('dj_rest_auth.urls')),
-    # path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
+
     path('api/auth/registration/', RegisterView.as_view(), name='rest_register'),
     path('api/auth/accounts/', include('allauth.urls')),
     # --- (2) 【修改】把你 V1 的 App 也移到 API 专区 ---
@@ -40,5 +40,5 @@ urlpatterns = [
     path('api/v1/', include('phrase_log.urls')),
 
     # 功能路由
-    path("", include("phrase_log.urls"))
+
 ]

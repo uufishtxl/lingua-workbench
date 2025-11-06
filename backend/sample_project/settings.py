@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -124,6 +125,20 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10, # 每页显示 10 条记录
 }
+
+# simple-jwt 的专门设置
+if DEBUG: 
+    SIMPLE_JWT = {
+        # 这里是关键：设置 Access Token 的有效期
+        # 默认是: timedelta(minutes=5)
+        # 我们可以改成1小时、1天，甚至更长
+        "ACCESS_TOKEN_LIFETIME": timedelta(days=1), # 开发时可以设置长一点
+        
+        # Refresh Token 的有效期 (默认是 1 天)
+        "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+        
+        # ... 其他 simple-jwt 设置 ...
+    }
 
 # --- (5) 新增 - 配置 dj-rest-auth ---
 # 告诉 dj-rest-auth 我们要用 JWT，而不是 Session
