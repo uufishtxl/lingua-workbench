@@ -1,3 +1,39 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useAuthStore } from '@/stores/authStore'
+import { useRouter, RouterLink } from 'vue-router' // 保留 RouterLink 用于 Header
+import logoUrl from '@/assets/logo.svg'
+
+// 1. 引入 ElementPlus 图标
+import {
+  Document,
+  Menu as IconMenu,
+  HomeFilled,
+  SwitchButton,
+  UserFilled,
+  Setting,
+  QuestionFilled,
+  // Clock,
+  // Scissor
+} from '@element-plus/icons-vue'
+
+const isCollapse = ref(false)
+const authStore = useAuthStore()
+const router = useRouter()
+
+const handleLogout = () => {
+  authStore.logout()
+  router.push({ name: 'login' })
+}
+
+// 2. 额外：处理 el-dropdown 的命令
+const handleCommand = (command: string | number | object) => {
+  if (command === 'logout') {
+    handleLogout()
+  }
+}
+</script>
+
 <template>
   <el-container class="h-screen">
     <el-header class="shadow py-4 px-8 border-b-1 border-b-gray-300 flex justify-between items-center"
@@ -35,31 +71,32 @@
     </el-header>
 
     <el-container>
-      <el-aside width="250px" class="bg-slate-100 border-r-gray-300 border-r-1 flex flex-col">
+      <el-aside width="auto" class="bg-slate-100 border-r-gray-300 border-r-1 flex flex-col">
         <el-menu :default-active="$route.path" router class="el-menu-vertical-demo"
-          style="background-color: transparent; border-right: none;">
-          <el-menu-item index="/">
-            <el-icon><DocumentAdd /></el-icon>
-            <span>PhraseSeeker</span>
-          </el-menu-item>
-        </el-menu>
-
-        <el-menu :default-active="$route.path" router class="el-menu-vertical-demo"
-          style="background-color: transparent; border-right: none;">
+          style="background-color: transparent; border-right: none;" :collapse="isCollapse">
+          <el-sub-menu index="1">
+            <template #title>
+              <el-icon><icon-menu /></el-icon>
+              <span>PhraseSeeker</span>
+            </template>
+            <el-menu-item index="/">
+              <el-icon><Document /></el-icon>
+              <span>Lookup</span>
+            </el-menu-item>
+            <el-menu-item index="/quiz">
+              <el-icon><QuestionFilled /></el-icon>
+              <span>Quiz</span>
+            </el-menu-item>
+          </el-sub-menu>
           <el-menu-item index="/history">
-            <el-icon><DocumentAdd /></el-icon>
+            <el-icon><setting /></el-icon>
             <span>History</span>
           </el-menu-item>
         </el-menu>
 
-        <!-- <div v-if="authStore.isAuthenticated" class="mt-auto p-2">
-          <div @click="handleLogout" class="logout-button">
-            <el-icon>
-              <SwitchButton />
-            </el-icon>
-            <span>Logout</span>
-          </div>
-        </div> -->
+        <div class="mt-auto p-4 flex justify-center">
+            <el-switch v-model="isCollapse" />
+        </div>
       </el-aside>
 
       <el-main class="bg-slate-100">
@@ -69,46 +106,15 @@
   </el-container>
 </template>
 
-<script setup lang="ts">
-import { useAuthStore } from '@/stores/authStore'
-import { useRouter, RouterLink } from 'vue-router' // 保留 RouterLink 用于 Header
-import logoUrl from '@/assets/logo.svg'
-
-// 1. 引入 ElementPlus 图标
-import {
-  DocumentAdd,
-  DocumentRemove,
-  HomeFilled,
-  SwitchButton,
-  UserFilled,
-  // Clock,
-  // Scissor
-} from '@element-plus/icons-vue'
-
-// (不需要引入 ElementPlus 组件，如果你使用了自动引入)
-// 否则你需要在这里引入所有用到的组件，如 ElContainer, ElHeader, etc.
-
-const authStore = useAuthStore()
-const router = useRouter()
-
-const handleLogout = () => {
-  authStore.logout()
-  router.push({ name: 'login' })
-}
-
-// 2. 额外：处理 el-dropdown 的命令
-const handleCommand = (command: string | number | object) => {
-  if (command === 'logout') {
-    handleLogout()
-  }
-}
-</script>
-
 <style scoped>
-/* 3. 移除旧的 .router-link-exact-active 样式
-  el-menu 的 :default-active="$route.path" 会自动处理高亮
-  el-menu-item.is-active { ... }
-*/
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 250px;
+}
+
+.el-menu-vertical-demo {
+  --el-menu-hover-bg-color: oklch(97.7% 0.013 236.62);
+  --el-menu-bg-color: transparent;
+}
 
 /* 4. 为底部的登出按钮添加样式
   让它看起来像一个 el-menu-item

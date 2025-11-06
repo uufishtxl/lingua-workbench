@@ -15,4 +15,7 @@ urlpatterns = [
 
     # 4. 【新增】处理单个日志条目的 API View (GET, PUT, PATCH, DELETE)
     path('phraselogs/<int:pk>/', views.PhraseLogDetailAPIView.as_view(), name='phraselog-detail'),
+
+    # 5. 【新增】导出数据
+    path('export/', views.export_phrases_view, name='export-phrases'),
 ]

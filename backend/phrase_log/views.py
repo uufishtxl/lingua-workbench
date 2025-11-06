@@ -1,16 +1,85 @@
 from django.http import JsonResponse
-from rest_framework.views import APIView # 导入 DRF 的 APIView
-from rest_framework.response import Response # 导入 DRF 的 Response
-from rest_framework.permissions import IsAuthenticated # 导入权限
-from rest_framework import generics, status # 导入 HTTP 状态码
-from rest_framework.generics import ListAPIView # 导入 ListAPIView
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics, status
+from rest_framework.generics import ListAPIView
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+import pandas as pd
+import io
+
 from .forms import ExpressionLookupForm
 from .services import get_structured_explanations
 from .types import LookupRequestData
 from .models import PhraseLog, Tag
 from .serializers import PhraseLogSerializer, TagSerializer
+from rest_framework.decorators import api_view, permission_classes
+from django.http import HttpResponse
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def export_phrases_view(request):
+    """
+    导出用户短语数据为 Excel 文件。
+    接收一个包含要导出的 phrase logs 的 ID 列表的 POST 请求。
+    如果未提供 ID，则导出该用户的所有短语。
+    """
+    user = request.user
+    log_ids = request.data.get('ids', None)
+
+    if log_ids:
+        queryset = PhraseLog.objects.filter(user=user, pk__in=log_ids)
+    else:
+        queryset = PhraseLog.objects.filter(user=user)
+
+    # 定义要导出的字段
+    data = list(queryset.values(
+        'expression_text',
+        'chinese_meaning',
+        'example_sentence',
+        'original_context',
+        'created_at',
+        'remark'
+    ))
+
+    if not data:
+        return Response({"error": "没有可导出的数据"}, status=status.HTTP_404_NOT_FOUND)
+
+    # 创建 Pandas DataFrame
+    df = pd.DataFrame(data)
+
+    # 【修复】将 'created_at' 列转换为无时区，以兼容 Excel
+    if 'created_at' in df.columns:
+        df['created_at'] = pd.to_datetime(df['created_at']).dt.tz_localize(None)
+
+    # 重命名字段以获得更友好的列标题
+    df.rename(columns={
+        'expression_text': '短语',
+        'chinese_meaning': '中文含义',
+        'example_sentence': '例句',
+        'original_context': '原始上下文',
+        'created_at': '创建时间',
+        'remark': '备注'
+    }, inplace=True)
+
+    # 将 DataFrame 写入内存中的 Excel 文件
+    buffer = io.BytesIO()
+    with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Phrases')
+    
+    buffer.seek(0)
+
+    # 创建 HTTP 响应
+    response = HttpResponse(
+        buffer,
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = 'attachment; filename="phrases_export.xlsx"'
+
+    return response
 
 
 class PhraseLookupAPIView(APIView):
@@ -78,9 +147,32 @@ class HistoryAPIView(ListAPIView): # Inherit from ListAPIView
     def get_queryset(self):
         """
         This view should return a list of all the phrase logs
-        for the currently authenticated user.
+        for the currently authenticated user, with optional filtering.
         """
-        return PhraseLog.objects.filter(user=self.request.user).order_by('-created_at')
+        user = self.request.user
+        queryset = PhraseLog.objects.filter(user=user)
+
+        # Get filter parameters from the request URL
+        tag_ids_str = self.request.query_params.get('tag', None)
+        search_query = self.request.query_params.get('search', None)
+
+        # Apply tag filter if a non-empty tag_ids_str is provided
+        if tag_ids_str:
+            tag_ids = tag_ids_str.split(',')
+            queryset = queryset.filter(tags__id__in=tag_ids)
+
+        # Apply search filter if a non-empty search_query is provided
+        if search_query:
+            queryset = queryset.filter(
+                Q(expression_text__icontains=search_query) |
+                Q(chinese_meaning__icontains=search_query) |
+                Q(example_sentence__icontains=search_query) |
+                Q(original_context__icontains=search_query) |
+                Q(remark__icontains=search_query)
+            )
+
+        # Return the filtered and ordered queryset
+        return queryset.order_by('-created_at')
 
 
 class TagAPIView(APIView):

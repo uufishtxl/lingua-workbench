@@ -1,17 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 import Login from '@/views/Login.vue'
-import Home from '@/views/Home.vue'
 import Register from '@/views/Register.vue'
 import VerifyEmail from '@/views/VerifyEmail.vue'
+import PhraseSeeker from '@/views/PhraseSeeker.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
-      name: "home",
-      component: Home,
+      name: "phrase-seeker",
+      component: PhraseSeeker,
       meta: {
         layout: 'AppLayout',
         requiresAuth: true
@@ -58,7 +58,7 @@ router.beforeEach((to, from, next) => {
   // --- 逻辑 1 (你问的)：如果“已登录”，还想去“登录/注册页” ---
   if (isAuthPage && isAuthenticated) {
     // 阻止他，并把他“踢”回主页
-    next({ name: 'home' })
+    next({ name: 'phrase-seeker' })
   } 
 
   // --- 逻辑 2 (保护)：如果“未登录”，还想去“受保护的页面” ---
