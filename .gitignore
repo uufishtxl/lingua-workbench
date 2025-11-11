@@ -211,3 +211,5 @@ __marimo__/
 /frontend/dist/
 /frontend/.vscode/
 /frontend/.DS_Store
+/backend/media/
+/frontend/media/
