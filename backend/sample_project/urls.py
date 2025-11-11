@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from dj_rest_auth.registration.views import RegisterView
 from dj_rest_auth.jwt_auth import get_refresh_view
 
@@ -37,8 +39,12 @@ urlpatterns = [
     # --- (2) 【修改】把你 V1 的 App 也移到 API 专区 ---
     # 我们把你 phrase_log App 的所有 URL 也放到 /api/ 下
     # (这样我们的 Vue 以后就知道，所有的数据都去 /api/ 里找)
-    path('api/v1/', include('phrase_log.urls')),
+    path('api/v1/', include('sample_project.api_v1_urls')),
 
     # 功能路由
 
 ]
+
+# Serve media files during development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

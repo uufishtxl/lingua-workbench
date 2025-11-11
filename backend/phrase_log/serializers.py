@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import PhraseLog, Tag
+from .models import PhraseLog, Tag # , SourceAudio
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,3 +26,9 @@ class PhraseLogSerializer(serializers.ModelSerializer):
             'created_at'
         ]
         # (我们 *不* 暴露 'user' 字段, 因为那没必要)
+
+# class SourceAudioSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = SourceAudio
+#         fields = ['id', 'title', 'file', 'uploaded_at']
+#         read_only_fields = ['uploaded_at']

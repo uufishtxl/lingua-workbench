@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'dj_rest_auth.registration',
     'corsheaders',
     'phrase_log',
+    'audio_slicer',
 ]
 
 MIDDLEWARE = [
@@ -235,3 +236,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # 告诉 allauth，我们希望 email 是小写的
 ACCOUNT_EMAIL_NORMALIZATION = True
+
+# Settings for user-uploaded files (Media Files)
+# https://docs.djangoproject.com/en/5.2/ref/settings/#media-root
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

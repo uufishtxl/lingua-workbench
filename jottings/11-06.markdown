@@ -1,0 +1,68 @@
+# 前端工作总结 (Frontend Review) - 2025-11-06
+
+(The summary of frontend work remains here...)
+
+---
+
+# Memos
+
+## 关键决策 (2025-11-07)
+
+*   **WaveSurfer.js 事件的澄清**: 在实现 `AudioLab` 功能时，我们发现 `wavesurfer.js` 的文档需要仔细区分。解决区域选择功能的关键在于，应该查阅 **`RegionsPluginEvents`** 的相关文档来处理事件（如 `region-created`, `region-update-end`），而不是 `RegionEvent` 的文档。
+
+*   **Celery 的重新评估**: 我们最终确定，对于当前的音频切片需求，**完全不需要引入 Celery**。所有核心操作（无论是切片、分段，还是“净化”文件）都通过 `ffmpeg` 的 `-c copy` 模式完成。这些操作速度极快（I/O密集型，而非CPU密集型），完全可以在 API 视图中**同步执行**而不会导致超时。因此，为该功能引入 Celery 的计划被无限期推迟。
+
+---
+
+## [ ] 待办事项
+
+### [ ] 在上传时自动分段长音频
+
+*   **想法**: 与其让用户手动预处理长音频，不如在文件上传到后端的 `audios` 路由时，增加一个自动处理步骤。
+*   **实现**:
+    1.  当文件上传后，使用 `ffprobe` (ffmpeg 自带的工具) 快速检测其时长。
+    2.  如果时长超过一个阈值（例如 180 秒），则立即调用 `ffmpeg -i <input> -f segment -segment_time 120 -c copy <output_%03d>.mp3` 命令。
+    3.  这个命令会同步地、快速地将长音频切成多个 120 秒的短音频。
+    4.  将这些生成的短音频作为独立的 `SourceAudio` 实例存入数据库。
+
+### [ ] Refactor Audio Slicing to be Asynchronous
+
+> **更新 (2025-11-07):** 以下备忘录解释了 Celery 的通用概念。然而，我们已经确定对于当前的音频切片功能，所有必需操作都使用 `ffmpeg` 快速的 `-c copy` 模式，因此 **Celery 对于此特定功能已不再是必需的**。但这些概念对于未来可能出现的其他慢任务依然具有参考价值。
+
+(The original Celery memo in English and Chinese remains here...)
+
+---
+
+# 新增备忘 (2025-11-07)
+
+## 备忘：IDE 的环境变量缓存陷阱
+
+*   **问题**: 在操作系统中更新了环境变量（例如，将 `ffmpeg` 的路径添加到了系统 `PATH`），但在 IDE（如 VS Code）的内置终端中运行 `python manage.py runserver` 时，程序依然报告“找不到命令”的错误。
+*   **原因**: IDE 应用（如 VS Code）通常只在**启动时**加载一次系统的环境变量。因此，即使你在 IDE 运行时修改了系统变量，IDE 内部已经打开的终端，以及之后新打开的终端，都只会继承 IDE 启动时加载的那份**旧的、不完整的**环境变量。
+*   **解决方案**: **完全关闭并重启整个 IDE 应用**。这会强制 IDE 重新加载最新的系统环境变量，之后在其中启动的任何进程（包括 `runserver`）就都能正确地找到路径了。
+
+## 备忘：为何 wavesurfer.js 无法加载某些“有效”的 MP3
+
+*   **问题**: 一个看起来能被 VLC 或其他播放器正常播放的 MP3 文件，在 `wavesurfer.js` 中加载时却抛出 `TypeError`。
+*   **原因**: `wavesurfer.js` 依赖浏览器内置的 `AudioContext.decodeAudioData` API 来解码音频。这个 API 的规范非常严格，对于一些含有非标准元数据、复杂 VBR（可变比特率）头信息、或嵌入了大量无关数据（如巨大的专辑封面）的 MP3 文件，可能会解析失败。相比之下，`ffmpeg` 或 VLC 等专业工具的解码器容错性要强得多。
+*   **“净化”方案**: 使用 `ffmpeg -i <input> -c copy <output>` 命令可以解决这个问题。这个命令在复制音频流的同时，会丢弃掉不规范的元数据和头部，并重新生成一个结构干净、高度标准化的新文件。这个“净化”过后的文件可以被浏览器解码器毫无问题地解析。
+
+## 备忘：浏览器原生录音 (MediaRecorder) 核心流程
+
+*   **概述**: 这是在浏览器前端实现录音功能，而无需任何插件的标准模式。
+*   **核心流程**:
+    1.  **请求权限**: 使用 `navigator.mediaDevices.getUserMedia({ audio: true })` 异步请求麦克风权限，并获取一个 `MediaStream` 对象。
+    2.  **创建实例**: `new MediaRecorder(stream)`，用上一步获取的流来创建一个 `MediaRecorder` 实例。
+    3.  **收集数据**: 监听 `recorder.ondataavailable` 事件。该事件会在录音过程中（或在停止时）触发，其 `event.data` 是一个包含音频数据的 `Blob` 数据块。将这些数据块 `push` 到一个数组中进行存储。
+    4.  **停止与合成**: 调用 `recorder.stop()` 停止录音。这会自动触发最后一次 `ondataavailable` 事件，并随后触发 `recorder.onstop` 事件。
+    5.  **生成 URL**: 在 `onstop` 事件的回调中，使用 `new Blob(chunksArray, { type: 'audio/...' })` 将之前收集的所有数据块合并成一个单独的、完整的 `Blob` 对象。
+    6.  调用 `URL.createObjectURL(blob)` 为这个 `Blob` 生成一个临时的、可在浏览器中播放的 URL，并将其赋值给 `<audio>` 标签的 `src` 属性。
+*   **关键注意事项**:
+    *   **内存管理**: `createObjectURL` 生成的 URL 会占用浏览器内存。为了避免内存泄漏，必须在它不再需要时（例如，组件卸载或创建新录音时）通过 `URL.revokeObjectURL(oldUrl)` 来手动释放。
+    *   **关闭麦克风指示**: 调用 `recorder.stop()` 后，应调用 `stream.getTracks().forEach(track => track.stop())` 来彻底关闭媒体流。这会有效地终止对麦克风的占用，并关闭浏览器上显示的“正在录音”的小红点或图标，是良好的用户体验实践。
+
+---
+
+# Subprocess vs. Celery 深度解析
+
+(The original Subprocess vs. Celery memo remains here...)

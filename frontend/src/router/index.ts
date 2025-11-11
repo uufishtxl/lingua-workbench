@@ -4,6 +4,8 @@ import Login from '@/views/Login.vue'
 import Register from '@/views/Register.vue'
 import VerifyEmail from '@/views/VerifyEmail.vue'
 import PhraseSeeker from '@/views/PhraseSeeker.vue'
+import AudioLab from '@/views/AudioLab.vue'
+import EpisodeSelector from '@/views/EpisodeSelector.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -40,6 +42,24 @@ const router = createRouter({
       meta: {
         layout: 'AuthLayout'
       },
+    },
+     {
+      path: '/episode-selector',
+      name: 'episode-selector',
+      component: EpisodeSelector,
+      meta: {
+        layout: 'AppLayout',
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/audio-lab',
+      name: 'audio-lab',
+      component: AudioLab,
+      meta: {
+        layout: 'AppLayout',
+        requiresAuth: true
+      }
     }
   ],
 })

@@ -67,7 +67,7 @@ const handleLogin = async () => {
   isLoading.value = false
   
   if (success) {
-    router.push({ name: 'home' }) 
+    router.push({ name: 'phrase-seeker' }) 
   } else {
     errorMessage.value = 'Login failed. Please check your email or password.'
   }

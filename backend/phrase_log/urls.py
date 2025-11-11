@@ -1,5 +1,10 @@
-from django.urls import path
+from django.urls import path, include
+# from rest_framework.routers import DefaultRouter
 from . import views
+
+# Create a router and register our viewsets with it.
+# router = DefaultRouter()
+# router.register(r'audios', views.SourceAudioViewSet, basename='sourceaudio')
 
 urlpatterns = [
     # (我们把 V1 的 'lookup_view' 删掉了)
@@ -18,4 +23,7 @@ urlpatterns = [
 
     # 5. 【新增】导出数据
     path('export/', views.export_phrases_view, name='export-phrases'),
+
+    # Add the new router URLs to our urlpatterns
+    # path('', include(router.urls)),
 ]

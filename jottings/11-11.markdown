@@ -1,0 +1,151 @@
+# Django Model `on_delete` Options
+
+In Django, when you define a `ForeignKey` relationship between two models, you need to specify what should happen to the related objects when the referenced object (the "parent" object) is deleted. This is handled by the `on_delete` argument.
+
+## `on_delete=models.PROTECT`
+
+`on_delete=models.PROTECT` is a crucial argument for ensuring data integrity.
+
+*   **Prevents Deletion:** If you attempt to delete a "parent" object that has "child" objects linked to it via this `ForeignKey`, Django will **prevent the deletion** by raising a `ProtectedError` exception.
+*   **Ensures Data Integrity:** Its primary purpose is to safeguard your data. For example, with `drama = models.ForeignKey(Drama, on_delete=models.PROTECT)` in your `SourceAudio` model, you cannot accidentally delete a `Drama` if there are still `SourceAudio` records associated with it. This prevents orphaned `SourceAudio` entries that would no longer point to a valid drama.
+
+Think of it as a safety lock: you can't remove the foundation (the `Drama`) if there are still buildings (the `SourceAudio`s) standing on it. You'd have to remove or reassign all the buildings first.
+
+## Other Common `on_delete` Options
+
+*   **`models.CASCADE`**: Deletes the child objects when the parent is deleted. This is the most common behavior.
+*   **`models.SET_NULL`**: Sets the foreign key to `NULL`. This requires the field to have `null=True`.
+*   **`models.SET_DEFAULT`**: Sets the foreign key to a specified default value. This requires the field to have a `default` value set.
+*   **`models.DO_NOTHING`**: Performs no action. This is risky as it can lead to database integrity errors.
+*   **`models.RESTRICT`**: Prevents deletion of the referenced object by raising `RestrictedError`. It's very similar to `PROTECT` but may behave differently at the database level depending on the backend.
+
+In summary, `models.PROTECT` is a good choice for critical relationships where you want to explicitly prevent the deletion of parent records while child records still depend on them.
+
+---
+
+# Django `ForeignKey` Value Types
+
+When you define a `ForeignKey` field in a Django model, its value has two different forms depending on the context:
+
+### 1. In Python/Django Code
+
+When you access the `ForeignKey` attribute on a model instance (e.g., `my_chunk.source_audio`), Django's Object-Relational Mapper (ORM) provides you with the **entire related model object**.
+
+-   **Example:** `my_chunk.source_audio` will be a full `SourceAudio` object.
+-   **Benefit:** This is very convenient because you can directly access the parent object's properties, like `my_chunk.source_audio.drama.name`.
+
+### 2. In the Database
+
+In the actual database table, Django creates a column with an `_id` suffix (e.g., `source_audio_id`). The value stored in this column is an **integer**—the **primary key (ID)** of the related parent object.
+
+-   **Example:** The `source_audio_id` column in the `AudioChunk` table will store the ID of the corresponding `SourceAudio` record.
+-   **Benefit:** This is the standard, efficient way relational databases link tables together.
+
+### Summary
+
+| Context          | Field Name (example) | Value Type                               |
+| ---------------- | -------------------- | ---------------------------------------- |
+| **Python Code**  | `source_audio`       | The full `SourceAudio` object instance   |
+| **Database**     | `source_audio_id`    | An integer (the ID of the `SourceAudio`) |
+
+---
+
+# DRF: `Router` + `ViewSet` vs. `APIView`
+
+A concise guide on when to use which.
+
+### Use `Router` + `ViewSet` for:
+
+-   **Standard CRUD:** The default choice for Create, Retrieve, Update, Delete operations on a single model.
+-   **Convention:** Quickly generates a full set of conventional, RESTful URLs (`/resource/`, `/resource/{id}/`).
+-   **Speed:** Saves a lot of boilerplate code.
+
+### Use `APIView` or `@api_view` functions for:
+
+-   **Custom URLs:** When you need an endpoint that doesn't fit the standard RESTful structure (e.g., `/audios/latest/`).
+-   **Special Actions (RPC-style):** For endpoints that perform a specific action rather than manipulating a resource (e.g., `/api/reports/generate/`, `/api/users/change_password/`).
+-   **Full Control:** When you have very complex logic and need maximum, explicit control over the view.
+
+---
+
+# DRF 文件上传 API 路径与原理 (Router + ViewSet)
+
+我们将整个过程想象成一个分工明确的现代化厨房，目标是让客户端（如 Postman）能通过一个 API 地址（`POST /api/v1/audios/`），把“订单信息”（如：剧名、季、集）和“原材料”（音频文件）一次性发给我们，我们就能在数据库里创建一条完整的 `SourceAudio` 记录，并把文件存好。
+
+为了实现这个目标，我们需要四个核心组件协同工作：
+
+### 1. `Model` (模型) - “数据蓝图”
+
+-   **文件:** `models.py`
+-   **作用:** 这是所有工作的基础。`SourceAudio` 模型定义了我们需要存储哪些信息（`drama`, `season`, `file` 等）以及它们的类型。
+-   **关键点:** 这里的 `FileField` 字段非常重要。它告诉 Django：“这个字段对应的是一个文件。你不需要把文件本身塞进数据库（那会很慢），你只需要把文件存到服务器的硬盘上，然后在数据库里记下它的**存储路径**就行了。”
+
+### 2. `Serializer` (序列化器) - “数据翻译官”
+
+-   **文件:** `serializers.py`
+-   **作用:** 它是网络世界（通常是 JSON 格式）和 Django 世界（Python 对象）之间的翻译官。
+    -   **序列化 (Python -> JSON):** 当我们要返回数据给用户时，它把一个复杂的 `SourceAudio` 对象转换成简单的 JSON 字符串。
+    -   **反序列化 (JSON/表单 -> Python):** 当用户发来请求时，它接收传入的数据，进行**验证**（比如 `season` 是不是数字），然后把验证通过的数据转换成一个可以存入数据库的 `SourceAudio` 对象。
+
+### 3. `ViewSet` (视图集) - “厨房大脑”
+
+-   **文件:** `views.py`
+-   **作用:** 这是处理请求的核心逻辑所在，相当于厨房的“总厨”。
+-   **关键点:**
+    -   `queryset = SourceAudio.objects.all()`: 告诉“总厨”它管理的是哪个模型的数据。
+    -   `serializer_class = SourceAudioSerializer`: 告诉“总厨”它应该用哪个“翻译官”。
+    -   **`parser_classes = [MultiPartParser, FormParser]`**: 这是**处理文件上传的关键**。它告诉“总厨”：“除了能看懂 JSON 数据，你还要能看懂 `multipart/form-data` 格式的请求”。这正是 Postman 或浏览器在上传文件时使用的数据格式。没有它，`ViewSet` 就无法解析文件。
+
+### 4. `Router` & `URL` (路由) - “前台接待和地址系统”
+
+-   **文件:** `urls.py`
+-   **作用:** 负责将不同的 URL 请求精确地导向到对应的“厨房大脑”(`ViewSet`) 去处理。
+-   **关键点:**
+    -   `router.register('audios', ...)`: 我们只需要告诉 `Router`，“所有以 `audios` 开头的 URL 都归 `SourceAudioViewSet`管”。
+    -   **自动化:** `Router` 会自动为我们生成一整套标准的 RESTful URL 规则，包括：
+        -   `GET /audios/` (获取列表)
+        -   `POST /audios/` (创建新条目)
+        -   `GET /audios/1/` (获取单个条目)
+        -   `PUT /audios/1/` (更新单个条目)
+        -   ...等等。
+    -   `include(router.urls)`: 最后，在项目的**总 `urls.py`** 中，我们把这个应用内的所有 URL 包含进来，并给它们一个统一的前缀，比如 `api/v1/`。
+
+### 整个上传流程串讲
+
+1.  **Postman (客户端):** 你在 Postman 里设置好 `POST` 请求，URL 为 `.../api/v1/audios/`。在 Body 的 `form-data` 中填入 `drama`, `season` 等文本值，并为 `file` 字段选择一个音频文件。
+2.  **Django (总路由):** Django 收到请求，查看总 `urls.py`，发现 `api/v1/` 这个前缀指向了 `audio_slicer` 应用的 `urls.py`。
+3.  **`audio_slicer` (应用路由):** `Router` 接管请求，看到 URL 是 `audios/` 并且方法是 `POST`，于是它精确地将这个请求交给了 `SourceAudioViewSet` 的 `create` 方法处理。
+4.  **`ViewSet` (大脑):**
+    -   `ViewSet` 的 `MultiPartParser` 开始工作，成功解析出请求中的文本数据和文件数据。
+    -   `ViewSet` 将这些解析好的数据交给 `SourceAudioSerializer`。
+5.  **`Serializer` (翻译官):**
+    -   `Serializer` 对数据进行验证。
+    -   验证通过后，它准备创建一个 `SourceAudio` 对象。
+6.  **`Model` & `FileField` (执行):**
+    -   当 `Serializer` 保存对象时，`FileField` 开始工作。
+    -   它将上传的音频文件保存到你在 `settings.py` 中配置的 `MEDIA_ROOT` 目录下的 `audio_slicer/originals/` 子目录中。
+    -   然后，它将这个文件的**相对路径**（比如 `audio_slicer/originals/my_audio.mp3`）作为**字符串**存入数据库的 `file` 字段。
+7.  **响应:** `ViewSet` 看到一切成功，就返回一个 `201 Created` 状态码，并让 `Serializer` 把刚刚创建的、包含新 ID 和文件 URL 的 `SourceAudio` 对象转换成 JSON，发回给 Postman。
+
+通过这四个组件的精妙配合，DRF 让我们用很少的代码就实现了一个功能强大且符合规范的 API。
+
+---
+
+# DRF API 核心组件总结
+
+1.  **Model (模型):** 数据的“蓝图”，定义了数据库中要存储什么信息 (`FileField` 在这里负责处理文件存储路径)。
+2.  **Serializer (序列化器):** 数据“翻译官”，负责在网络传输的 JSON 格式和 Django 的 Python 对象之间进行转换和验证。
+3.  **ViewSet (视图集):** API 的“大脑”，包含处理请求的核心逻辑，连接 `Model` 和 `Serializer`。
+4.  **Router (路由):** “地址系统”，自动为 `ViewSet` 生成所有标准的 CRUD (增删改查) URL 路径。
+
+---
+
+# DRF Parsers 与文件上传的关系
+
+这是一个必要且直接的联系。
+
+-   **`Content-Type` Header:** HTTP 请求通过这个头信息告诉服务器它发送的数据是什么格式。文件上传使用 `multipart/form-data` 格式。
+-   **DRF Parsers:** `ViewSet` 中的 `parser_classes` 是一组“专家”，每个“专家”都认识一种 `Content-Type`。
+-   **`MultiPartParser`:** 这是专门处理 `multipart/form-data` 的“专家”。
+-   **结论:** 如果你的 `ViewSet` 的 `parser_classes` 列表中没有 `MultiPartParser`，它就无法识别和处理文件上传请求，并将返回 `415 Unsupported Media Type` 错误。因此，**处理文件上传必须使用 `MultiPartParser`**。
+
