@@ -35,3 +35,17 @@ class PhraseLog(models.Model):
 
     def __str__(self):
         return self.expression_text
+
+
+##############################以下迁移到新 App####################################
+# """
+# 目的：为功能建立“地基”。SourceAudio 模型的作用是在数据库中专门记录和管理用户上传的、大的原始音频文件，让每一个文件都有一个唯一的身份（ID）和存储路径。
+# """
+
+# class SourceAudio(models.Model):
+#     title = models.CharField(max_length=200)
+#     file = models.FileField(upload_to='originals/')
+#     uploaded_at = models.DateTimeField(auto_now_add=True)
+
+#     def __str__(self):
+#         return self.title

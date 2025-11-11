@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -10,12 +11,11 @@ from django.db.models import Q
 import pandas as pd
 import io
 
-from .forms import ExpressionLookupForm
 from .services import get_structured_explanations
 from .types import LookupRequestData
 from .models import PhraseLog, Tag
 from .serializers import PhraseLogSerializer, TagSerializer
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, action
 from django.http import HttpResponse
 
 
@@ -164,11 +164,12 @@ class HistoryAPIView(ListAPIView): # Inherit from ListAPIView
         # Apply search filter if a non-empty search_query is provided
         if search_query:
             queryset = queryset.filter(
-                Q(expression_text__icontains=search_query) |
-                Q(chinese_meaning__icontains=search_query) |
-                Q(example_sentence__icontains=search_query) |
-                Q(original_context__icontains=search_query) |
-                Q(remark__icontains=search_query)
+                Q(expression_text__icontains=search_query)
+                #   |
+                # Q(chinese_meaning__icontains=search_query) |
+                # Q(example_sentence__icontains=search_query) |
+                # Q(original_context__icontains=search_query) |
+                # Q(remark__icontains=search_query)
             )
 
         # Return the filtered and ordered queryset
@@ -203,3 +204,4 @@ class PhraseLogDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         for the currently authenticated user.
         """
         return PhraseLog.objects.filter(user=self.request.user)
+

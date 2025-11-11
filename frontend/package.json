@@ -22,7 +22,8 @@
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.5.0",
     "vue": "^3.5.22",
-    "vue-router": "^4.6.3"
+    "vue-router": "^4.6.3",
+    "wavesurfer.js": "^7.11.1"
   },
   "devDependencies": {
     "@iconify/json": "^2.2.402",

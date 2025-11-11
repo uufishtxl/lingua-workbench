@@ -13,8 +13,9 @@ import {
   UserFilled,
   Setting,
   QuestionFilled,
+  VideoPlay,
   // Clock,
-  // Scissor
+  Scissor,
 } from '@element-plus/icons-vue'
 
 const isCollapse = ref(false)
@@ -77,25 +78,48 @@ const handleCommand = (command: string | number | object) => {
           <el-sub-menu index="1">
             <template #title>
               <el-icon><icon-menu /></el-icon>
-              <span>PhraseSeeker</span>
+              <span>Phrase Seeker</span>
             </template>
             <el-menu-item index="/">
-              <el-icon><Document /></el-icon>
+              <el-icon>
+                <Document />
+              </el-icon>
               <span>Lookup</span>
             </el-menu-item>
             <el-menu-item index="/quiz">
-              <el-icon><QuestionFilled /></el-icon>
+              <el-icon>
+                <QuestionFilled />
+              </el-icon>
               <span>Quiz</span>
             </el-menu-item>
           </el-sub-menu>
+
+          <el-menu :default-active="$route.path" router class="el-menu-vertical-demo"
+            style="background-color: transparent; border-right: none;" :collapse="isCollapse">
+            <el-sub-menu index="2">
+              <template #title>
+                <el-icon><icon-menu /></el-icon>
+                <span>Audio Slicer</span>
+              </template>
+              <el-menu-item index="/audio-lab">
+                <el-icon>
+                  <Scissor />
+                </el-icon>
+                <span>Audio Clip</span>
+              </el-menu-item>
+            </el-sub-menu>
+          </el-menu>
+
           <el-menu-item index="/history">
-            <el-icon><setting /></el-icon>
-            <span>History</span>
+            <el-icon>
+              <setting />
+            </el-icon>
+            <span>Setting</span>
           </el-menu-item>
         </el-menu>
 
-        <div class="mt-auto p-4 flex justify-center">
-            <el-switch v-model="isCollapse" />
+        <div class="mt-auto p-4 flex justify-end">
+          <el-switch v-model="isCollapse" />
         </div>
       </el-aside>
 
