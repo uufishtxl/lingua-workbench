@@ -149,3 +149,35 @@ A concise guide on when to use which.
 -   **`MultiPartParser`:** 这是专门处理 `multipart/form-data` 的“专家”。
 -   **结论:** 如果你的 `ViewSet` 的 `parser_classes` 列表中没有 `MultiPartParser`，它就无法识别和处理文件上传请求，并将返回 `415 Unsupported Media Type` 错误。因此，**处理文件上传必须使用 `MultiPartParser`**。
 
+---
+
+# Django Signals: 解耦应用的利器 (以 `post_save` 为例)
+
+Django 的信号机制 (Signals) 是一种强大的设计模式，它允许应用程序的不同部分在不直接相互引用的情况下进行通信。这大大降低了代码的耦合度。
+
+在我们的音频切片功能中，它就是这样工作的：
+
+### 工作流程
+
+1.  **视图层 (View):** `SourceAudioViewSet` 负责处理文件上传的 HTTP 请求。当它调用 `serializer.save()` 保存一个新的 `SourceAudio` 实例到数据库后，它的主要任务就完成了。
+
+2.  **信号触发 (Signal Trigger):** 在 `SourceAudio` 实例成功保存到数据库的**那一刻**，Django 会自动发出一个名为 `post_save` 的信号。
+
+3.  **信号接收器 (Signal Receiver):** 在 `audio_slicer/signals.py` 文件中，我们定义了一个“接收器”函数 `source_audio_post_save`。通过 `@receiver(post_save, sender=SourceAudio)` 这个装饰器，我们告诉 Django：“请在任何 `SourceAudio` 模型实例保存后，调用这个函数。”
+
+4.  **执行动作 (Action Execution):**
+    -   接收器函数被调用后，它会检查 `created` 参数。如果为 `True`，说明这是一个**新创建**的实例，而不是更新。
+    -   确认是新实例后，它便调用 `services.py` 中的 `slice_source_to_chunks()` 函数，开始执行耗时的音频切片任务。
+
+### 为什么这是一种高级的设计 (解耦)
+
+-   **关注点分离 (Separation of Concerns):** `ViewSet` 只关心处理 Web 请求和数据验证，它完全不需要知道“保存之后还要切片”这个业务逻辑。而切片逻辑也只关心拿到一个 `SourceAudio` 对象并处理它。各司其职，代码更清晰。
+-   **保证逻辑一致性 (Consistency):** 无论你在哪里创建了 `SourceAudio` 对象——无论是通过 API、Django Admin 后台，还是一个自定义脚本——只要它被创建并保存，切片逻辑**总会**被自动触发。这避免了在多处重复编写调用代码，也防止了遗忘。
+-   **高可维护性 (Maintainability):** 如果未来需要修改切片逻辑（比如更换算法、增加失败处理），你只需要去 `services.py` 和 `signals.py` 中修改，而完全不用触碰 `views.py` 的代码。
+
+### 总结
+
+简单来说，`ViewSet` 的工作是从“前门”接收订单（上传文件），然后把它存入“档案室”（数据库）。而信号机制则像一个“档案室”里的智能传感器，一旦检测到有“新档案”入库，就立刻通知“后厨”（`services.py`）开始对这份新档案进行深加工（切片）。
+
+整个过程，“前门”的接待员完全不需要知道“后厨”具体在做什么，实现了高效的解耦。
+

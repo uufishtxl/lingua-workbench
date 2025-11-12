@@ -17,8 +17,12 @@ interface UserDetails {
 // dj-rest-auth /login/ 接口返回的数据的 Shape
 interface LoginResponse {
     access: string;
-    refresh_token: string;
+    // refresh: string; // Refresh token is now in cookie
     user: UserDetails
+}
+
+interface RefreshResponse {
+    access: string;
 }
 
 // dj-rest-auth 注册/登录 失败时返回的Shape
@@ -26,18 +30,14 @@ export interface AuthErrorResponse {
     [key: string]: string[]
 }
 
-// const  API_BASE_URL = '/api'
-// const AUTH_API_URL = `${API_BASE_URL}/auth/` 
-
-// “保安室”
 export const useAuthStore = defineStore('auth', () => {
   // --- 1. State (状态) ---
-  // ref() 用于创建“响应式”变量
-  const accessToken: Ref<string | null> = ref(null)  // 存放 JWT 令牌
-  const userEmail: Ref<string | null> = ref(null)     // (可选) 存放登录用户的邮箱
+  const accessToken: Ref<string | null> = ref(null)
+  // const refreshToken: Ref<string | null> = ref(null) // Refresh token is now in cookie
+  const userEmail: Ref<string | null> = ref(null)
+  const isRefreshing: Ref<boolean> = ref(false) // To prevent race conditions
 
   // --- 2. Getters (计算属性) ---
-  // computed() 用于根据 state 派生新值
   const isAuthenticated: ComputedRef<boolean> = computed(() => accessToken.value != null)
 
   // --- 3. Actions (动作) ---
@@ -53,20 +53,18 @@ export const useAuthStore = defineStore('auth', () => {
         password: password
       })
 
-      // 登录成功！
-      accessToken.value = response.data.access // 从 `dj-rest-auth` 获取 token
-      userEmail.value = response.data.user.email  // (dj-rest-auth 会返回 user 信息)
+      accessToken.value = response.data.access
+      // refreshToken.value = response.data.refresh // Refresh token is now in cookie
+      userEmail.value = response.data.user.email
 
-      // (重要) 把 Token 加到 axios 的全局请求头中
-      // 这样，*之后*所有的 API 请求都会自动带上这个“通行证”
-      axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken.value}`
-      console.log(response.data)
-      return true // 返回成功
+      apiClient.defaults.headers.common['Authorization'] = `Bearer ${accessToken.value}`
+      
+      return true
 
     } catch (e) {
       const error = e as AxiosError<AuthErrorResponse>
       console.error('Login failed:', error.response?.data)
-      return false // 返回失败
+      return false
     }
   }
 
@@ -75,24 +73,40 @@ export const useAuthStore = defineStore('auth', () => {
    */
   function logout():void {
     accessToken.value = null
+    // refreshToken.value = null // Refresh token is now in cookie
     userEmail.value = null
 
-    // (重要) 从全局请求头中移除“通行证”
-    delete axios.defaults.headers.common['Authorization']
+    delete apiClient.defaults.headers.common['Authorization']
+  }
+
+  /**
+   * 动作：刷新令牌
+   */
+  async function refreshAccessToken(): Promise<boolean> {
+    // If refresh token is in cookie, we don't need to send it in body
+    try {
+      const response = await apiClient.post<RefreshResponse>('/api/token/refresh/') // Correct endpoint
+      accessToken.value = response.data.access
+      apiClient.defaults.headers.common['Authorization'] = `Bearer ${accessToken.value}`
+      return true
+    } catch (error) {
+      console.error('Token refresh failed:', error)
+      logout() // If refresh fails, log the user out
+      return false
+    }
   }
 
   // --- 4. Return (暴露) ---
-  // 把你需要“暴露”给组件的状态和动作 return 出去
   return {
     accessToken,
+    // refreshToken, // Refresh token is now in cookie
     userEmail,
+    isRefreshing,
     isAuthenticated,
     login,
-    logout
+    logout,
+    refreshAccessToken
   }
 }, {
-  // 【魔法】开启 Pinia 的持久化插件
-  // 这会自动把上面 return 的所有 state (accessToken, userEmail)
-  // 存入浏览器的 localStorage，实现“刷新也不掉线”
   persist: true, 
 })

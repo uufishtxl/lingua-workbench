@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter, RouterLink } from 'vue-router' // 保留 RouterLink 用于 Header
 import logoUrl from '@/assets/logo.svg'
-
+import RiArchive2Fill from '~icons/ri/archive-2-fill';
 // 1. 引入 ElementPlus 图标
 import {
   Document,
@@ -101,6 +101,12 @@ const handleCommand = (command: string | number | object) => {
                 <el-icon><icon-menu /></el-icon>
                 <span>Audio Slicer</span>
               </template>
+              <el-menu-item index="/slicer/load-source">
+                <el-icon>
+                  <RiArchive2Fill />
+                </el-icon>
+                <span>Load Source</span>
+              </el-menu-item>
               <el-menu-item index="/audio-lab">
                 <el-icon>
                   <Scissor />

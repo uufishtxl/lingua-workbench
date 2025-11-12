@@ -48,7 +48,7 @@ onMounted(() => {
       waveColor: '#409EFF',
       progressColor: 'rgb(198, 226, 255)',
       cursorColor: 'rgb(160, 207, 255)',
-      url: '/media/originals/segmented_audio_005.mp3', // TODO: Replace with a real audio URL
+      url: '/media/originals/segmented_audio_006.mp3', // TODO: Replace with a real audio URL
       barWidth: 2,
       barRadius: 3,
       barGap: 1,

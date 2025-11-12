@@ -6,6 +6,7 @@ import VerifyEmail from '@/views/VerifyEmail.vue'
 import PhraseSeeker from '@/views/PhraseSeeker.vue'
 import AudioLab from '@/views/AudioLab.vue'
 import EpisodeSelector from '@/views/EpisodeSelector.vue'
+import LoadSource from '@/views/LoadSource.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,6 +15,15 @@ const router = createRouter({
       path: "/",
       name: "phrase-seeker",
       component: PhraseSeeker,
+      meta: {
+        layout: 'AppLayout',
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/slicer/load-source',
+      name: 'load-source',
+      component: LoadSource,
       meta: {
         layout: 'AppLayout',
         requiresAuth: true
