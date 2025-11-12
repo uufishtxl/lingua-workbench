@@ -209,8 +209,8 @@
     - [x] **[Task/DB]**: 创建 `AudioChunk` 模型 (FK to `SourceAudio`, `chunk_index`, `file` [60s MP3], `has_slices` [Boolean])。
     - [x] **[Task/DB]**: 创建 `AudioSlice` 模型 (FK to `AudioChunk`, `start_time`, `end_time`, `file` [like 5s MP3], `original_text`, `notes`, `tags` [JSONField])。
     - [x] **[Task/Backend]**: 创建一个 `ffmpeg` 服务，`slice_source_to_chunks(source_audio)`，使用 `ffmpeg` 循环（60秒“一刀切”）创建 `AudioChunk`。
-    - [ ] **[Task/Backend]**: 创建另一个 `ffmpeg` 服务，`slice_chunk_to_slice(chunk, start, end)`，用于创建最终的 `AudioSlice`。
-    - [ ] **[Task/Backend]**: 将 `slice_source_to_chunks` 挂载到 `SourceAudio` 的 `post_save` 信号上，实现上传后自动“预切片”。
+    - [x] **[Task/Backend]**: 创建另一个 `ffmpeg` 服务，`slice_chunk_to_slice(chunk, start, end)`，用于创建最终的 `AudioSlice`。
+    - [x] **[Task/Backend]**: 将 `slice_source_to_chunks` 挂载到 `SourceAudio` 的 `post_save` 信号上，实现上传后自动“预切片”。
 
 #### **Story #2: [Audio Slicer > Feature] Load Source 页面**
 - **目标**: 实现一个允许用户上传 `SourceAudio` 或加载现有 `AudioChunk` 的入口。   
@@ -249,3 +249,24 @@
     - [ ] **[Task/Frontend]**: 实现核心交互：点击`Table` -> `Mirror` 加载数据。
     - [ ] **[Task/Frontend]**: 集成 `MediaRecorder` API 到 `[🔴 Record]` 按钮，实现“跟读对比”。
     - [ ] **[Task/Frontend]**: (V1.5) 实现 `el-table` 的“行内编辑”功能 (`onClick` -> `el-input` -> `onBlur` -> `PATCH`)。
+
+### 3. 知识点总结 (Backend Knowledge Points)
+
+1.  **文件上传核心流程**: `models.FileField` 负责定义存储，`ViewSet` 中的 `parser_classes = [MultiPartParser]` 负责解析 `multipart/form-data` 请求，`ModelViewSet` 负责处理整个创建逻辑。
+2.  **Model 核心知识**:
+    *   **外键 (`ForeignKey`)**: 用于建立模型间的关联。
+    *   **联合唯一约束 (`unique_together`)**: 保证多个字段的组合值是唯一的（如：同一剧集只能有一个 `SourceAudio`）。
+3.  **定制 `ModelViewSet`**:
+    *   重写 `perform_create` 方法，在保存模型时自动关联当前登录的 `user`。
+    *   重写 `get_queryset` 方法，根据 `request.user` 实现数据权限隔离。
+4.  **`@action` 装饰器**: 在标准的 `ViewSet` 之外，创建自定义的 URL 和方法，如 `create_batch`，以处理非标准的业务需求。
+5.  **`ffmpeg` 命令行调用**:
+    *   **`segment`**: 用于将一个大文件按固定时长（如60秒）分割成多个小文件 (`AudioChunk`)。
+    *   **`-ss` 和 `-to`**: 用于从一个文件中精确截取某个时间段的内容，创建 `AudioSlice`。
+    *   **`-c copy`**: 流复制模式，在不需要重新编码时极大提高处理速度。
+6.  **Django Signals (`post_save`)**: 实现事件驱动的逻辑解耦。当一个 `SourceAudio` 模型被保存后，自动触发一个信号，通知 `slice_source_to_chunks` 服务开始执行“预切片”任务。
+7.  **服务层抽象 (`services.py`)**: 将核心业务逻辑（如调用 `ffmpeg`）封装成独立的服务函数，使 `views.py` 保持简洁，并让逻辑本身更易于复用和测试。
+8.  **ORM 跨关系查询**: 在 `get_queryset` 中使用双下划线 `__` (如 `source_audio__user`) 来实现跨模型的关联查询，这是 Django ORM 的一个强大功能。
+9.  **序列化器的批量处理 (`many=True`)**: 在 `create_batch` 视图中，通过在序列化器上设置 `many=True`，使其能够验证和反序列化一个对象列表，是实现批量创建接口的关键。
+10. **Python `subprocess` 模块**: 使用 `subprocess.run` 执行外部命令，并通过 `check=True` 和 `capture_output=True` 进行错误捕获和输出管理。
+11. **Python `tempfile` 模块**: 使用 `tempfile.TemporaryDirectory` 来安全地处理中间文件（如 `AudioChunk`），确保这些临时文件在操作完成后被自动清理。

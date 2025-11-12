@@ -33,10 +33,22 @@ class SourceAudio(models.Model):
     def __str__(self):
         return f"{self.drama.name} S{self.season:02d}E{self.episode:02d} - {self.title or 'Untitled'}"
 
+def audio_chunk_upload_path(instance, filename):
+    """
+    Generates a dynamic upload path for AudioChunk files.
+    e.g., media/audio_slicer/chunks/Friends_S10_E12/chunk_001.mp3
+    """
+    source = instance.source_audio
+    drama_name = source.drama.name.replace(' ', '_')
+    season_str = f"S{source.season:02d}"
+    episode_str = f"E{source.episode:02d}"
+    
+    return f'audio_slicer/chunks/{drama_name}_{season_str}_{episode_str}/{filename}'
+
 class AudioChunk(models.Model):
     source_audio = models.ForeignKey(SourceAudio, on_delete=models.CASCADE)
     chunk_index = models.PositiveIntegerField(help_text="Index of the chunk within the source audio (e.g., 0, 1, 2...)")
-    file = models.FileField(upload_to='audio_slicer/chunks/')
+    file = models.FileField(upload_to=audio_chunk_upload_path)
     has_slices = models.BooleanField(default=False, help_text="Indicates if this chunk has any AudioSlices associated with it")
     
     class Meta:
@@ -45,11 +57,23 @@ class AudioChunk(models.Model):
     def __str__(self):
         return f"{self.source_audio.drama.name} S{self.source_audio.season:02d}E{self.source_audio.episode:02d} Chunk {self.chunk_index:03d}"
 
+def audio_slice_upload_path(instance, filename):
+    """
+    Generates a dynamic upload path for AudioSlice files.
+    e.g., media/audio_slicer/slices/Friends_S10_E12/slice_uuid.mp3
+    """
+    source = instance.audio_chunk.source_audio
+    drama_name = source.drama.name.replace(' ', '_')
+    season_str = f"S{source.season:02d}"
+    episode_str = f"E{source.episode:02d}"
+    
+    return f'audio_slicer/slices/{drama_name}_{season_str}_{episode_str}/{filename}'
+
 class AudioSlice(models.Model):
     audio_chunk = models.ForeignKey(AudioChunk, on_delete=models.CASCADE)
     start_time = models.FloatField(help_text="Start time of the slice in seconds")
     end_time = models.FloatField(help_text="End time of the slice in seconds")
-    file = models.FileField(upload_to='audio_slicer/slices/')
+    file = models.FileField(upload_to=audio_slice_upload_path)
     original_text = models.TextField(blank=True, help_text="Original text content of the audio slice")
     notes = models.TextField(blank=True, help_text="User's personal notes for this slice")
     tags = models.ManyToManyField(AudioTag, blank=True)
