@@ -24,9 +24,4 @@ class DramaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Drama
         fields = '__all__'
-
-
-class AudioChunkSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AudioChunk
-        fields = '__all__'
+        read_only_fields = ['user']
