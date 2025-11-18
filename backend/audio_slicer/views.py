@@ -15,14 +15,60 @@ class SourceAudioViewSet(viewsets.ModelViewSet):
     API endpoint for uploading and managing source audio files.
     Triggers ffmpeg segmentation on upload.
     """
-    queryset = SourceAudio.objects.all()
+    # queryset = SourceAudio.objects.all() # Removed static queryset
     serializer_class = SourceAudioSerializer
     permission_classes = [IsAuthenticated]
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
 
+    def get_queryset(self):
+        """
+        This view should return a list of all the SourceAudio objects
+        for the currently authenticated user.
+        """
+        return SourceAudio.objects.filter(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        drama_value = request.data.get('drama')
+
+        # Handle case where drama is a string name instead of an ID
+        if drama_value and isinstance(drama_value, str) and not drama_value.isdigit():
+            drama_name = drama_value
+            
+            # Since Drama.name is unique, we can't have two users with the same drama name.
+            # We get or create, but ensure it's associated with the current user.
+            drama, created = Drama.objects.get_or_create(
+                name=drama_name,
+                defaults={'user': request.user}
+            )
+
+            # If the drama was not created, it means it already existed.
+            # We must verify that it belongs to the current user.
+            if not created and drama.user != request.user:
+                return Response(
+                    {"error": f"A drama with the name '{drama_name}' already exists and is owned by another user."},
+                    status=status.HTTP_409_CONFLICT
+                )
+
+            # Mutate the request data to replace the drama name with the drama ID
+            mutable_data = {key: value for key, value in request.data.items()}
+            mutable_data['drama'] = drama.id
+            
+            # Proceed with the serializer and standard creation flow
+            serializer = self.get_serializer(data=mutable_data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        # If drama is an ID or not provided, proceed with default behavior
+        return super().create(request, *args, **kwargs)
+
     def perform_create(self, serializer):
-        # First, save the SourceAudio instance to get an ID and file path
-        # We also associate the currently authenticated user.
+        if not serializer.validated_data.get('title'):
+            season = serializer.validated_data.get('season')
+            episode = serializer.validated_data.get('episode')
+            if season is not None and episode is not None:
+                serializer.validated_data['title'] = f"S{season:02d}E{episode:02d}"
         serializer.save(user=self.request.user)
 
     @action(detail=False, methods=['get'])
@@ -37,6 +83,7 @@ class SourceAudioViewSet(viewsets.ModelViewSet):
             return Response({"error": "drama_id and season parameters are required."}, status=status.HTTP_400_BAD_REQUEST)
 
         episodes = SourceAudio.objects.filter(
+            user=request.user,
             drama_id=drama_id,
             season=season
         ).values_list('episode', flat=True).distinct().order_by('episode')
@@ -80,9 +127,16 @@ class AudioSliceViewSet(viewsets.ModelViewSet):
     """
     API endpoint for managing audio slices.
     """
-    queryset = AudioSlice.objects.all()
+    # queryset = AudioSlice.objects.all() # Removed static queryset
     serializer_class = AudioSliceSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        """
+        This view should return a list of all the AudioSlice objects
+        for the currently authenticated user.
+        """
+        return AudioSlice.objects.filter(audio_chunk__source_audio__user=self.request.user)
 
     @action(detail=False, methods=['post'], url_path='create_batch')
     def create_batch(self, request):
@@ -102,16 +156,16 @@ class AudioSliceViewSet(viewsets.ModelViewSet):
             tags = item_data.get('tags', [])
 
             try:
-                # Use the service to create the audio file and an unsaved AudioSlice instance
-                audio_slice_instance = slice_chunk_to_slice(audio_chunk, start_time, end_time)
-                
-                # Populate other fields
-                audio_slice_instance.original_text = original_text
-                audio_slice_instance.notes = notes
-                
-                audio_slice_instance.save() # Save the instance to the database
-                audio_slice_instance.tags.set(tags) # Set tags after saving
-                created_slices.append(audio_slice_instance)
+                # Use the service to create the audio slice, including all metadata
+                created_slice = slice_chunk_to_slice(
+                    chunk=audio_chunk,
+                    start_time=start_time,
+                    end_time=end_time,
+                    original_text=original_text,
+                    notes=notes,
+                    tags=tags
+                )
+                created_slices.append(created_slice)
             except Exception as e:
                 errors.append(f"Error creating slice for chunk {audio_chunk.id} from {start_time}-{end_time}: {e}")
         
