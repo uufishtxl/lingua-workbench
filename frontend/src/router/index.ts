@@ -7,6 +7,7 @@ import PhraseSeeker from '@/views/PhraseSeeker.vue'
 import AudioLab from '@/views/AudioLab.vue'
 import EpisodeSelector from '@/views/EpisodeSelector.vue'
 import LoadSource from '@/views/LoadSource.vue'
+import AudioWorkbench from '@/views/AudioWorkbench.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,6 +25,15 @@ const router = createRouter({
       path: '/slicer/load-source',
       name: 'load-source',
       component: LoadSource,
+      meta: {
+        layout: 'AppLayout',
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/slicer/workbench/:id',
+      name: 'audio-workbench',
+      component: AudioWorkbench,
       meta: {
         layout: 'AppLayout',
         requiresAuth: true
@@ -62,15 +72,15 @@ const router = createRouter({
         requiresAuth: true
       }
     },
-    {
-      path: '/audio-lab',
-      name: 'audio-lab',
-      component: AudioLab,
-      meta: {
-        layout: 'AppLayout',
-        requiresAuth: true
-      }
-    }
+    // {
+    //   path: '/audio-lab',
+    //   name: 'audio-lab',
+    //   component: AudioLab,
+    //   meta: {
+    //     layout: 'AppLayout',
+    //     requiresAuth: true
+    //   }
+    // }
   ],
 })
 

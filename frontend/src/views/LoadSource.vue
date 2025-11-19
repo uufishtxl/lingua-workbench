@@ -5,6 +5,9 @@ import { isAxiosError } from 'axios'
 import api from '@/api/axios'
 // import waitGif from '@/assets/wait.gif'
 import waitJpg from '@/assets/wait.jpg'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 // --- State for Selects ---
 const dramas = ref<{ id: number; name: string }[]>([])
@@ -147,7 +150,7 @@ const handleDramaChange = (val: string | number) => {
     if (!existingDrama) {
       const newDrama = { id: -Date.now(), name: val };
       dramas.value.push(newDrama);
-      dramas.value.sort((a, b) => a.name.localeCompare(b.name));
+      dramas.value.sort((a, b) => a.name.localeCompare(b.name)); // localeCompare 用于对不同语言和字符集提供符合用户习惯、正确的字母顺序
       nextTick(() => {
         selection.dramaId = newDrama.id;
       });
@@ -319,10 +322,9 @@ const handleStartEditing = () => {
     ElMessage.warning('Please select a chunk to start editing.')
     return
   }
-  ElMessage.info(`Navigating to workbench for chunk ID: ${selectedChunkId.value}`)
+  router.push({ name: 'audio-workbench', params: { id: selectedChunkId.value } })
 }
 </script>
-
 <template>
   <div class="px-8 flex flex-col h-full">
     <!-- <h1 class="text-2xl font-bold mb-6 flex-shrink-0">Load Source Audio</h1> -->
@@ -407,7 +409,7 @@ const handleStartEditing = () => {
       <p class="text-xs text-gray-400 mb-2">Fill in Drama/Season/Episode to continue.</p>
       <!-- This div will grow and shrink, and be a container for the image -->
       <div class="flex-1 w-full min-h-0 relative">
-        <img :src="waitJpg" class="absolute w-full h-full object-contain" />
+            <img :src="waitJpg" class="absolute w-full h-full object-cover object-right"/>
       </div>
     </el-card>
   </div>

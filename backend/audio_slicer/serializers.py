@@ -8,9 +8,12 @@ class SourceAudioSerializer(serializers.ModelSerializer):
         read_only_fields = ['user', 'uploaded_at']
 
 class AudioChunkSerializer(serializers.ModelSerializer):
+    title = serializers.CharField(source='source_audio.title', read_only=True)
+    drama = serializers.CharField(source='source_audio.drama.name', read_only=True)
+
     class Meta:
         model = AudioChunk
-        fields = '__all__'
+        fields = ['id', 'source_audio', 'chunk_index', 'file', 'has_slices', 'title', 'drama']
 
 class AudioSliceSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(many=True, queryset=AudioTag.objects.all(), required=False)
