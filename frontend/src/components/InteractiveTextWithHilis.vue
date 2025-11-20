@@ -65,14 +65,9 @@ const tokens = computed(() => {
                 ? 'bg-yellow-100 cursor-pointer hover:bg-yellow-200 rounded px-1 mx-0.5 transition relative'
                 : '', 
             token.isHighlight && token.data.id === currentActiveId ? 'text-blue-500' : ''
-        ]" @click="token.isHighlight ? emit('click-highlight', token.data) : null">
-            {{ token.text }}
-
-            <span v-if="token.isHighlight && token.data.id === currentActiveId"
+        ]" @click="token.isHighlight ? emit('click-highlight', token.data) : null"
+            >{{ token.text }}<span v-if="token.isHighlight && token.data.id === currentActiveId"
                 class="absolute -top-4 left-1/2 -translate-x-1/2 text-xs"
-                >
-                ▼
-            </span>
-        </span>
+                >▼</span></span>
     </div>
 </template>
