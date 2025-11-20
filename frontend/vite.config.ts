@@ -91,5 +91,8 @@ export default defineConfig((config) => {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  optimizeDeps: {
+    exclude: ['wavesurfer.js']
+  },
   };
 });

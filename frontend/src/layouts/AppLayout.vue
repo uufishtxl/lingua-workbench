@@ -36,7 +36,7 @@ const handleCommand = (command: string | number | object) => {
 </script>
 
 <template>
-  <el-container class="h-screen">
+  <el-container class="h-screen overflow-hidden">
     <el-header class="shadow py-4 px-8 border-b-1 border-b-gray-300 flex justify-between items-center"
       style="background-color: #f1f5f9;">
       <div class="flex items-center">
@@ -71,7 +71,7 @@ const handleCommand = (command: string | number | object) => {
       </div>
     </el-header>
 
-    <el-container>
+    <el-container class="overflow-hidden">
       <el-aside width="auto" class="bg-slate-100 border-r-gray-300 border-r-1 flex flex-col">
         <el-menu :default-active="$route.path" router class="el-menu-vertical-demo"
           style="background-color: transparent; border-right: none;" :collapse="isCollapse">
@@ -129,7 +129,7 @@ const handleCommand = (command: string | number | object) => {
         </div>
       </el-aside>
 
-      <el-main class="bg-slate-100">
+      <el-main class="bg-slate-100 overflow-hidden">
         <slot />
       </el-main>
     </el-container>
