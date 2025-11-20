@@ -1,10 +1,11 @@
 <template>
-    <div class="wave-surfer__wrapper flex flex-col gap-4">
-        <el-card>
+    <div class="wave-surfer__wrapper flex flex-col gap-4 h-full overflow-hidden">
+        <!-- Wave Container -->
+        <el-card class="flex-none">
             <p class="text-xs text-gray-400 mb-2">Source: {{ props.title }}</p>
 
             <BaseWaveSurfer ref="baseWaveSurferRef" :url="props.url" @play="isPlaying = true" @pause="isPlaying = false"
-                @region-created="updateRegionsList" @region-updated="updateRegionsList"
+                @region-created="handleRegionCreated" @region-updated="handleRegionUpdated"
                 @region-removed="handleRegionRemoved" @region-in="handleRegionIn" @region-out="handleRegionOut"
                 @region-clicked="handleRegionClicked" />
 
@@ -22,19 +23,31 @@
             </div>
         </el-card>
 
-        <el-card>
-            <h2 class="font-bold">Selected Regions</h2>
-            <!-- This is where you would list and edit the regionsList -->
+        <!-- Region List -->
+        <el-card class="flex-1 overflow-y-hidden flex flex-col">
+            <h2 class="font-bold mb-4 border-b-[0.5px] border-blue-100/50 pb-2">Selected Regions</h2>
+            
+            <!-- Header Row -->
+            <el-row :gutter="24" class="text-sm text-gray-500 font-semibold mb-2 px-2">
+                <el-col :span="3" class="text-center">Time</el-col>
+                <el-col :span="7" class="text-center">Original Text</el-col>
+                <el-col :span="7" class="text-center">Note</el-col>
+                <el-col :span="3" class="text-center">Tags</el-col>
+                <el-col :span="2" class="text-center">Actions</el-col>
+            </el-row>
 
-            <div v-if="regionsList.length > 0">
-                <RegionEditor v-for="region in regionsList" :key="region.id" :region="region" @delete="removeRegion"
-                    @update:tags="handleUpdateTags" @update:field="handleUpdateRegion" />
+            <div class="flex-1 overflow-y-auto min-h-0 flex flex-col">
+                <div v-if="regionsList.length > 0">
+                    <RegionEditor v-for="region in regionsList" :key="region.id" :region="region" @delete="removeRegion"
+                        @update:tags="handleUpdateTags" @update:field="handleUpdateRegion" />
+                </div>
+                <div v-else class="flex-grow flex items-center justify-center">
+                    <p class="text-xs text-gray-600">Click and drag on the waveform to select regions.</p>
+                </div>
             </div>
-            <div v-else>
-                <p class="text-sm text-gray-600">Click and drag on the waveform to select regions.</p>
-            </div>
-            <div class="mt-4 text-right">
-                <el-button type="success" @click="saveRegions">Save All Changes</el-button>
+
+            <div class="mt-4 w-full text-center flex-shrink-0 flex lg:px-96">
+                <el-button class="flex-1" type="primary" @click="saveRegions" :disabled="!regionsList.length">Save All Changes</el-button>
             </div>
 
         </el-card>
@@ -42,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import type { Region } from 'wavesurfer.js/dist/plugins/regions.js'
 import BaseWaveSurfer from './BaseWaveSurfer.vue';
 import RegionEditor from './RegionEditor.vue';
@@ -67,33 +80,33 @@ interface RegionInfo {
 
 const regionsList = ref<RegionInfo[]>([])
 
-const updateRegionsList = () => {
-    const regions = baseWaveSurferRef.value?.getRegions()
-    if (!regions) return;
+watch(regionsList, (list) => {
+    list.sort((a, b) => parseFloat(a.start) - parseFloat(b.start));
+}, { deep: true });
 
-    const newRegionsMap = new Map<string, RegionInfo>();
-
-    for (const region of Object.values(regions)) {
-        const existingRegion = regionsList.value.find(r => r.id === region.id);
-
-        if (existingRegion) {
-            newRegionsMap.set(region.id, {
-                ...existingRegion,
-                start: region.start.toFixed(2),
-                end: region.end.toFixed(2),
-            });
-        } else {
-            newRegionsMap.set(region.id, {
-                id: region.id,
-                start: region.start.toFixed(2),
-                end: region.end.toFixed(2),
-                originalText: '',
-                tags: [],
-                note: '',
-            });
-        }
+const handleRegionCreated = (newRegion: Region) => {
+    if (!regionsList.value.some(r => r.id === newRegion.id)) {
+        regionsList.value.push({
+            id: newRegion.id,
+            start: newRegion.start.toFixed(2),
+            end: newRegion.end.toFixed(2),
+            originalText: '',
+            tags: [],
+            note: '',
+        });
     }
-    regionsList.value = Array.from(newRegionsMap.values());
+}
+
+const handleRegionUpdated = (updatedRegion: Region) => {
+    const regionInList = regionsList.value.find(r => r.id === updatedRegion.id);
+    if (regionInList) {
+        regionInList.start = updatedRegion.start.toFixed(2);
+        regionInList.end = updatedRegion.end.toFixed(2);
+    }
+}
+
+const handleRegionRemoved = (removedRegion: Region) => {
+    regionsList.value = regionsList.value.filter(r => r.id !== removedRegion.id);
 }
 
 const handlePlayPause = () => {
@@ -123,8 +136,6 @@ const removeRegion = (id: string) => {
         const region_to_del = Object.values(regions).find(r => r.id === id)
         if (region_to_del) {
             region_to_del.remove()
-            // Directly filter the list to ensure UI updates reliably
-            regionsList.value = regionsList.value.filter(r => r.id !== id)
         }
     }
 }

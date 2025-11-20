@@ -10,9 +10,12 @@ import WaveSurfer from 'wavesurfer.js'
 import RegionsPlugin from 'wavesurfer.js/dist/plugins/regions.esm.js'
 import type { Region } from 'wavesurfer.js/dist/plugins/regions.js'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   url: string
-}>()
+  height?: number
+}>(), {
+  height: 150,
+})
 
 const emit = defineEmits<{
   (e: 'region-created', region: Region): void
@@ -41,7 +44,7 @@ onMounted(() => {
       barWidth: 2,
       barRadius: 3,
       barGap: 1,
-      height: 200,
+      height: props.height,
     })
 
     wavesurfer.value.on('play', () => emit('play'))
@@ -64,6 +67,12 @@ onMounted(() => {
     })
 
     wavesurfer.value.on('error', (err) => console.error('Wavesurfer error:', err))
+  }
+})
+
+watch(() => props.height, (newHeight) => {
+  if (wavesurfer.value) {
+    wavesurfer.value.setOptions({ height: newHeight })
   }
 })
 

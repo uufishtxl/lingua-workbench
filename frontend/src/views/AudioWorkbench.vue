@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '@/api/axios'
 import { ElMessage } from 'element-plus'
-import WaveSurfer from '@/components/WaveSurfer.vue'
+import WaveSurfer from '@/components/AudioSlicer.vue'
 import ResourceNotFoundJpg from '@/assets/resource_not_found.jpg'
 
 const route = useRoute()
@@ -23,6 +23,7 @@ onMounted(async () => {
   try {
     const response = await api.get(`/v1/audiochunks/${chunkId}/`)
     chunk.value = response.data
+    console.log(chunk.value.file)
   } catch (err) {
     error.value = 'Failed to fetch audio chunk data.'
     ElMessage.error(error.value)
@@ -41,11 +42,8 @@ onMounted(async () => {
         <el-button class="absolute left-[50%] bottom-0 translate-x-[-50%] translate-y-[-50%]">Back to Chunk List</el-button>
       </div>
     </el-card>
-    <div v-else-if="chunk" class="min-h-0">
-      <h2 class="text-xl mb-4">Chunk #{{ chunk.chunk_index }} Details</h2>
-      <p class="mb-4">File URL: <a :href="chunk.file" target="_blank" class="text-blue-500 hover:underline">{{ chunk.file }}</a></p>
-      <pre class="bg-gray-100 p-4 rounded text-sm">{{ JSON.stringify(chunk, null, 2) }}</pre>
-      <WaveSurfer :url="chunk.file" :title="`${chunk.drama} - ${chunk.title}`"/>
+    <div v-else-if="chunk" class="min-h-0 flex flex-col flex-grow p-4">
+      <WaveSurfer class="flex-grow min-h-0" :url="chunk.file" :title="chunk.title"/>
     </div>
   </div>
 </template>

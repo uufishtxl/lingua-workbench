@@ -11,7 +11,12 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AnnotatedText: typeof import('./src/components/AnnotatedText.vue')['default']
+    AudioSlicer: typeof import('./src/components/AudioSlicer.vue')['default']
+    'AudioSlicer copy': typeof import('./src/components/AudioSlicer copy.vue')['default']
     BaseWaveSurfer: typeof import('./src/components/BaseWaveSurfer.vue')['default']
+    copy: typeof import('./src/components/RegionEditor copy.vue')['default']
+    EditableTextWithHilis: typeof import('./src/components/InteractiveTextWithHilis.vue')['default']
     ElAlert: typeof import('element-plus/es')['ElAlert']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
@@ -20,6 +25,7 @@ declare module 'vue' {
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCard: typeof import('element-plus/es')['ElCard']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
+    ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
     ElCol: typeof import('element-plus/es')['ElCol']
     ElContainer: typeof import('element-plus/es')['ElContainer']
     ElDialog: typeof import('element-plus/es')['ElDialog']
@@ -46,11 +52,14 @@ declare module 'vue' {
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
+    ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     ILocalNavPowerOff: typeof import('~icons/local/nav-power-off')['default']
     IMdiContentCut: typeof import('~icons/mdi/content-cut')['default']
     IMdiHome: typeof import('~icons/mdi/home')['default']
     IMdiScissor: typeof import('~icons/mdi/scissor')['default']
+    InteractiveTextWithHilis: typeof import('./src/components/InteractiveTextWithHilis.vue')['default']
+    ITablerDeviceFloppy: typeof import('~icons/tabler/device-floppy')['default']
     ITablerHeadphones: typeof import('~icons/tabler/headphones')['default']
     ITablerMicrophone: typeof import('~icons/tabler/microphone')['default']
     ITablerPlayerPauseFilled: typeof import('~icons/tabler/player-pause-filled')['default']
@@ -59,9 +68,12 @@ declare module 'vue' {
     ITablerRepeatOff: typeof import('~icons/tabler/repeat-off')['default']
     ITablerSpeaker: typeof import('~icons/tabler/speaker')['default']
     ITablerVolume: typeof import('~icons/tabler/volume')['default']
+    ITablerX: typeof import('~icons/tabler/x')['default']
     RegionEditor: typeof import('./src/components/RegionEditor.vue')['default']
+    'RegionEditor copy': typeof import('./src/components/RegionEditor copy.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SliceCard: typeof import('./src/components/SliceCard.vue')['default']
     WaveSurfer: typeof import('./src/components/WaveSurfer.vue')['default']
   }
   export interface GlobalDirectives {
