@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<{
   end?: number
   allowSelection?: boolean
 }>(), {
-  height: 150,
+  height: 100,
   allowSelection: true,
 })
 
@@ -36,41 +36,51 @@ const emit = defineEmits<{
 const waveformContainer = ref<HTMLElement | null>(null)
 const wavesurfer = ref<WaveSurfer | null>(null)
 const wsRegions = ref<RegionsPlugin | null>(null)
+const selectedRegion = ref<Region | null>(null);
+const managedRegion = ref<Region | null>(null);
 
 const REGION_ID = 'start-end-segment'
 
-/**
- * Creates or updates a non-interactive region based on start/end props.
- */
 const syncStartEndRegion = (start?: number, end?: number) => {
   if (!wavesurfer.value || !wsRegions.value) return
 
-  // Find and remove any existing region with our managed ID
   const existingRegions = Object.values(wsRegions.value.getRegions())
   const region = existingRegions.find(r => r.id === REGION_ID)
   if (region) {
     region.remove()
+    managedRegion.value = null
   }
 
-  // Add a new region if start and end are valid
   if (start !== undefined && end !== undefined && end > start) {
-    wsRegions.value.addRegion({
+    managedRegion.value = wsRegions.value.addRegion({
       id: REGION_ID,
       start,
       end,
-      color: 'rgba(255, 165, 0, 0.2)', // A distinct orange color
+      color: 'rgba(255, 165, 0, 0.2)',
       drag: false,
       resize: false,
+      // loop: false // We handle looping manually for better control
     })
 
-    // Also seek to the start of the region
-    const duration = wavesurfer.value.getDuration()
-    if (duration > 0) {
-      wavesurfer.value.seekTo(start / duration)
+    if (waveformContainer.value) {
+        const segmentDuration = end - start;
+        if (segmentDuration > 0) {
+            const containerWidth = waveformContainer.value.clientWidth;
+            const paddedSegmentDuration = segmentDuration * 1.4; 
+            const pxPerSec = containerWidth / paddedSegmentDuration;
+            wavesurfer.value.zoom(pxPerSec);
+        }
     }
+    
+    setTimeout(() => {
+      const duration = wavesurfer.value?.getDuration()
+      if (duration && duration > 0) {
+        const centerProgress = ((start + end) / 2) / duration;
+        wavesurfer.value?.seekTo(centerProgress);
+      }
+    }, 10);
   }
 }
-
 
 onMounted(() => {
   if (waveformContainer.value) {
@@ -89,17 +99,24 @@ onMounted(() => {
     wavesurfer.value.on('play', () => emit('play'))
     wavesurfer.value.on('pause', () => emit('pause'))
 
+    // Manual looping logic
+    wavesurfer.value.on('audioprocess', (currentTime) => {
+      if (managedRegion.value && wavesurfer.value?.isPlaying()) {
+        if (currentTime >= managedRegion.value.end) {
+          wavesurfer.value.seekTo(managedRegion.value.start / wavesurfer.value.getDuration());
+        }
+      }
+    });
+
     wavesurfer.value.on('ready', () => {
       if (!wavesurfer.value) return
 
       wsRegions.value = wavesurfer.value.registerPlugin(RegionsPlugin.create())
-      // Conditionally enable drag selection based on allowSelection prop
       if (props.allowSelection) {
         wsRegions.value.enableDragSelection({ color: 'rgba(64, 158, 255, 0.1)' })
       }
 
       wsRegions.value.on('region-created', (region) => {
-        // Prevent emitting our managed region
         if (region.id !== REGION_ID) {
           emit('region-created', region)
         }
@@ -108,9 +125,12 @@ onMounted(() => {
       wsRegions.value.on('region-removed', (region) => emit('region-removed', region))
       wsRegions.value.on('region-in', (region) => emit('region-in', region))
       wsRegions.value.on('region-out', (region) => emit('region-out', region))
-      wsRegions.value.on('region-clicked', (region, e) => emit('region-clicked', region, e))
+      
+      wsRegions.value.on('region-clicked', (region, e) => {
+        selectedRegion.value = region;
+        emit('region-clicked', region, e)
+      })
 
-      // Create the initial region if start/end are provided
       syncStartEndRegion(props.start, props.end)
       
       emit('ready', wavesurfer.value)
@@ -120,21 +140,19 @@ onMounted(() => {
   }
 })
 
-// Watch for changes in height
 watch(() => props.height, (newHeight) => {
   if (wavesurfer.value) {
     wavesurfer.value.setOptions({ height: newHeight })
   }
 })
 
-// Watch for URL changes and reload the waveform
 watch(() => props.url, (newUrl) => {
   if (wavesurfer.value) {
+    selectedRegion.value = null;
     wavesurfer.value.load(newUrl);
   }
 })
 
-// Watch for changes in start/end and update the region
 watch([() => props.start, () => props.end], ([newStart, newEnd]) => {
   syncStartEndRegion(newStart, newEnd)
 })
@@ -143,18 +161,58 @@ onUnmounted(() => {
   wavesurfer.value?.destroy()
 })
 
-// Expose public methods
+// Smarter play function for region handling
+const play = () => {
+  const ws = wavesurfer.value;
+  const region = managedRegion.value;
+
+  if (region && ws) {
+    const currentTime = ws.getCurrentTime();
+    // Seek to start only if cursor is outside the region
+    if (currentTime < region.start || currentTime >= region.end) {
+      ws.seekTo(region.start / ws.getDuration());
+    }
+    ws.play();
+  } else {
+    // Fallback for no region
+    ws?.play();
+  }
+};
+
 defineExpose({
-  playPause: () => wavesurfer.value?.playPause(),
-  play: () => wavesurfer.value?.play(),
+  playPause: () => {
+    if (wavesurfer.value?.isPlaying()) {
+      wavesurfer.value.pause();
+    } else {
+      play();
+    }
+  },
+  play: play,
   pause: () => wavesurfer.value?.pause(),
   getRegions: () => wsRegions.value?.getRegions(),
   addRegion: (options: any) => wsRegions.value?.addRegion(options),
+  setPlaybackRate: (rate: number) => wavesurfer.value?.setPlaybackRate(rate),
+  toggleLoop: () => {
+    if (selectedRegion.value) {
+      selectedRegion.value.setLoop(!selectedRegion.value.loop);
+      return selectedRegion.value.loop;
+    }
+    return false;
+  }
 })
 </script>
 
 <style scoped>
-.wavesurfer-host {
-  overflow: hidden;
+/* 
+  WaveSurfer uses Shadow DOM, and the scrollable element has part="scroll".
+  We need to use the ::part() pseudo-element to style it from outside.
+  The :deep() selector is still needed to pierce the parent's scope to reach the wavesurfer-host's shadow root.
+*/
+.wavesurfer-host :deep(::part(scroll)) {
+  scrollbar-width: none; /* For Firefox */
+}
+
+.wavesurfer-host :deep(::part(scroll)::-webkit-scrollbar) {
+  display: none; /* For Webkit browsers */
 }
 </style>

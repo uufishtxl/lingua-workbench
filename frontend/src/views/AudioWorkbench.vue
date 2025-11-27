@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '@/api/axios'
 import { ElMessage } from 'element-plus'
-import WaveSurfer from '@/components/AudioSlicer.vue'
+import AudioSlicer from '@/components/AudioSlicer.vue'
 import ResourceNotFoundJpg from '@/assets/resource_not_found.jpg'
 
 const route = useRoute()
@@ -42,8 +42,8 @@ onMounted(async () => {
         <el-button class="absolute left-[50%] bottom-0 translate-x-[-50%] translate-y-[-50%]">Back to Chunk List</el-button>
       </div>
     </el-card>
-    <div v-else-if="chunk" class="min-h-0 flex flex-col flex-grow p-4">
-      <WaveSurfer class="flex-grow min-h-0" :url="chunk.file" :title="chunk.title"/>
+    <div v-else-if="chunk" class="min-h-0 flex flex-col flex-grow p-2">
+      <AudioSlicer class="flex-grow min-h-0" :url="chunk.file" :title="chunk.title"/>
     </div>
   </div>
 </template>
@@ -55,6 +55,7 @@ onMounted(async () => {
   flex-direction: column;
   flex-grow: 1;
   min-height: 0;
+  padding: 12px;
   /* Allow the body to shrink beyond its content's minimum size */
 }
 </style>

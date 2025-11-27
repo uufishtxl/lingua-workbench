@@ -12,3 +12,4 @@ const ipaSymbols = [
 ];
 
 export default ipaSymbols
+

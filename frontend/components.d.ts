@@ -13,7 +13,6 @@ declare module 'vue' {
   export interface GlobalComponents {
     AnnotatedText: typeof import('./src/components/AnnotatedText.vue')['default']
     AudioSlicer: typeof import('./src/components/AudioSlicer.vue')['default']
-    'AudioSlicer copy': typeof import('./src/components/AudioSlicer copy.vue')['default']
     BaseWaveSurfer: typeof import('./src/components/BaseWaveSurfer.vue')['default']
     copy: typeof import('./src/components/RegionEditor copy.vue')['default']
     EditableTextWithHilis: typeof import('./src/components/InteractiveTextWithHilis.vue')['default']

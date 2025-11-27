@@ -1,12 +1,12 @@
 <template>
-    <el-card class="w-80">
+    <el-card>
         <!-- Time Stamp -->
         <div class="w-full flex justify-between items-center text-xs">
-            <p class="bg-sky-100 text-blue-400 px-2 py-1 rounded">00:00-00:23</p>
-            <el-button text type="danger" :icon="Delete" class="is-del" circle />
+            <p class="bg-sky-100 text-blue-400 px-2 py-1 rounded">{{ formatTime(props.start) }}~{{ formatTime(props.end) }}</p>
+            <el-button text type="danger" :icon="Delete" class="is-del" circle @click.stop="emit('delete', region.id)"  />
         </div>
         <!-- Original Text 浏览/编辑区域 -->
-        <div class="font-semibold relative h-24 text-display-area" ref="textDisplayRef" @mouseup="handleTextSelection">
+        <div class="font-semibold relative h-20 text-display-area" ref="textDisplayRef" @mouseup="handleTextSelection">
             <div class="original-text__wrapper rounded relative h-full" v-if="isEditingOriginal">
                 <el-input v-model="editingText" :auto-size="false" type="textarea" :rows="3" />
                 <div class="absolute right-2 bottom-2 input__icons">
@@ -33,26 +33,41 @@
                 </el-button>
             </transition>
         </div>
-
         <!-- Wave / Highlight Editor -->
-        <div class="h-40 overflow-hidden" v-if="activeHighlightId && activeHighlight" ref="editorWrapperRef">
+        <div v-if="activeHighlightId && activeHighlight" ref="editorWrapperRef">
             <HighlightEditor :highlight="activeHighlight" @update:highlight="handleHighlightUpdate"
                 @cancel="handleHighlightCancel" @delete-highlight="handleHighlightDelete" />
         </div>
-        <template v-else>
-            <div class="bg-slate-900 h-40 overflow-hidden flex flex-col">
-                <BaseWaveSurfer :url="audioUrl" class="flex-grow" :height="120" :allow-selection="true" :start="3.2" :end="13.2" />
-                <div class="controls h-10 flex flex-row items-center justify-center gap-4">
-                    <el-button type="primary" size="small" circle class="block">
-                        <!-- <i-tabler-player-pause-filled class="text-xs" /> -->
-                        <i-tabler-player-play-filled class="text-xs" />
+        <div v-else class="bg-slate-900 flex flex-col h-[140px] p-2">
+            <BaseWaveSurfer ref="wavesurferRef" :url="props.url" :height="100" :allow-selection="true"
+                :start="props.start" :end="props.end" @play="isPlaying = true" @pause="isPlaying = false"
+                @region-clicked="(region) => isLooping = region.loop" />
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-2">
+                    <el-button size="small" @click="wavesurferRef?.playPause()" circle class="control-button is-dark">
+                        <i-tabler-player-play-filled class="text-sky-500 text-xs" v-if="!isPlaying" />
+                        <i-tabler-player-pause-filled v-else class="text-sky-500 text-xs" />
                     </el-button>
-                    <el-button circle size="small" class="block">
-                        <i-tabler-repeat class="text-xs" />
+                    <el-button size="small" @click="handleToggleLoop" circle class="control-button is-dark">
+                        <i-tabler-repeat-off v-if="!isLooping" class="text-gray-400 text-xs" />
+                        <i-tabler-repeat v-else class="text-sky-500 text-xs" />
                     </el-button>
                 </div>
+                <div>
+                    <el-dropdown @command="handleSpeedChange" trigger="click" popper-class="dark-popper">
+                        <el-button size="small" circle class="speed-control-btn control-button is-dark">
+                            <span class="text-[0.7em] text-sky-500">{{ currentPlaybackRate }}x</span>
+                        </el-button><template #dropdown>
+                            <el-dropdown-menu>
+                                <el-dropdown-item v-for="speed in speedOptions" :key="speed" :command="speed">
+                                    {{ speed }}x
+                                </el-dropdown-item>
+                            </el-dropdown-menu>
+                        </template>
+                    </el-dropdown>
+                </div>
             </div>
-        </template>
+        </div>
     </el-card>
 
 </template>
@@ -61,6 +76,7 @@
 import { ref, computed, reactive, onMounted, onUnmounted } from 'vue'
 import { Delete, Edit } from '@element-plus/icons-vue'
 import { v4 as uuidv4 } from 'uuid';
+import { formatTime } from '@/utils/utils';
 import InteractiveTextWithHilis from './InteractiveTextWithHilis.vue';
 import BaseWaveSurfer from './BaseWaveSurfer.vue';
 import HighlightEditor from './HighlightEditor.vue';
@@ -104,18 +120,53 @@ const mockData = {
     ]
 };
 
-const currentSlice = ref(mockData);
+const props = defineProps<{
+    url: string;
+    start: number;
+    end: number;
+    region: {
+    id: string;
+    start: string;
+    end: string;
+    originalText: string;
+    tags: string[];
+    note: string;
+  }
+}>();
+
+const emit = defineEmits(['delete'])
+
+const currentSlice = ref({text: "", highlights: []});
 const activeHighlightId = ref<string | null>(null);
 
 const isEditingOriginal = ref(false)
 const editingText = ref('')
-const audioUrl = ref('http://192.168.31.192:8000/media/audio_slicer/chunks/chunk_002.mp3');
 
 // State for text selection and highlighter icon
 const textDisplayRef = ref<HTMLElement | null>(null);
 const selectedTextInfo = ref<{ text: string; start: number; end: number; rect: DOMRect | null } | null>(null);
 const highlighterIconVisible = ref(false);
 const highlighterIconPosition = reactive({ top: '0px', left: '0px' });
+const isPlaying = ref(false);
+const isLooping = ref(false);
+
+// --- Playback Speed Control ---
+const wavesurferRef = ref<any>(null); // Ref for the BaseWaveSurfer component
+const currentPlaybackRate = ref(1);
+const speedOptions = [0.5, 0.8, 1];
+
+const handleSpeedChange = (rate: number) => {
+    currentPlaybackRate.value = rate;
+    wavesurferRef.value?.setPlaybackRate(rate);
+};
+
+const handleToggleLoop = () => {
+    if (wavesurferRef.value) {
+        isLooping.value = wavesurferRef.value.toggleLoop();
+    }
+};
+
+// -----------------------------
 
 // Computed property for the active highlight
 const activeHighlight = computed<Hili | undefined>(() => {

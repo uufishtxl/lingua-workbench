@@ -4,8 +4,9 @@
     <div class="flex justify-between items-center">
       <div class="flex items-center gap-2">
         <i-tabler-tag class="text-gray-400" />
-        <el-select v-model="editableHighlight.tags" multiple placeholder="Select tags" size="small" class="tags-select"
-          popper-class="dark-select-popper">
+        <!-- Tag 选择器 -->
+        <el-select v-model="editableHighlight.tags" multiple placeholder="Select tags" size="small"  class="tags-select"
+          popper-class="dark-popper">
           <el-option v-for="tagOption in allTagOptions" :key="tagOption.value" :label="tagOption.value"
             :value="tagOption.value">
             {{ tagOption.label }}
@@ -19,7 +20,7 @@
 
     <!-- Note -->
     <div class="note-input-wrapper">
-      <el-input v-model="editableHighlight.note" type="textarea" :rows="2" placeholder="Add a note..." />
+      <el-input ref="noteInput" v-model="editableHighlight.note" type="textarea" :rows="2" placeholder="Add a note..." />
     </div>
 
     <!-- IPA Keyboard -->
@@ -44,7 +45,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import ipaSymbols from '@/data/ipa';
-// Removed: import { Erase } from '@element-plus/icons-vue';
 
 type TagType = 'Flap T' | 'Reduction' | 'Linking' | 'Resyllabification' | 'Flap-T'; // These are the full display names
 type AbbreviatedTag = 'FT' | 'RED' | 'LINK' | 'RESYL' | 'FT_HYPHEN'; // These are the actual values stored
@@ -70,6 +70,8 @@ const emit = defineEmits<{
 
 const editableHighlight = ref<Hili>({ ...props.highlight });
 
+const noteInput = ref<HTMLElement | null>(null)
+
 const allTagOptions: { value: AbbreviatedTag; label: TagType }[] = [
   { value: 'FT', label: 'Flap T' },
   { value: 'RED', label: 'Reduction' },
@@ -84,6 +86,9 @@ watch(() => props.highlight, (newHighlight) => {
 
 const addSymbol = (symbol: string) => {
   editableHighlight.value.note += symbol
+  if (noteInput.value) {
+    noteInput.value.focus()
+  }
 }
 
 const handleSave = () => {
@@ -109,14 +114,11 @@ const handleDelete = () => {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  overflow-x: hidden; /* Hide horizontal scrollbar */
 }
 
 .tags-select {
   width: 200px;
-}
-
-:deep(.el-select) {
-  --el-select-input-focus-border-color: #4E466E;
 }
 
 :deep(.el-input__wrapper),
@@ -184,6 +186,10 @@ const handleDelete = () => {
   padding: 4px 6px;
 }
 
+:deep(.el-button:hover) {
+  background-color: #4E466E !important;
+}
+
 :deep(.symbol-button.el-button) {
   background: black;
   color: white;
@@ -198,34 +204,5 @@ const handleDelete = () => {
   background: #302849;
   font-size:10px;
   resize: none;
-}
-</style>
-
-<style>
-/* Global styles for the dark popper, targeting the custom class */
-.dark-select-popper {
-  background-color: #302849 !important;
-  border: 1px solid #4E466E !important;
-}
-
-.dark-select-popper .el-select-dropdown__item {
-  background-color: #302849 !important; /* Default background for all items */
-  color: white; /* Default text color for all items */
-  font-size: 12px;
-}
-
-.dark-select-popper .el-select-dropdown__item.hover,
-.dark-select-popper .el-select-dropdown__item:hover,
-.dark-select-popper .el-select-dropdown__item:focus,
-.dark-select-popper .el-select-dropdown__item.is-focus,
-.dark-select-popper .el-select-dropdown__item.selected {
-  background-color: #4E466E !important;
-  color: #fff;
-}
-
-/* Optional: Style the arrow */
-.dark-select-popper .el-popper__arrow::before {
-  background: #302849 !important;
-  border-color: #4E466E !important;
 }
 </style>
