@@ -10,13 +10,13 @@
                 @region-clicked="handleRegionClicked" />
 
             <!-- Controls -->
-            <div class="flex justify-around items-center gap-4 mt-4">
+            <div class="flex justify-around items-center gap-4 mt-2">
                 <div class="flex gap-6 items-center">
-                    <el-button type="primary" @click="handlePlayPause" circle>
+                    <el-button type="primary" @click="handlePlayPause" size="small" circle>
                         <i-tabler-player-pause-filled v-if="isPlaying" class="text-sm" />
                         <i-tabler-player-play-filled v-else class="text-sm" />
                     </el-button>
-                    <el-button :type="loopRegion ? 'success' : ''" @click="loopRegion = !loopRegion" circle>
+                    <el-button :type="loopRegion ? 'success' : ''" @click="loopRegion = !loopRegion" size="small" circle>
                         <i-tabler-repeat class="text-sm" />
                     </el-button>
                 </div>
@@ -28,18 +28,19 @@
             <h2 class="font-bold mb-4 border-b-[0.5px] border-blue-100/50 pb-2">Selected Regions</h2>
             
             <div class="flex-1 overflow-y-auto min-h-0">
-                <div v-if="regionsList.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-1">
-                    <RegionEditor 
+                <div v-if="regionsList.length > 0" class="grid gap-4" style="grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));">
+                    <SliceCard 
                         v-for="region in regionsList" 
                         :key="region.id" 
-                        :region="region" 
+                        :url="props.url"
+                        :start="Number(region.start)"
+                        :end="Number(region.end)"
+                        :region="region"
                         @delete="removeRegion"
-                        @edit="openEditDialog"
                     />
                 </div>
                 <div v-else class="flex flex-col items-center justify-center h-full">
                     <p class="text-xs text-gray-600">Click and drag on the waveform to select regions.</p>
-                    <SliceCard />
                 </div>
             </div>
 
@@ -48,33 +49,6 @@
             </div>
         </el-card>
 
-        <!-- Edit Dialog -->
-        <el-dialog v-model="isDialogVisible" :title="`Edit Region: ${currentEditingRegion?.id}`">
-            <div v-if="currentEditingRegion">
-                <el-form label-position="top">
-                    <el-form-item label="Original Text">
-                        <el-input v-model="currentEditingRegion.originalText" type="textarea" :rows="3" placeholder="Type the sentence here..." />
-                    </el-form-item>
-                    <el-form-item label="Annotated Preview">
-                        <AnnotatedText :annotatedText="parsedAnnotatedText" />
-                    </el-form-item>
-                    <el-form-item label="Note">
-                        <el-input v-model="currentEditingRegion.note" type="textarea" :rows="2" />
-                    </el-form-item>
-                    <el-form-item label="Tags">
-                        <el-checkbox-group v-model="currentEditingRegion.tags">
-                            <el-checkbox v-for="tag in allTags" :key="tag" :label="tag" :value="tag" />
-                        </el-checkbox-group>
-                    </el-form-item>
-                </el-form>
-            </div>
-            <template #footer>
-                <span class="dialog-footer">
-                    <el-button @click="isDialogVisible = false">Cancel</el-button>
-                    <el-button type="primary" @click="isDialogVisible = false">Confirm</el-button>
-                </span>
-            </template>
-        </el-dialog>
     </div>
 </template>
 
@@ -83,7 +57,7 @@ import { ref, watch, computed } from 'vue';
 import type { Region } from 'wavesurfer.js/dist/plugins/regions.js'
 import BaseWaveSurfer from './BaseWaveSurfer.vue';
 import RegionEditor from './RegionEditor.vue';
-import AnnotatedText from './AnnotatedText.vue';
+// import AnnotatedText from './AnnotatedText.vue';
 import SliceCard from './SliceCard.vue';
 
 const baseWaveSurferRef = ref<InstanceType<typeof BaseWaveSurfer> | null>(null)

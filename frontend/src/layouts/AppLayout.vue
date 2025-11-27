@@ -164,4 +164,8 @@ const handleCommand = (command: string | number | object) => {
 .logout-button:hover {
   background-color: var(--el-menu-hover-bg-color);
 }
+
+:deep(.el-main) {
+  padding: 8px;
+}
 </style>

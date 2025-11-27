@@ -72,15 +72,15 @@ const router = createRouter({
         requiresAuth: true
       }
     },
-    // {
-    //   path: '/audio-lab',
-    //   name: 'audio-lab',
-    //   component: AudioLab,
-    //   meta: {
-    //     layout: 'AppLayout',
-    //     requiresAuth: true
-    //   }
-    // }
+    {
+      path: '/audio-lab',
+      name: 'audio-lab',
+      component: AudioLab,
+      meta: {
+        layout: 'AppLayout',
+        requiresAuth: true
+      }
+    }
   ],
 })
 

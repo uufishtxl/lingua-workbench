@@ -13,3 +13,66 @@
 .audio__wrapper > div {
   @apply shadow-sm bg-white
 }
+
+.el-header {
+  height: 48px;
+}
+/*
+  Global styles for dark poppers used by el-select and el-dropdown.
+  To use, add `popper-class="dark-popper"` to the element.
+*/
+
+/* 1. Base popper container */
+.dark-popper {
+  background-color: #302849 !important;
+  border: 1px solid #4E466E !important;
+}
+
+/* 2. Popper arrow */
+.dark-popper .el-popper__arrow::before {
+  background: #302849 !important;
+  border-color: #4E466E !important;
+}
+
+/* 3. Inner menu/list wrappers */
+.dark-popper .el-dropdown-menu,
+.dark-popper .el-select-dropdown {
+  background-color: #302849 !important;
+  border: none !important; /* Override default borders */
+}
+
+/* 4. Default state for all items inside */
+.dark-popper .el-dropdown-menu__item,
+.dark-popper .el-select-dropdown__item {
+  color: white;
+  font-size: 12px;
+  background-color: transparent !important; /* Ensure they don't have their own background */
+}
+
+/* 5. Hover, focus, and selected states for all items */
+.dark-popper .el-dropdown-menu__item:hover,
+.dark-popper .el-dropdown-menu__item:focus,
+.dark-popper .el-select-dropdown__item.hover,
+.dark-popper .el-select-dropdown__item:hover,
+.dark-popper .el-select-dropdown__item:focus,
+.dark-popper .el-select-dropdown__item.is-focus,
+.dark-popper .el-select-dropdown__item.selected {
+  background-color: #4E466E !important;
+  color: #fff;
+}
+
+/* Button - Dark Theme */
+.is-dark.el-button {
+  background-color: #222b37; /* bg-slate-900 */
+  color: white;
+  border-color: transparent; /* slate-700 */
+}
+
+/* Play Button */
+
+.is-dark.el-button:hover,
+.is-dark.el-button:focus {
+  background-color: #334155; /* bg-slate-700 */
+  color: white;
+  border-color:transparent; /* slate-600 */
+}
