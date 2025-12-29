@@ -11,3 +11,7 @@ django-allauth
 django-cors-headers
 pandas
 openpyxl
+langchain
+langchain-openai
+python-dotenv
+pydantic
