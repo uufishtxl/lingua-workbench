@@ -1,14 +1,12 @@
+# %%
 import os
-from typing import List
-
 from dotenv import load_dotenv
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnableLambda
-from langchain_openai import ChatOpenAI
-
-from .types import LookupRequestData, LookupResponseItem, LLMResponse
 
 load_dotenv()
+
+# %%
+from langchain_openai import ChatOpenAI
+import os
 
 llm = ChatOpenAI(
     api_key=os.getenv("DEEPSEEK_API_KEY"),
@@ -17,14 +15,43 @@ llm = ChatOpenAI(
     temperature=0
 )
 
-llm_as_structured = llm.with_structured_output(LLMResponse, method="function_calling")
+# %%
+from pydantic import BaseModel
 
+from typing import TypedDict, List
+
+class ResponseItem(TypedDict):
+    original_context: str
+    expression_text: str
+    chinese_meaning: str
+    example_sentence: str
+    remark: str
+
+class ResponseObject(BaseModel):
+    explanations: List[ResponseItem]
+
+
+llm_as_structured = llm.with_structured_output(ResponseObject, method="function_calling")
+
+
+
+# %%
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnablePassthrough, RunnableLambda
+
+"""
+class LookupRequestData(TypedDict):
+    original_context: str
+    expressions_to_lookup: str
+    tags: Optional[List[str]]
+    remark: Optional[List[ExpressionRemark]]
+"""
 
 def preprocess_input(inputs: dict) -> dict:
     exp_str = inputs["expressions_to_lookup"]
     exp_snippets = [exp.strip() for exp in exp_str.split("/")]
     print("exp snippets are {exp_snippets}")
-    remark = inputs.get("remark")
+    remark = inputs.get("remark", None)
     remark_instruction = ""
     if remark:
         remark_instruction = f"备注参考：{remark}。如果表达匹配备注中的 expression，请用自己的话总结 note 内容作为 remark 字段。"
@@ -54,15 +81,14 @@ prompt = ChatPromptTemplate.from_messages([
 """)
 ])
 
-chain = RunnableLambda(preprocess_input) | prompt | llm_as_structured | (lambda x: x.model_dump().get("explanations", []))
+chain = RunnableLambda(preprocess_input) | prompt | llm_as_structured | (lambda x: x.model_dump())
 
-# 发送不理解的句子和短语给 Deepseek
-def get_structured_explanations(lookup: LookupRequestData) -> List[LookupResponseItem]:
-    """使用 LCEL chain 调用 Deepseek 获取短语解释"""
-    try:
-        return chain.invoke(lookup)
-    except Exception as e:
-        print(f"Chain invocation error: {e}")
-        return None
+# %%
+result = chain.invoke({"original_context": "Thank you guys for having us over.", "expressions_to_lookup": "have us over"})
 
+# %%
 
+items = result["explanations"]
+for item in items:
+    print(item)
+# %%

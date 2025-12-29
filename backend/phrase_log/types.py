@@ -1,5 +1,8 @@
 from typing import TypedDict, List, Optional
 
+from pydantic import BaseModel, Field
+
+
 class ExpressionRemark(TypedDict):
     expression: str
     note: str
@@ -20,9 +23,13 @@ class LookupRequestData(TypedDict):
     tags: Optional[List[str]]
     remark: Optional[List[ExpressionRemark]]
 
-class LookupResponseData(TypedDict):
-    original_context: str
-    expression_text: str
-    chinese_meaning: str
-    example_sentence: str
-    remark: str
+
+class LookupResponseItem(BaseModel):
+    original_context: str = Field(description="原始句子")
+    expression_text: str = Field(description="被查询的短语")
+    chinese_meaning: str = Field(description="中文释义，500字符以内，如表达已过时请说明现代替代语")
+    example_sentence: str = Field(description="一个经典使用范例")
+    remark: str = Field(default="", description="个人笔记总结")
+
+class LLMResponse(BaseModel):
+    explanations: List[LookupResponseItem]
