@@ -3,10 +3,23 @@
         <!-- Time Stamp -->
         <div class="w-full flex justify-between items-center text-xs">
             <p class="bg-sky-100 text-blue-400 px-2 py-1 rounded">{{ formatTime(props.start) }}~{{ formatTime(props.end) }}</p>
-            <el-button text type="danger" :icon="Delete" class="is-del" circle @click.stop="emit('delete', region.id)"  />
+            <div class="flex items-center gap-1">
+                <el-button 
+                    text 
+                    type="primary" 
+                    circle 
+                    size="small"
+                    :loading="isTranscribing"
+                    @click.stop="handleTranscribe"
+                    title="Speech to Text"
+                >
+                    <i-tabler-microphone v-if="!isTranscribing" class="text-sm" />
+                </el-button>
+                <el-button text type="danger" :icon="Delete" class="is-del" circle @click.stop="emit('delete', region.id)" />
+            </div>
         </div>
         <!-- Original Text 浏览/编辑区域 -->
-        <div class="font-semibold relative h-20 text-display-area" ref="textDisplayRef" @mouseup="handleTextSelection">
+        <div class="font-semibold relative h-20 text-display-area" ref="textDisplayRef" @mouseup="handleTextSelection" :style="dynamicTextStyle">
             <div class="original-text__wrapper rounded relative h-full" v-if="isEditingOriginal">
                 <el-input v-model="editingText" :auto-size="false" type="textarea" :rows="3" />
                 <div class="absolute right-2 bottom-2 input__icons">
@@ -73,13 +86,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive, onMounted, onUnmounted } from 'vue'
+import { ref, computed, reactive, onMounted, onUnmounted, watch } from 'vue'
 import { Delete, Edit } from '@element-plus/icons-vue'
 import { v4 as uuidv4 } from 'uuid';
 import { formatTime } from '@/utils/utils';
 import InteractiveTextWithHilis from './InteractiveTextWithHilis.vue';
 import BaseWaveSurfer from './BaseWaveSurfer.vue';
 import HighlightEditor from './HighlightEditor.vue';
+import { extractAudioSegment } from '@/utils/audioUtils';
+import { transcribeAudio, pollTaskUntilComplete } from '@/api/whisperApi';
 
 // Note: The AbbreviatedTag type is defined in HighlightEditor.vue
 // For SliceCard's internal logic, we can just use `string` for simplicity,
@@ -94,31 +109,6 @@ interface Hili {
     tags: AbbreviatedTag[];
     note: string;
 }
-
-const mockData = {
-    // 1. 原文文本
-    text: "Just not enough to put us in the original wedding party.",
-
-    // 2. 高亮数组 (注意 start 和 end 的位置)
-    highlights: [
-        {
-            id: 'uuid-001',          // 唯一ID，用于 key
-            start: 4,                // "not enough" 开始的索引
-            end: 15,                 // 结束索引
-            content: "not enough",   // 对应文本(可选，方便调试)
-            tags: ["FT", "RED"], // 使用缩写
-            note: "实际听感：No-duh-nuff ( /nɑːdɪˈnʌf/ )" // 笔记
-        },
-        {
-            id: 'uuid-002',
-            start: 16,               // "put us in" 开始的索引
-            end: 25,                 // 结束索引
-            content: "put us in",
-            tags: ["LINK", "RESYL"],
-            note: "典型的连读：Pu-du-sin"
-        }
-    ]
-};
 
 const props = defineProps<{
     url: string;
@@ -137,6 +127,33 @@ const props = defineProps<{
 const emit = defineEmits(['delete'])
 
 const currentSlice = ref({text: "", highlights: []});
+
+// 同步 props.region.originalText 到 currentSlice.text
+watch(
+    () => props.region.originalText,
+    (newText) => {
+        currentSlice.value.text = newText;
+    },
+    { immediate: true }
+);
+
+// 根据文本长度动态计算字体大小
+const dynamicTextStyle = computed(() => {
+    const textLength = currentSlice.value.text?.length || 0;
+    let fontSize = '1.5rem';  // 默认 16px
+    
+    if (textLength > 150) {
+        fontSize = '0.7rem';   // 11.2px
+    } else if (textLength > 100) {
+        fontSize = '0.9rem';  // 12px
+    } else if (textLength > 60) {
+        fontSize = '1rem';   // 12.8px
+    } else if (textLength > 40) {
+        fontSize = '1.2rem'; // 14px
+    }
+    
+    return { fontSize };
+});
 const activeHighlightId = ref<string | null>(null);
 
 const isEditingOriginal = ref(false)
@@ -149,6 +166,34 @@ const highlighterIconVisible = ref(false);
 const highlighterIconPosition = reactive({ top: '0px', left: '0px' });
 const isPlaying = ref(false);
 const isLooping = ref(false);
+const isTranscribing = ref(false);
+
+// Whisper 转写功能
+const handleTranscribe = async () => {
+    if (isTranscribing.value) return;
+    
+    isTranscribing.value = true;
+    try {
+        const audioBlob = await extractAudioSegment(
+            props.url,
+            props.start,
+            props.end
+        );
+        const { task_id } = await transcribeAudio(audioBlob);
+        const result = await pollTaskUntilComplete(task_id, {
+            onStatusChange: (status) => {
+                console.log(`Transcription task ${task_id} status: ${status}`);
+            }
+        });
+        
+        // 更新文本
+        currentSlice.value.text = result;
+    } catch (error) {
+        console.error('Transcription failed:', error);
+    } finally {
+        isTranscribing.value = false;
+    }
+};
 
 // --- Playback Speed Control ---
 const wavesurferRef = ref<any>(null); // Ref for the BaseWaveSurfer component
@@ -289,7 +334,7 @@ const handleWindowClickForEditor = (event: MouseEvent) => {
     const isClickInsideEditor = editorWrapperRef.value && editorWrapperRef.value.contains(target);
 
     // Check if the click is inside the select's dropdown popper
-    const popperEl = document.querySelector('.dark-select-popper');
+    const popperEl = document.querySelector('.dark-popper');
     const isClickInsidePopper = popperEl && popperEl.contains(target);
 
     // If the click is NOT inside the editor AND NOT inside the popper, then cancel.

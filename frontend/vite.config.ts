@@ -83,16 +83,22 @@ export default defineConfig((config) => {
           target: backendUrl, // 代理的目标地址
           changeOrigin: true, // 必须开启
           // rewrite: (path) => path.replace(/^\/api/, ''), // 去掉 /api 前缀
+        },
+        // Whisper 服务代理
+        '/whisper': {
+          target: 'http://localhost:8001',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/whisper/, ''),
         }
       }
     },
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url))
+      },
     },
-  },
-  optimizeDeps: {
-    exclude: ['wavesurfer.js']
-  },
+    optimizeDeps: {
+      exclude: ['wavesurfer.js']
+    },
   };
 });
