@@ -134,7 +134,7 @@ watch(
     (newText) => {
         currentSlice.value.text = newText;
     },
-    { immediate: true }
+    { immediate: true } // 初始化时立即执行，而不是等更新后才执行
 );
 
 // 根据文本长度动态计算字体大小

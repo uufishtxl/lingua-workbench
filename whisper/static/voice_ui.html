@@ -209,15 +209,15 @@
             }
 
             if (cmd.action === 'change_color') {
-                targetElement.style.backgroundColor = cmd.value;
-                targetElement.style.color = isDark(cmd.value) ? 'white' : 'black';
+                targetElement.style.backgroundColor = cmd.text;
+                targetElement.style.color = isDark(cmd.text) ? 'white' : 'black';
             } else if (cmd.action === 'change_text') {
-                targetElement.innerText = cmd.value;
+                targetElement.innerText = cmd.text;
             } else if (cmd.action === 'change_size') {
-                // targetElement.style.fontSize = cmd.value;
+                // targetElement.style.fontSize = cmd.text;
                 console.log(`target element is ${targetElement}`);
-                targetElement.style.width = `${cmd.value}px`;
-                targetElement.style.height = `${cmd.value}px`;
+                targetElement.style.width = `${cmd.text}px`;
+                targetElement.style.height = `${cmd.text}px`;
             }
         }
 
