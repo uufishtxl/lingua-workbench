@@ -1,6 +1,7 @@
 /**
  * Whisper API service for audio transcription
  */
+import axios from 'axios';
 
 interface TranscribeResponse {
     status: string;
@@ -40,21 +41,15 @@ export async function transcribeAudio(
     const formData = new FormData();
     formData.append('file', audioBlob, filename);
 
-    const url = new URL(`${WHISPER_BASE_URL}/transcribe`, window.location.origin);
-    if (skipLlm) {
-        url.searchParams.set('skip_llm', 'true');
-    }
+    const response = await axios.post<TranscribeResponse>(
+        `${WHISPER_BASE_URL}/transcribe`,
+        formData,
+        {
+            params: skipLlm ? { skip_llm: 'true' } : undefined,
+        }
+    );
 
-    const response = await fetch(url.pathname + url.search, {
-        method: 'POST',
-        body: formData,
-    });
-
-    if (!response.ok) {
-        throw new Error(`Transcribe request failed: ${response.statusText}`);
-    }
-
-    return response.json();
+    return response.data;
 }
 
 /**
@@ -63,13 +58,11 @@ export async function transcribeAudio(
  * @returns 任务状态响应
  */
 export async function getTaskStatus(taskId: number): Promise<TaskStatusResponse> {
-    const response = await fetch(`${WHISPER_BASE_URL}/task/${taskId}`);
+    const response = await axios.get<TaskStatusResponse>(
+        `${WHISPER_BASE_URL}/task/${taskId}`
+    );
 
-    if (!response.ok) {
-        throw new Error(`Get task status failed: ${response.statusText}`);
-    }
-
-    return response.json();
+    return response.data;
 }
 
 

@@ -88,6 +88,7 @@ export default defineConfig((config) => {
         '/whisper': {
           target: 'http://localhost:8001',
           changeOrigin: true,
+          // 替换掉 whisper 前缀，比如前端请求 /whisper/transcribe 发到目标网络服务地址（这里是8001端口）时，会替换为 http://localhost:8001/transcribe
           rewrite: (path) => path.replace(/^\/whisper/, ''),
         }
       }
