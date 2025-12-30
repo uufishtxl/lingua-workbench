@@ -59,7 +59,7 @@ const tokens = computed(() => {
 </script>
 
 <template>
-    <div class="text-lg font-serif tracking-tight">
+    <div class="font-serif tracking-tight">
         <span v-for="(token, index) in tokens" :key="index" :class="[
             token.isHighlight
                 ? 'bg-yellow-100 cursor-pointer hover:bg-yellow-200 rounded px-1 mx-0.5 transition relative'

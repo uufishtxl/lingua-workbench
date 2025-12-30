@@ -77,6 +77,7 @@ interface RegionInfo {
     originalText: string;
     tags: audio_type[];
     note: string;
+    isTranscribing?: boolean;  // Whisper 转写中状态
 }
 
 const regionsList = ref<RegionInfo[]>([])
@@ -112,6 +113,7 @@ const openEditDialog = (regionId: string) => {
     }
 }
 
+
 const handleRegionCreated = (newRegion: Region) => {
     if (!regionsList.value.some(r => r.id === newRegion.id)) {
         regionsList.value.push({
@@ -121,6 +123,7 @@ const handleRegionCreated = (newRegion: Region) => {
             originalText: '',
             tags: [],
             note: '',
+            isTranscribing: false,
         });
     }
 }
