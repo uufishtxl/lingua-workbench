@@ -8,12 +8,11 @@
                     text 
                     type="primary" 
                     circle 
-                    size="small"
                     :loading="isTranscribing"
                     @click.stop="handleTranscribe"
                     title="Speech to Text"
                 >
-                    <i-tabler-microphone v-if="!isTranscribing" class="text-sm" />
+                    <ArcticonsLiveTranscribe v-if="!isTranscribing" class="text-sky-500" />
                 </el-button>
                 <el-button text type="danger" :icon="Delete" class="is-del" circle @click.stop="emit('delete', region.id)" />
             </div>
@@ -48,7 +47,8 @@
         </div>
         <!-- Wave / Highlight Editor -->
         <div v-if="activeHighlightId && activeHighlight" ref="editorWrapperRef">
-            <HighlightEditor :highlight="activeHighlight" @update:highlight="handleHighlightUpdate"
+            <HighlightEditor :highlight="activeHighlight" :fullContext="currentSlice.text"
+                @update:highlight="handleHighlightUpdate"
                 @cancel="handleHighlightCancel" @delete-highlight="handleHighlightDelete" />
         </div>
         <div v-else class="bg-slate-900 flex flex-col h-[140px] p-2">
@@ -95,6 +95,7 @@ import BaseWaveSurfer from './BaseWaveSurfer.vue';
 import HighlightEditor from './HighlightEditor.vue';
 import { extractAudioSegment } from '@/utils/audioUtils';
 import { transcribeAudio, pollTaskUntilComplete } from '@/api/whisperApi';
+import ArcticonsLiveTranscribe from '~icons/arcticons/live-transcribe';
 
 // Note: The AbbreviatedTag type is defined in HighlightEditor.vue
 // For SliceCard's internal logic, we can just use `string` for simplicity,

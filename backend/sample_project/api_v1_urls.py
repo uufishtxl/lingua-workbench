@@ -6,4 +6,6 @@ urlpatterns = [
     
     # URLs from audio_slicer app
     path('', include('audio_slicer.urls')),
+
+    path('', include('ai_analysis.urls'))
 ]

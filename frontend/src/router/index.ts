@@ -55,7 +55,7 @@ const router = createRouter({
         layout: 'AuthLayout'
       },
     },
-     {
+    {
       path: '/verify-email',
       name: 'verify-email',
       component: VerifyEmail,
@@ -63,7 +63,7 @@ const router = createRouter({
         layout: 'AuthLayout'
       },
     },
-     {
+    {
       path: '/episode-selector',
       name: 'episode-selector',
       component: EpisodeSelector,
@@ -79,6 +79,15 @@ const router = createRouter({
       meta: {
         layout: 'AppLayout',
         requiresAuth: true
+      }
+    },
+    // Dev routes (开发专用)
+    {
+      path: '/dev/highlight-editor',
+      name: 'dev-highlight-editor',
+      component: () => import('@/views/dev/HighlightEditorDev.vue'),
+      meta: {
+        requiresAuth: false
       }
     }
   ],
@@ -99,18 +108,18 @@ router.beforeEach((to, from, next) => {
   if (isAuthPage && isAuthenticated) {
     // 阻止他，并把他“踢”回主页
     next({ name: 'phrase-seeker' })
-  } 
+  }
 
   // --- 逻辑 2 (保护)：如果“未登录”，还想去“受保护的页面” ---
   else if (requiresAuth && !isAuthenticated) {
     // 阻止他，并把他“踢”回登录页
     next({ name: 'login' })
-  } 
+  }
 
   // --- 逻辑 3 (放行)：所有其他情况 (e.g., 登录了去主页, 没登录去登录页) ---
   else {
     // 正常放行
-    next() 
+    next()
   }
 })
 

@@ -2,31 +2,67 @@
   <div class="dark-editor">
     <!-- Top row: Tags and Close button -->
     <div class="flex justify-between items-center">
-      <div class="flex items-center gap-2">
-        <i-tabler-tag class="text-gray-400" />
-        <!-- Tag 选择器 -->
-        <el-select v-model="editableHighlight.tags" multiple placeholder="Select tags" size="small"  class="tags-select"
+      <!-- <div class="flex items-center gap-2"> -->
+      <!-- Tag 图标 -->
+      <!-- <i-tabler-tag class="text-gray-400" /> -->
+      <!-- Tag 选择器 -->
+      <!-- <el-select v-model="editableHighlight.tags" multiple placeholder="Select tags" size="small"  class="tags-select"
           popper-class="dark-popper">
           <el-option v-for="tagOption in allTagOptions" :key="tagOption.value" :label="tagOption.value"
             :value="tagOption.value">
             {{ tagOption.label }}
           </el-option>
-        </el-select>
+        </el-select> -->
+      <!-- </div> -->
+      <div class="flex items-center gap-2">
+        <CilVoice class="text-red-600" />
+
+        <!-- Dynamic phonetic tags from AI -->
+        <el-tag 
+          v-for="tag in analysisResult?.phonetic_tags ?? []" 
+          :key="tag"
+          type="success" 
+          effect="dark" 
+          round
+          size="small"
+          class="cursor-pointer"
+          @click="handleTagClick(tag)"
+        >
+          {{ tag }}
+        </el-tag>
+        
+        <!-- Placeholder when no tags -->
+        <span v-if="!analysisResult" class="text-gray-500 text-xs">点击 ✨ 获取分析</span>
       </div>
-      <el-button text circle @click="handleCancel">
-        <i-tabler-x class="text-gray-400" />
+
+      <!-- AI Magic Button with 3 states -->
+      <el-button 
+        text 
+        circle 
+        class="ai-magic-btn"
+        :class="{
+          'is-default': aiStatus === 'default',
+          'is-loading': aiStatus === 'loading',
+          'is-active': aiStatus === 'active'
+        }"
+        @click="handleAiClick"
+      >
+        <i-tabler-loader-2 v-if="aiStatus === 'loading'" class="spin-icon" />
+        <HugeiconsAiMagic v-else />
       </el-button>
     </div>
 
     <!-- Note -->
     <div class="note-input-wrapper">
-      <el-input ref="noteInput" v-model="editableHighlight.note" type="textarea" :rows="2" placeholder="Add a note..." />
+      <el-input ref="noteInput" v-model="editableHighlight.note" type="textarea" :rows="2"
+        placeholder="Add a note..." />
     </div>
 
     <!-- IPA Keyboard -->
     <div class="flex flex-col gap-1">
       <div class="flex items-center justify-center">
-        <el-button class="symbol-button" @click="addSymbol(_symbol)" v-for="(_symbol, sid) in ipaSymbols" :key="sid" size="small">{{ _symbol }}</el-button>
+        <el-button class="symbol-button" @click="addSymbol(_symbol)" v-for="(_symbol, sid) in ipaSymbols" :key="sid"
+          size="small">{{ _symbol }}</el-button>
       </div>
     </div>
 
@@ -45,6 +81,64 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import ipaSymbols from '@/data/ipa';
+import CilVoice from '~icons/cil/voice';
+import HugeiconsAiMagic from '~icons/hugeicons/ai-magic';
+import { analyzeSoundScript, type SoundScriptResponse } from '@/api/aiAnalysisApi';
+
+// AI Button States: 'default' | 'loading' | 'active'
+type AiStatus = 'default' | 'loading' | 'active'
+const aiStatus = ref<AiStatus>('default')
+
+const emit = defineEmits<{
+  (e: 'update:highlight', highlight: Hili): void;
+  (e: 'delete-highlight', highlightId: string): void;
+  (e: 'cancel'): void;
+  (e: 'ai-analyze'): void;
+}>();
+
+// AI Analysis result
+const analysisResult = ref<SoundScriptResponse | null>(null)
+
+// Handle AI button click
+const handleAiClick = async () => {
+  if (aiStatus.value === 'loading') return
+  
+  aiStatus.value = 'loading'
+  
+  try {
+    const requestData = {
+      full_context: props.fullContext,
+      focus_segment: props.highlight.content,
+      speed_profile: 'native_fast' as const
+    }
+    console.log('AI Analysis request:', requestData)
+    
+    const result = await analyzeSoundScript(requestData)
+    
+    analysisResult.value = result
+    aiStatus.value = 'active'
+    
+    // Auto-fill the first segment's note
+    if (result.script_segments.length > 0) {
+      editableHighlight.value.note = result.script_segments
+        .map(seg => `${seg.original}: ${seg.sound_display} (${seg.note})`)
+        .join('\n')
+    }
+  } catch (error) {
+    console.error('AI analysis failed:', error)
+    aiStatus.value = 'default'
+  }
+}
+
+// Handle tag click - show corresponding segment note
+const handleTagClick = (tag: string) => {
+  if (!analysisResult.value) return
+  
+  const segment = analysisResult.value.script_segments.find(s => s.type === tag)
+  if (segment) {
+    editableHighlight.value.note = `${segment.original}: ${segment.sound_display}\n${segment.ipa}\n${segment.note}`
+  }
+}
 
 type TagType = 'Flap T' | 'Reduction' | 'Linking' | 'Resyllabification' | 'Flap-T'; // These are the full display names
 type AbbreviatedTag = 'FT' | 'RED' | 'LINK' | 'RESYL' | 'FT_HYPHEN'; // These are the actual values stored
@@ -60,12 +154,7 @@ interface Hili {
 
 const props = defineProps<{
   highlight: Hili;
-}>();
-
-const emit = defineEmits<{
-  (e: 'update:highlight', highlight: Hili): void;
-  (e: 'delete-highlight', highlightId: string): void;
-  (e: 'cancel'): void;
+  fullContext: string;  // The complete sentence for AI analysis
 }>();
 
 const editableHighlight = ref<Hili>({ ...props.highlight });
@@ -114,7 +203,8 @@ const handleDelete = () => {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  overflow-x: hidden; /* Hide horizontal scrollbar */
+  overflow-x: hidden;
+  /* Hide horizontal scrollbar */
 }
 
 .tags-select {
@@ -138,7 +228,7 @@ const handleDelete = () => {
   color: white;
 }
 
-:deep(.el-tag) {
+:deep(.tags-select .el-tag) {
   --el-tag-bg-color: #4E466E;
   --el-tag-border-color: #675F93;
   --el-tag-hover-color: #7d7a8c;
@@ -202,7 +292,49 @@ const handleDelete = () => {
 :deep(.el-textarea__inner) {
   border: 1px solid black;
   background: #302849;
-  font-size:10px;
+  font-size: 10px;
   resize: none;
+}
+
+/* AI Magic Button States */
+.ai-magic-btn {
+  transition: all 0.3s ease;
+}
+
+/* Default: 明黄色，吸引用户点击 */
+.ai-magic-btn.is-default {
+  color: #facc15 !important;
+}
+
+.ai-magic-btn.is-default:hover {
+  color: #fde047 !important;
+  transform: scale(1.1);
+}
+
+/* Loading: 蓝色 + 旋转 */
+.ai-magic-btn.is-loading {
+  color: #60a5fa !important;
+  pointer-events: none;
+}
+
+/* Active: 淡黄色，表示已有内容 */
+.ai-magic-btn.is-active {
+  color: #fef08a !important;
+  opacity: 0.5;
+}
+
+.ai-magic-btn.is-active:hover {
+  opacity: 0.8;
+  color: #fef9c3 !important;
+}
+
+/* Spinning animation for loading */
+.spin-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 </style>
