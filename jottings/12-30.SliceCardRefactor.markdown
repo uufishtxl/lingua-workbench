@@ -8,7 +8,111 @@
    * ADD (新增):
       * ✅ AI 自动注音 (Passive Mode)：选中句子后，自动在单词上方显示“实际听感音标” (Ruby Text 风格)。
       * ✅ AI 深度上下文菜单 (Active Mode)：点击句子/短语，弹出多维度问答菜单（听力显微镜、习语深挖、翻译纠错）。
-   
+
+### 12/31 更新 UI
+
+📝 极速听力卡片 - 需求变更汇总 (v2.0)
+
+1. UI 视觉与图标 (UI & Icons)
+   * [x] Whisper 图标更换
+     * 现状： 原有的“Pull Text from Whisper”图标可能表意不清或风格不符。
+     * 修改： 更换为一个更清晰的图标（建议使用类似“波形声波”、“麦克风+文档”或“听写”风格的图标），明确其功能是将音频转为文字。
+
+    * AI 触发图标状态
+     * 现状： 界面上可能没有明确区分“未分析”和“已分析”的状态。
+     * 修改：
+       * 未拉取（Default）： AI 分析按钮（那个 ✨）显示为灰色（或低饱和度），表示等待激活。
+       * 拉取中（Loading）： 显示为转圈或呼吸效果。
+       * 已拉取（Active）： 显示为高亮彩色，或变为“刷新/重生成”图标。
+
+2. 核心显示区域 (Main Display Area)
+   * 听觉图谱 (Visual Sound Script)
+     * 修改： 废弃原本的纯文本显示，改用 Ruby Text (<ruby>) 形式。
+     * 逻辑：
+       * 下方 (Base): 显示原始单词 (Original Text)。
+       * 上方 (RT): 显示 AI 生成的听感音标 (Phonetic Display)，如 "GA-da"。
+     * 样式： 根据 AI 返回的标签（弱读、连读、失爆等），对文字颜色或样式进行微调（例如弱读变灰）。
+   * 空状态占位 (Empty State)
+     * 修改： 当 AI 尚未分析（未拉取数据）时，不要隐藏下方的分析区域 DIV。
+     * 样式： 保持 DIV 占位，但在内容区域显示占位符文本（Placeholder），例如：“和 AI 聊一聊，获取听力分析吧...” 或 “Tap the sparkle to analyze...”。
+     * 目的： 引导用户点击 AI 按钮，而不是让用户面对一片空白不知所措。
+
+3. AI 分析生成功能 (AI Features)
+* 一键生成三件套
+  * 功能： 点击 AI 按钮后，后台 LLM 一次性生成并返回以下数据：
+    1. 听觉图谱数据（用于渲染 Ruby Text）。
+    2. 语音现象标签（如 Flap T, Reduction，用于显示彩色 Tag）。
+    3. 场景释义与例句（用于底部卡片）。
+* 练习/例句模块 (Mini-Exercise)
+  * 单句展示 + 翻转练习。
+    * 交互：
+      * 默认： 显示中文（或英文，根据设置）。
+      * 操作： 增加一个 Toggle (开关) 或 EN/ZH 切换按钮。
+    * 逻辑： 点击切换按钮，在“中文译文”和“英文原句”之间切换，起到 Flashcard（抽认卡）的记忆训练作用。
+* 重生成： 保留一个“刷新”按钮，让 AI 换一个例句场景。
+
+🧠 逻辑与数据结构 (Tech Specs)
+为了支持上述前端变化，你的后端数据结构建议固定为：
+
+
+```JSON
+{
+    "card_type": "visual_sound_script",
+    "speed_profile": "native_fast",
+    "full_context": "You've got to live with it.",
+    "focus_segment": "You've got to",
+    "phonetic_tags": ["Reduction", "Linking"],
+    "script_segments": [
+        {
+            "original": "You've",
+            "sound_display": "Yuh",
+            "ipa": "/jə/",
+            "type": "reduction",
+            "is_stressed": false,
+            "note": "'v' 音脱落"
+        },
+        {
+            "original": "got to",
+            "sound_display": "GAH-duh",
+            "ipa": "/ˈɡɑːtə/",
+            "type": "linking",
+            "is_stressed": true,
+            "note": "连读为 gotta"
+        }
+    ]
+}
+```
+
+![图片](slice_card_1231.png)
+
+### 释义 API 返回结构
+
+```JSON
+{
+    "card_type": "idiom_explanation",
+    "content": {
+        "focus_segment": "You've got to live with it",
+        "full_context": "You've got to live with it."
+    },
+    "explanation": "你必须接受这个事实，没法改变就得学会与之共处",
+    "tone": "resigned",
+    "cultural_note": "美剧中常用于表达无奈但接受的态度"
+}
+```
+
+### 例句 API 返回结构
+
+```JSON
+{
+    "card_type": "exercise_sentence",
+    "exercise": {
+        "en": "You can follow your heart, but you've got to live with the consequences.",
+        "zh": "你当然可以随着性子来，但也得承担后果。",
+        "context": "General Life Advice"
+    }
+}
+```
+
 2. 数据流变更
    * **Before**: User Input → Database → UI Display
    * **After**: Selected Text + Context → LLM API → JSON Response → UI Rendering

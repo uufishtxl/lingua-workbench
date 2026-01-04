@@ -37,12 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # --- (1) 新增 - DRF 和 Auth 框架 ---
+    # --- (1) 新增 - DRF �?Auth 框架 ---
     'rest_framework',
     'rest_framework.authtoken',
     'dj_rest_auth',
 
-    # 'dj_rest_auth' 需要 'sites' 框架
+    # 'dj_rest_auth' 需�?'sites' 框架
     'django.contrib.sites', 
     'allauth',
     'allauth.account',
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'phrase_log',
     'audio_slicer',
+    'ai_analysis',
 ]
 
 MIDDLEWARE = [
@@ -63,22 +64,22 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    # --- 【ADD THIS LINE】 ---
+    # --- 【ADD THIS LINE�?---
     'allauth.account.middleware.AccountMiddleware',
 ]
 
 # 告诉 Django:
-# 1. 默认的认证后端，*必须*是 allauth 提供的 (它懂 email)
-# 2. (保留) 默认的 ModelBackend (这样你才能用 username 登录 /admin 后台)
-# 【【【 对的！！！】】】
+# 1. 默认的认证后端，*必须*�?allauth 提供�?(它懂 email)
+# 2. (保留) 默认�?ModelBackend (这样你才能用 username 登录 /admin 后台)
+# 【【�?对的！！！】】�?
 AUTHENTICATION_BACKENDS = [
     # 新版本的“正确拼写”是这个:
-    'allauth.account.auth_backends.AuthenticationBackend', # <-- 它现在就叫这个名字
+    'allauth.account.auth_backends.AuthenticationBackend', # <-- 它现在就叫这个名�?
     'django.contrib.auth.backends.ModelBackend',
 ]
 
 # --- (3) 新增 - 告诉 'sites' 框架你的默认站点ID ---
-# (dj-rest-auth 需要这个)
+# (dj-rest-auth 需要这�?
 SITE_ID = 1
 
 ROOT_URLCONF = 'sample_project.urls'
@@ -111,42 +112,42 @@ DATABASES = {
     }
 }
 
-# --- (4) 【核心】新增 - 配置 REST Framework ---
-# 告诉 DRF 我们全局的“认证策略”
+# --- (4) 【核心】新�?- 配置 REST Framework ---
+# 告诉 DRF 我们全局的“认证策略�?
 REST_FRAMEWORK = {
     # 默认的认证方式：我们使用 JWT
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    # 默认的权限：默认情况下，所有 API 都必须是已登录用户才能访问
+    # 默认的权限：默认情况下，所�?API 都必须是已登录用户才能访�?
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
     # --- 新增分页配置 ---
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10, # 每页显示 10 条记录
+    'PAGE_SIZE': 10, # 每页显示 10 条记�?
 }
 
-# simple-jwt 的专门设置
+# simple-jwt 的专门设�?
 if DEBUG: 
     SIMPLE_JWT = {
         # 这里是关键：设置 Access Token 的有效期
-        # 默认是: timedelta(minutes=5)
-        # 我们可以改成1小时、1天，甚至更长
-        "ACCESS_TOKEN_LIFETIME": timedelta(days=1), # 开发时可以设置长一点
+        # 默认�? timedelta(minutes=5)
+        # 我们可以改成1小时�?天，甚至更长
+        "ACCESS_TOKEN_LIFETIME": timedelta(days=1), # 开发时可以设置长一�?
         
-        # Refresh Token 的有效期 (默认是 1 天)
+        # Refresh Token 的有效期 (默认�?1 �?
         "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
         
         # ... 其他 simple-jwt 设置 ...
     }
 
 # --- (5) 新增 - 配置 dj-rest-auth ---
-# 告诉 dj-rest-auth 我们要用 JWT，而不是 Session
+# 告诉 dj-rest-auth 我们要用 JWT，而不�?Session
 REST_AUTH = {
     'USE_JWT': True,
-    'JWT_AUTH_COOKIE': 'my-auth-cookie', # (可选) 我们可以把 Token 存在 Cookie 里
-    'JWT_AUTH_REFRESH_COOKIE': 'my-refresh-cookie', # (可选)
+    'JWT_AUTH_COOKIE': 'my-auth-cookie', # (可�? 我们可以�?Token 存在 Cookie �?
+    'JWT_AUTH_REFRESH_COOKIE': 'my-refresh-cookie', # (可�?
 }
 
 # --- (6) 新增 - 配置 allauth ---
@@ -155,10 +156,10 @@ REST_AUTH = {
 # ACCOUNT_LOGIN_METHODS = {'email'}
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory' # 'none' (开发时) 暂时关闭邮件验证
 
-ACCOUNT_AUTHENTICATION_METHODS = ['email'] # 必须用 email 登录
-ACCOUNT_EMAIL_REQUIRED = True           # 注册时 email 必填
-ACCOUNT_UNIQUE_EMAIL = True           # Email 必须是唯一的
-ACCOUNT_USERNAME_REQUIRED = False       # 注册时*不需要*填 username
+ACCOUNT_AUTHENTICATION_METHODS = ['email'] # 必须�?email 登录
+ACCOUNT_EMAIL_REQUIRED = True           # 注册�?email 必填
+ACCOUNT_UNIQUE_EMAIL = True           # Email 必须是唯一�?
+ACCOUNT_USERNAME_REQUIRED = False       # 注册�?不需�?�?username
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 # Password validation
@@ -182,7 +183,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# 1. 告诉 allauth：收到 GET 链接就自动验证，不要渲染“你确定吗”页面
+# 1. 告诉 allauth：收�?GET 链接就自动验证，不要渲染“你确定吗”页�?
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 # 2. 告诉 allauth：验证成功后，把用户“重定向”到哪里
 #    (我们把它指向 Vue 的登录页)
@@ -213,7 +214,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # --- 【新增】CORS (跨域资源共享) 配置 ---
 # 我们告诉 Django "厨房"
-# 允许来自 "Vue 大堂" (localhost:5173) 的 API 请求
+# 允许来自 "Vue 大堂" (localhost:5173) �?API 请求
 
 # CORS_ALLOWED_ORIGINS = [
 #     # Vue CLI (npm run dev) 默认的开发服务器地址
@@ -222,19 +223,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #     "http://192.168.31.215:5173",
 # ]
 
-# (可选，但推荐) 
-# 如果你想在开发时更宽松一点，允许所有来源
-# (上线时必须换成上面那个)
+# (可选，但推�? 
+# 如果你想在开发时更宽松一点，允许所有来�?
+# (上线时必须换成上面那�?
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
 
-# --- EMAIL CONFIGURATION (for Development) ---】
-# 我们不“真”发邮件，我们让 Django 把“邮件内容”
-# 打印到你 `runserver` 的那个“终端” (PowerShell) 里
+# --- EMAIL CONFIGURATION (for Development) ---�?
+# 我们不“真”发邮件，我们让 Django 把“邮件内容�?
+# 打印到你 `runserver` 的那个“终端�?(PowerShell) �?
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# 告诉 allauth，我们希望 email 是小写的
+# 告诉 allauth，我们希�?email 是小写的
 ACCOUNT_EMAIL_NORMALIZATION = True
 
 # Settings for user-uploaded files (Media Files)
