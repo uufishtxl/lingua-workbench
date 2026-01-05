@@ -84,3 +84,120 @@ def analyze_sound_script(
     })
     
     return result
+
+
+# ============ Dictionary Lookup ============
+from .schemas import DictionaryResponse
+from .prompts import DICTIONARY_SYSTEM_PROMPT, DICTIONARY_HUMAN_PROMPT
+
+_dictionary_structured_llm = None
+_dictionary_chain = None
+
+
+def get_dictionary_structured_llm():
+    """Get the singleton structured LLM for dictionary responses."""
+    global _dictionary_structured_llm
+    if _dictionary_structured_llm is None:
+        llm = get_llm()
+        _dictionary_structured_llm = llm.with_structured_output(
+            DictionaryResponse,
+            method="function_calling"
+        )
+    return _dictionary_structured_llm
+
+
+def get_dictionary_chain():
+    """
+    Get the singleton LCEL chain for dictionary lookup.
+    Returns a chain that takes {full_context, word_or_phrase}
+    and returns a DictionaryResponse.
+    """
+    global _dictionary_chain
+    if _dictionary_chain is None:
+        structured_llm = get_dictionary_structured_llm()
+        prompt = ChatPromptTemplate.from_messages([
+            ("system", DICTIONARY_SYSTEM_PROMPT),
+            ("human", DICTIONARY_HUMAN_PROMPT),
+        ])
+        _dictionary_chain = prompt | structured_llm
+    
+    return _dictionary_chain
+
+
+def lookup_dictionary(
+    full_context: str,
+    word_or_phrase: str
+) -> DictionaryResponse:
+    """
+    Look up a word or phrase and return dictionary entry.
+    
+    Args:
+        full_context: The complete sentence/context
+        word_or_phrase: The word/phrase to look up
+    
+    Returns:
+        DictionaryResponse with definition and examples
+    """
+    chain = get_dictionary_chain()
+    
+    result = chain.invoke({
+        "full_context": full_context,
+        "word_or_phrase": word_or_phrase
+    })
+    
+    return result
+
+
+# ============ Refresh Example ============
+from .schemas import RefreshExampleResponse
+from .prompts import REFRESH_EXAMPLE_SYSTEM_PROMPT, REFRESH_EXAMPLE_HUMAN_PROMPT
+
+_refresh_example_structured_llm = None
+_refresh_example_chain = None
+
+
+def get_refresh_example_structured_llm():
+    """Get the singleton structured LLM for refresh example responses."""
+    global _refresh_example_structured_llm
+    if _refresh_example_structured_llm is None:
+        llm = get_llm()
+        _refresh_example_structured_llm = llm.with_structured_output(
+            RefreshExampleResponse,
+            method="function_calling"
+        )
+    return _refresh_example_structured_llm
+
+
+def get_refresh_example_chain():
+    """Get the singleton LCEL chain for refreshing examples."""
+    global _refresh_example_chain
+    if _refresh_example_chain is None:
+        structured_llm = get_refresh_example_structured_llm()
+        prompt = ChatPromptTemplate.from_messages([
+            ("system", REFRESH_EXAMPLE_SYSTEM_PROMPT),
+            ("human", REFRESH_EXAMPLE_HUMAN_PROMPT),
+        ])
+        _refresh_example_chain = prompt | structured_llm
+    
+    return _refresh_example_chain
+
+
+def refresh_example(
+    word_or_phrase: str
+) -> RefreshExampleResponse:
+    """
+    Generate a new example sentence for a word/phrase.
+    
+    Args:
+        word_or_phrase: The word/phrase to generate example for
+    
+    Returns:
+        RefreshExampleResponse with new example
+    """
+    chain = get_refresh_example_chain()
+    
+    result = chain.invoke({
+        "word_or_phrase": word_or_phrase
+    })
+    
+    return result
