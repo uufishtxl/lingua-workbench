@@ -76,3 +76,116 @@ class SoundScriptAnalysisView(APIView):
                 {'error': str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+
+class DictionaryLookupView(APIView):
+    """
+    POST /api/ai/dictionary/
+    
+    Look up a word or phrase and return dictionary entry.
+    
+    Request body:
+    {
+        "full_context": "You've got to live with it.",
+        "word_or_phrase": "got to"
+    }
+    
+    Response:
+    {
+        "card_type": "dictionary",
+        "word_or_phrase": "got to",
+        "part_of_speech": "phrase",
+        "definition_en": "have to; must",
+        "definition_cn": "必须；不得不",
+        "examples": [
+            {
+                "english": "I've got to go now.",
+                "chinese": "我现在必须走了。"
+            }
+        ],
+        "usage_note": "常用于口语，书面语用 have to"
+    }
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        from .services import lookup_dictionary
+        
+        full_context = request.data.get('full_context')
+        word_or_phrase = request.data.get('word_or_phrase')
+        
+        # Validation
+        if not full_context:
+            return Response(
+                {'error': 'full_context is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        if not word_or_phrase:
+            return Response(
+                {'error': 'word_or_phrase is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            result = lookup_dictionary(
+                full_context=full_context,
+                word_or_phrase=word_or_phrase
+            )
+            
+            # Convert Pydantic model to dict
+            return Response(result.model_dump())
+            
+        except Exception as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class RefreshExampleView(APIView):
+    """
+    POST /api/ai/refresh-example/
+    
+    Generate a new example sentence for a word/phrase.
+    
+    Request body:
+    {
+        "word_or_phrase": "got to"
+    }
+    
+    Response:
+    {
+        "word_or_phrase": "got to",
+        "example": {
+            "english": "You've got to try this cake.",
+            "chinese": "你一定要尝尝这个蛋糕。"
+        }
+    }
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        from .services import refresh_example
+        
+        word_or_phrase = request.data.get('word_or_phrase')
+        
+        # Validation
+        if not word_or_phrase:
+            return Response(
+                {'error': 'word_or_phrase is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            result = refresh_example(
+                word_or_phrase=word_or_phrase
+            )
+            
+            # Convert Pydantic model to dict
+            return Response(result.model_dump())
+            
+        except Exception as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

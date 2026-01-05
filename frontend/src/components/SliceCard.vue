@@ -30,8 +30,12 @@
                     </el-button>
                 </div>
             </div>
-            <InteractiveTextWithHilis v-else :highlights="currentSlice.highlights" :text="currentSlice.text"
-                :current-active-id="activeHighlightId" @click-highlight="handleHighlightClick" />
+            <InteractiveTextWithHilis v-else 
+                :highlights="currentSlice.highlights" 
+                :text="currentSlice.text"
+                :current-active-id="activeHighlightId" 
+                :analysis-results="analysisResults"
+                @click-highlight="handleHighlightClick" />
             <el-button v-if="!isEditingOriginal" text class="absolute bottom-2 right-2 is-edit" :icon="Edit"
                 size="small" circle @click="startEditing" />
 
@@ -49,7 +53,8 @@
         <div v-if="activeHighlightId && activeHighlight" ref="editorWrapperRef">
             <HighlightEditor :highlight="activeHighlight" :fullContext="currentSlice.text"
                 @update:highlight="handleHighlightUpdate"
-                @cancel="handleHighlightCancel" @delete-highlight="handleHighlightDelete" />
+                @cancel="handleHighlightCancel" @delete-highlight="handleHighlightDelete"
+                @ai-result="handleAiResult" />
         </div>
         <div v-else class="bg-slate-900 flex flex-col h-[140px] p-2">
             <BaseWaveSurfer ref="wavesurferRef" :url="props.url" :height="100" :allow-selection="true"
@@ -141,7 +146,7 @@ watch(
 // 根据文本长度动态计算字体大小
 const dynamicTextStyle = computed(() => {
     const textLength = currentSlice.value.text?.length || 0;
-    let fontSize = '1.5rem';  // 默认 16px
+    let fontSize = '1.2rem';  // 默认 16px
     
     if (textLength > 150) {
         fontSize = '0.7rem';   // 11.2px
@@ -305,6 +310,11 @@ const startEditing = () => {
 const saveEditing = () => {
     const newText = editingText.value;
     currentSlice.value.text = newText;
+    
+    // Clear all highlights and analysis results since positions are invalidated
+    currentSlice.value.highlights = [];
+    analysisResults.value.clear();
+    
     isEditingOriginal.value = false;
 };
 
@@ -340,7 +350,7 @@ const handleWindowClickForEditor = (event: MouseEvent) => {
 
     // If the click is NOT inside the editor AND NOT inside the popper, then cancel.
     if (!isClickInsideEditor && !isClickInsidePopper) {
-        handleHighlightCancel();
+        // handleHighlightCancel();
     }
 };
 
@@ -370,6 +380,17 @@ const handleHighlightCancel = () => {
 const handleHighlightDelete = (highlightId: string) => {
     currentSlice.value.highlights = currentSlice.value.highlights.filter(h => h.id !== highlightId);
     activeHighlightId.value = null; // Close editor after deletion
+};
+
+// Store AI analysis results per highlight
+import type { SoundScriptResponse } from '@/api/aiAnalysisApi';
+const analysisResults = ref<Map<string, SoundScriptResponse>>(new Map());
+
+const handleAiResult = (result: SoundScriptResponse) => {
+    if (activeHighlightId.value) {
+        analysisResults.value.set(activeHighlightId.value, result);
+        console.log('AI Result stored for highlight:', activeHighlightId.value, result);
+    }
 };
 </script>
 

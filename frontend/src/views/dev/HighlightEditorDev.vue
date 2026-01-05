@@ -239,6 +239,7 @@ const onCancel = () => {
   font-size: 18px;
   min-height: 60px;
   cursor: pointer;
+  color: #1a1a1a;
 }
 
 .editor-area {
