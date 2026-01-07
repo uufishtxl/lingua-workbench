@@ -91,8 +91,8 @@
                 :current-active-id="activeHighlightId" 
                 :analysis-results="analysisResults"
                 @click-highlight="handleHighlightClick" />
-            <el-button text class="absolute bottom-2 right-2 is-edit" :icon="Edit"
-                size="small" circle @click="startEditing" :disabled="isEditingOriginal || !!activeHighlightId" />
+            <el-button v-if="!isEditingOriginal" text class="absolute bottom-2 right-2 is-edit" :icon="Edit"
+                size="small" circle @click="startEditing" :disabled="!!activeHighlightId" />
 
             <!-- Highlighter Icon -->
             <transition name="fade">
