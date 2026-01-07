@@ -18,8 +18,10 @@ class AudioChunkSerializer(serializers.ModelSerializer):
 class AudioSliceSerializer(serializers.ModelSerializer):
     class Meta:
         model = AudioSlice
-        fields = ['id', 'audio_chunk', 'start_time', 'end_time', 'original_text', 'highlights', 'created_at', 'updated_at']
+        fields = ['id', 'audio_chunk', 'start_time', 'end_time', 'original_text', 'highlights', 'is_favorite', 'created_at', 'updated_at']
         read_only_fields = ['created_at', 'updated_at']
+        # Disable unique_together validators - we use update_or_create in batch view
+        validators = []
 
 class DramaSerializer(serializers.ModelSerializer):
     class Meta:

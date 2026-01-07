@@ -19,6 +19,7 @@
                     <el-button :type="loopRegion ? 'success' : ''" @click="loopRegion = !loopRegion" size="small" circle>
                         <i-tabler-repeat class="text-sm" />
                     </el-button>
+                    <PlaybackSpeedControl v-model="currentPlaybackRate" :options="speedOptions" @change="handleSpeedChange" theme="light" />
                 </div>
             </div>
         </el-card>
@@ -30,7 +31,7 @@
             <div class="flex-1 overflow-y-auto min-h-0">
                 <div v-if="regionsList.length > 0" class="grid gap-1" style="grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));">
                     <SliceCard 
-                        v-for="(region, index) in regionsList" 
+                        v-for="(region, index) in sortedRegionsList" 
                         :key="region.id" 
                         :ref="el => setSliceCardRef(index, el)"
                         :url="props.url"
@@ -38,7 +39,11 @@
                         :end="Number(region.end)"
                         :region="region"
                         :initial-highlights="region.savedHighlights"
+                        :initial-favorite="region.isFavorite"
                         @delete="removeRegion"
+                        @adjust-start="(delta) => handleAdjustTime(region.id, 'start', delta)"
+                        @adjust-end="(delta) => handleAdjustTime(region.id, 'end', delta)"
+                        @toggle-favorite="(val) => handleToggleFavorite(region.id, val)"
                     />
                 </div>
                 <div v-else class="flex flex-col items-center justify-center h-full">
@@ -47,7 +52,7 @@
             </div>
 
             <div class="mt-4 w-full text-center flex-shrink-0 flex lg:px-96">
-                <el-button class="flex-1" type="primary" @click="saveRegions" :disabled="!isDirty || !regionsList.length" :loading="isSaving">
+                <el-button class="flex-1" type="primary" @click="saveRegions" :disabled="!regionsList.length" :loading="isSaving">
                     Save All Changes
                 </el-button>
             </div>
@@ -61,7 +66,8 @@ import { ref, watch, computed, onMounted, nextTick } from 'vue';
 import type { Region } from 'wavesurfer.js/dist/plugins/regions.js'
 import BaseWaveSurfer from './BaseWaveSurfer.vue';
 import SliceCard from './SliceCard.vue';
-import { createBatchSlices, type CreateSliceRequest, type AudioSliceResponse } from '@/api/slicerApi';
+import PlaybackSpeedControl from './PlaybackSpeedControl.vue';
+import { createBatchSlices, deleteSlice, type CreateSliceRequest, type AudioSliceResponse } from '@/api/slicerApi';
 import { ElMessage } from 'element-plus';
 
 const baseWaveSurferRef = ref<InstanceType<typeof BaseWaveSurfer> | null>(null)
@@ -69,7 +75,14 @@ const loopRegion = ref<boolean>(true)
 const isPlaying = ref<boolean>(false)
 const isSaving = ref<boolean>(false)
 const isDirty = ref<boolean>(false)  // Track if changes were made
+const currentPlaybackRate = ref(1);
+const speedOptions = [0.5, 1];
 let activeRegion: Region | null = null;
+
+const handleSpeedChange = (rate: number) => {
+    currentPlaybackRate.value = rate;
+    baseWaveSurferRef.value?.setPlaybackRate(rate);
+};
 
 const props = defineProps<{ 
     url: string; 
@@ -81,18 +94,25 @@ const props = defineProps<{
 type audio_type = 'Link' | 'H-Del' | 'Th-Del' | 'Flap-T'
 
 interface RegionInfo {
-    id: string;
+    id: string;  // WaveSurfer region ID
+    dbId?: number;  // Database ID for updates
     start: string;
     end: string;
     originalText: string;
     tags: audio_type[];
     note: string;
     isTranscribing?: boolean;
+    isFavorite?: boolean;  // Mark as favorite
     // Link to saved slice data for restoring analysis/dictionary
     savedHighlights?: AudioSliceResponse['highlights'];
 }
 
 const regionsList = ref<RegionInfo[]>([])
+
+// Sorted regions for display
+const sortedRegionsList = computed(() => 
+    [...regionsList.value].sort((a, b) => Number(a.start) - Number(b.start))
+)
 
 // Store refs to SliceCard components
 const sliceCardRefs = ref<Map<number, InstanceType<typeof SliceCard>>>(new Map())
@@ -141,12 +161,14 @@ watch(() => props.initialSlices, (newSlices) => {
         console.log('Initializing from saved slices:', newSlices.length)
         regionsList.value = newSlices.map((slice) => ({
             id: `saved-${slice.id}`,
+            dbId: slice.id,  // Store database ID for updates
             start: slice.start_time.toFixed(2),
             end: slice.end_time.toFixed(2),
             originalText: slice.original_text,
             tags: [],
             note: '',
             isTranscribing: false,
+            isFavorite: slice.is_favorite,  // Load favorite state
             savedHighlights: slice.highlights
         }))
         
@@ -216,13 +238,62 @@ const handleRegionClicked = (region: Region, e: MouseEvent) => {
     region.play()
 }
 
-const removeRegion = (id: string) => {
+const removeRegion = async (id: string) => {
+    // Check if this is a saved slice (has dbId)
+    const regionInList = regionsList.value.find(r => r.id === id)
+    if (regionInList?.dbId) {
+        try {
+            await deleteSlice(regionInList.dbId)
+            ElMessage.success('Slice deleted')
+        } catch (error) {
+            console.error('Failed to delete slice:', error)
+            ElMessage.error('Failed to delete slice')
+            return  // Don't remove from UI if API failed
+        }
+    }
+    
+    // Remove from WaveSurfer
     const regions = baseWaveSurferRef.value?.getRegions()
     if (regions) {
         const region_to_del = Object.values(regions).find(r => r.id === id)
         if (region_to_del) {
             region_to_del.remove()
         }
+    }
+}
+
+// Handle time adjustment from SliceCard arrows
+const handleAdjustTime = (regionId: string, type: 'start' | 'end', delta: number) => {
+    // Update in regionsList
+    const regionInList = regionsList.value.find(r => r.id === regionId)
+    if (!regionInList) return
+    
+    if (type === 'start') {
+        const newStart = Math.max(0, Number(regionInList.start) + delta)
+        regionInList.start = newStart.toFixed(2)
+    } else {
+        const newEnd = Number(regionInList.end) + delta
+        regionInList.end = newEnd.toFixed(2)
+    }
+    
+    // Sync to WaveSurfer region
+    const regions = baseWaveSurferRef.value?.getRegions()
+    if (regions) {
+        const wsRegion = Object.values(regions).find(r => r.id === regionId)
+        if (wsRegion) {
+            wsRegion.setOptions({
+                start: Number(regionInList.start),
+                end: Number(regionInList.end)
+            })
+        }
+    }
+}
+
+// Handle favorite toggle from SliceCard
+const handleToggleFavorite = (regionId: string, isFavorite: boolean) => {
+    const regionInList = regionsList.value.find(r => r.id === regionId)
+    if (regionInList) {
+        regionInList.isFavorite = isFavorite
     }
 }
 
@@ -235,10 +306,13 @@ const saveRegions = async () => {
         // Collect data from all SliceCard components
         const slicesData: CreateSliceRequest[] = []
         
-        sliceCardRefs.value.forEach((sliceCard) => {
+        // Iterate through sorted regions to match with sliceCardRefs
+        sortedRegionsList.value.forEach((region, index) => {
+            const sliceCard = sliceCardRefs.value.get(index)
             if (sliceCard?.getSliceData) {
                 const data = sliceCard.getSliceData()
                 slicesData.push({
+                    id: region.dbId,  // Include database ID for updates
                     audio_chunk: props.chunkId,
                     ...data
                 })

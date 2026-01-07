@@ -2,9 +2,19 @@
   <div class="dark-editor">
     <!-- Top row: Note input + Icons -->
     <div class="note-row">
-      <!-- Left: Voice + Note input -->
+      <!-- Left: Mode Toggle + Note input -->
       <div class="note-left">
-        <CilVoice class="text-red-600 icon-btn text-xs" />
+        <!-- Mode Toggle Button -->
+        <el-button 
+          text 
+          circle 
+          class="mode-toggle-btn"
+          @click="editorMode = editorMode === 'note' ? 'sound' : 'note'"
+          :title="editorMode === 'note' ? 'AI Note 模式' : 'Sound Display 模式'"
+        >
+          <i-tabler-notes v-if="editorMode === 'note'" class="text-red-500" />
+          <i-tabler-abc v-else class="text-cyan-400" />
+        </el-button>
         <!-- User Note (editable) with inline save button -->
         <div class="note-input-container">
           <el-input 
@@ -12,15 +22,15 @@
             v-model="editableHighlight.note" 
             type="textarea" 
             :rows="1"
-            placeholder="添加笔记..." 
+            :placeholder="editorMode === 'note' ? '添加笔记...' : '编辑发音...'" 
             class="note-input"
           />
           <!-- Save Note Button (inside input) -->
           <button 
             class="save-note-btn-inline"
-            @click="handleSaveNote"
+            @click="editorMode === 'note' ? handleSaveNote() : handleSaveSegment()"
             :disabled="!editableHighlight.note?.trim()"
-            title="保存笔记"
+            :title="editorMode === 'note' ? '保存笔记' : '保存发音'"
           >
             <i-tabler-device-floppy />
           </button>
@@ -52,8 +62,8 @@
       </div>
     </div>
 
-    <!-- AI Analysis Results (read-only, colored) -->
-    <div v-if="analysisResult?.phonetic_tags?.length" class="ai-results">
+    <!-- AI Note 模式: phonetic_tags + notes -->
+    <div v-if="editorMode === 'note' && analysisResult?.phonetic_tags?.length" class="ai-results">
       <div 
         v-for="(tag, idx) in analysisResult.phonetic_tags" 
         :key="idx"
@@ -68,6 +78,28 @@
           @click.stop="handleDeleteNote(idx)" 
         />
       </div>
+    </div>
+
+    <!-- Sound Display 模式: script_segments -->
+    <div v-if="editorMode === 'sound' && analysisResult?.script_segments?.length" class="ai-results">
+      <div 
+        v-for="(seg, idx) in analysisResult.script_segments" 
+        :key="idx"
+        class="segment-note segment-sound-item"
+        :class="{ 
+          'is-editing': editingSegmentIndex === idx,
+          'is-stressed': seg.is_stressed 
+        }"
+        @click="handleSegmentClick(idx)"
+      >
+        <span class="type-badge">{{ seg.original }}</span>
+        <span class="note-text">{{ seg.sound_display }}</span>
+      </div>
+    </div>
+    
+    <!-- 空状态提示 -->
+    <div v-if="editorMode === 'sound' && !analysisResult?.script_segments?.length" class="ai-results-empty">
+      <span class="text-gray-500 text-xs">点击右上角 ✨ 获取发音分析</span>
     </div>
 
     <!-- Dictionary: Definition Row -->
@@ -138,12 +170,16 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 // import ipaSymbols from '@/data/ipa';
-import CilVoice from '~icons/cil/voice';
 import { analyzeSoundScript, lookupDictionary, refreshExample, type SoundScriptResponse, type DictionaryResponse } from '@/api/aiAnalysisApi';
 
 // AI Button States: 'default' | 'loading' | 'active'
 type AiStatus = 'default' | 'loading' | 'active'
 const aiStatus = ref<AiStatus>('active') // 'default'
+
+// Editor Mode: 'note' = AI Note mode, 'sound' = Sound Display mode
+type EditorMode = 'note' | 'sound'
+const editorMode = ref<EditorMode>('note')
+const editingSegmentIndex = ref<number | null>(null)
 
 // Speed toggle: true = fast, false = normal
 const isFastSpeed = ref(true);
@@ -336,6 +372,32 @@ const handleSaveNote = () => {
   // Clear input and editing state
   editableHighlight.value.note = ''
   editingTagIndex.value = null
+}
+
+// Handle segment click in Sound Display mode
+const handleSegmentClick = (idx: number) => {
+  editingSegmentIndex.value = idx
+  const segment = analysisResult.value?.script_segments[idx]
+  if (segment) {
+    // Put sound_display into note input for editing
+    editableHighlight.value.note = segment.sound_display
+  }
+}
+
+// Save segment sound_display
+const handleSaveSegment = () => {
+  const content = editableHighlight.value.note?.trim()
+  if (editingSegmentIndex.value === null || !analysisResult.value || !content) return
+  
+  // Update sound_display
+  const segment = analysisResult.value.script_segments[editingSegmentIndex.value]
+  if (segment) {
+    segment.sound_display = content
+  }
+  
+  // Clear editing state
+  editingSegmentIndex.value = null
+  editableHighlight.value.note = ''
 }
 
 type TagType = 'Flap T' | 'Reduction' | 'Linking' | 'Resyllabification' | 'Flap-T'; // These are the full display names
@@ -684,6 +746,42 @@ const handleDelete = () => {
 .type-glottal .type-badge { background: #fb923c; color: #000; }
 .type-custom .type-badge { background: #22d3ee; color: #000; }
 .type-default .type-badge { background: #6b7280; color: #fff; }
+
+/* Sound Display mode - segment items */
+.segment-sound-item {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.segment-sound-item .type-badge {
+  background: #22d3ee;
+  color: #000;
+}
+
+.segment-sound-item:hover {
+  background: #3d3566;
+}
+
+.segment-sound-item.is-editing {
+  background: #4E466E;
+  box-shadow: 0 0 0 1px #22d3ee;
+}
+
+.segment-sound-item.is-stressed .type-badge {
+  background: #f87171;
+  color: #fff;
+}
+
+.segment-sound-item.is-stressed .note-text {
+  color: #fca5a5;
+  font-weight: 600;
+}
+
+/* Empty state for Sound Display mode */
+.ai-results-empty {
+  padding: 8px;
+  text-align: center;
+}
 
 /* Save note button */
 .save-note-btn {

@@ -28,6 +28,27 @@ const getScriptSegments = (highlightId: string): ScriptSegment[] | null => {
   return result.script_segments;
 };
 
+// Helper: Parse sound_display to separate ghost (bracketed) and normal parts
+interface SoundPart {
+  text: string;
+  isGhost: boolean;
+}
+const parseSoundDisplay = (display: string): SoundPart[] => {
+  const parts: SoundPart[] = [];
+  const regex = /\[([^\]]+)\]|([^\[]+)/g;
+  let match;
+  while ((match = regex.exec(display)) !== null) {
+    if (match[1] !== undefined) {
+      // Bracketed content (ghost)
+      parts.push({ text: match[1], isGhost: true });
+    } else if (match[2]) {
+      // Normal content
+      parts.push({ text: match[2], isGhost: false });
+    }
+  }
+  return parts;
+};
+
 // 核心算法：把纯文本转换成 Token 数组
 const tokens = computed(() => {
   const result: Array<{
@@ -89,7 +110,12 @@ const tokens = computed(() => {
           :class="['ruby-segment', seg.is_stressed ? 'stressed' : 'unstressed']"
         >
           {{ seg.original }}
-          <rt>{{ seg.sound_display }}</rt>
+          <rt>
+            <template v-for="(part, pi) in parseSoundDisplay(seg.sound_display)" :key="pi">
+              <span v-if="part.isGhost" class="ghost-sound">{{ part.text }}</span>
+              <span v-else>{{ part.text }}</span>
+            </template>
+          </rt>
         </ruby>
       </span>
       
@@ -160,5 +186,11 @@ const tokens = computed(() => {
   font-size: 0.6em;
   color: #dc2626;
   font-weight: 700;
+}
+
+/* Ghost/Omitted sound: strikethrough */
+.ghost-sound {
+  text-decoration: line-through;
+  opacity: 0.5;
 }
 </style>
