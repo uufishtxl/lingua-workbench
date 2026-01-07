@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import SourceAudio, AudioChunk, AudioSlice, AudioTag, Drama
+from .models import SourceAudio, AudioChunk, AudioSlice, Drama
 
 class SourceAudioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,12 +16,10 @@ class AudioChunkSerializer(serializers.ModelSerializer):
         fields = ['id', 'source_audio', 'chunk_index', 'file', 'has_slices', 'title', 'drama']
 
 class AudioSliceSerializer(serializers.ModelSerializer):
-    tags = serializers.PrimaryKeyRelatedField(many=True, queryset=AudioTag.objects.all(), required=False)
-
     class Meta:
         model = AudioSlice
-        fields = '__all__'
-        read_only_fields = ['file', 'created_at'] # 'file' is handled by the service, 'created_at' is auto_now_add
+        fields = ['id', 'audio_chunk', 'start_time', 'end_time', 'original_text', 'highlights', 'created_at', 'updated_at']
+        read_only_fields = ['created_at', 'updated_at']
 
 class DramaSerializer(serializers.ModelSerializer):
     class Meta:

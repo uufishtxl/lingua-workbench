@@ -28,10 +28,11 @@
             <h2 class="font-bold mb-4 border-b-[0.5px] border-blue-100/50 pb-2">Selected Regions</h2>
             
             <div class="flex-1 overflow-y-auto min-h-0">
-                <div v-if="regionsList.length > 0" class="grid gap-4" style="grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));">
+                <div v-if="regionsList.length > 0" class="grid gap-1" style="grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));">
                     <SliceCard 
-                        v-for="region in regionsList" 
+                        v-for="(region, index) in regionsList" 
                         :key="region.id" 
+                        :ref="el => setSliceCardRef(index, el)"
                         :url="props.url"
                         :start="Number(region.start)"
                         :end="Number(region.end)"
@@ -45,7 +46,9 @@
             </div>
 
             <div class="mt-4 w-full text-center flex-shrink-0 flex lg:px-96">
-                <el-button class="flex-1" type="primary" @click="saveRegions" :disabled="!regionsList.length">Save All Changes</el-button>
+                <el-button class="flex-1" type="primary" @click="saveRegions" :disabled="!regionsList.length" :loading="isSaving">
+                    Save All Changes
+                </el-button>
             </div>
         </el-card>
 
@@ -56,19 +59,19 @@
 import { ref, watch, computed } from 'vue';
 import type { Region } from 'wavesurfer.js/dist/plugins/regions.js'
 import BaseWaveSurfer from './BaseWaveSurfer.vue';
-import RegionEditor from './RegionEditor.vue';
-// import AnnotatedText from './AnnotatedText.vue';
 import SliceCard from './SliceCard.vue';
+import { createBatchSlices, type CreateSliceRequest } from '@/api/slicerApi';
+import { ElMessage } from 'element-plus';
 
 const baseWaveSurferRef = ref<InstanceType<typeof BaseWaveSurfer> | null>(null)
 const loopRegion = ref<boolean>(true)
 const isPlaying = ref<boolean>(false)
+const isSaving = ref<boolean>(false)
 let activeRegion: Region | null = null;
 
-const props = defineProps<{ url: string; title: string | null }>()
+const props = defineProps<{ url: string; title: string | null; chunkId: number }>()
 
 type audio_type = 'Link' | 'H-Del' | 'Th-Del' | 'Flap-T'
-const allTags: audio_type[] = ['Link', 'H-Del', 'Th-Del', 'Flap-T'];
 
 interface RegionInfo {
     id: string;
@@ -77,42 +80,25 @@ interface RegionInfo {
     originalText: string;
     tags: audio_type[];
     note: string;
-    isTranscribing?: boolean;  // Whisper 转写中状态
+    isTranscribing?: boolean;
 }
 
 const regionsList = ref<RegionInfo[]>([])
-const isDialogVisible = ref(false)
-const currentEditingRegion = ref<RegionInfo | null>(null)
 
-const parsedAnnotatedText = computed(() => {
-    if (!currentEditingRegion.value?.originalText) return [];
-    const words = currentEditingRegion.value.originalText.split(/(\s+)/); // Split by spaces, keeping spaces
-    return words.map(wordText => {
-        if (wordText.trim() === '') { // If it's just whitespace
-            return { text: wordText };
-        }
-        // Example: Apply 'Flap-T' tag to 'matter' if region has 'Flap-T'
-        const tagsForWord: audio_type[] = [];
-        if (currentEditingRegion.value?.tags.includes('Flap-T') && wordText.toLowerCase().includes('matter')) {
-            tagsForWord.push('Flap-T');
-        }
-        // Add other tags based on some logic if needed
-        return { text: wordText, tags: tagsForWord.length > 0 ? tagsForWord : undefined };
-    });
-});
+// Store refs to SliceCard components
+const sliceCardRefs = ref<Map<number, InstanceType<typeof SliceCard>>>(new Map())
+
+const setSliceCardRef = (index: number, el: any) => {
+    if (el) {
+        sliceCardRefs.value.set(index, el)
+    } else {
+        sliceCardRefs.value.delete(index)
+    }
+}
 
 watch(regionsList, (list) => {
     list.sort((a, b) => parseFloat(a.start) - parseFloat(b.start));
 }, { deep: true });
-
-const openEditDialog = (regionId: string) => {
-    const regionToEdit = regionsList.value.find(r => r.id === regionId);
-    if (regionToEdit) {
-        currentEditingRegion.value = regionToEdit;
-        isDialogVisible.value = true;
-    }
-}
-
 
 const handleRegionCreated = (newRegion: Region) => {
     if (!regionsList.value.some(r => r.id === newRegion.id)) {
@@ -171,21 +157,39 @@ const removeRegion = (id: string) => {
     }
 }
 
-const handleUpdateTags = (payload: { id: string, tags: audio_type[] }) => {
-  const region = regionsList.value.find(r => r.id === payload.id);
-  if (region) {
-    region.tags = payload.tags;
-  }
-}
-
-const handleUpdateRegion = (payload: { id: string, key: keyof RegionInfo, value: any }) => {
-  const region = regionsList.value.find(r => r.id === payload.id);
-  if (region) {
-    (region[payload.key] as any) = payload.value;
-  }
-}
-
-const saveRegions = () => {
-    console.log('Saving regions to server:', regionsList.value);
+const saveRegions = async () => {
+    if (isSaving.value) return
+    
+    isSaving.value = true
+    
+    try {
+        // Collect data from all SliceCard components
+        const slicesData: CreateSliceRequest[] = []
+        
+        sliceCardRefs.value.forEach((sliceCard) => {
+            if (sliceCard?.getSliceData) {
+                const data = sliceCard.getSliceData()
+                slicesData.push({
+                    audio_chunk: props.chunkId,
+                    ...data
+                })
+            }
+        })
+        
+        if (slicesData.length === 0) {
+            ElMessage.warning('No data to save')
+            return
+        }
+        
+        console.log('Saving slices:', slicesData)
+        const result = await createBatchSlices(slicesData)
+        console.log('Save result:', result)
+        ElMessage.success(`Saved ${result.length} slices successfully!`)
+    } catch (error) {
+        console.error('Failed to save slices:', error)
+        ElMessage.error('Failed to save slices')
+    } finally {
+        isSaving.value = false
+    }
 };
 </script>

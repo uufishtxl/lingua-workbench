@@ -7,8 +7,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import SourceAudio, AudioChunk, AudioSlice, Drama
-from .serializers import SourceAudioSerializer, AudioSliceSerializer, DramaSerializer, AudioChunkSerializer, AudioChunkSerializer
-from .services import slice_source_to_chunks, slice_chunk_to_slice
+from .serializers import SourceAudioSerializer, AudioSliceSerializer, DramaSerializer, AudioChunkSerializer
+from .services import slice_source_to_chunks
 
 class SourceAudioViewSet(viewsets.ModelViewSet):
     """
@@ -140,37 +140,53 @@ class AudioSliceViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'], url_path='create_batch')
     def create_batch(self, request):
+        """
+        Create multiple AudioSlice records in a batch.
+        No longer cuts audio files - just stores metadata with highlights.
+        """
         serializer = self.get_serializer(data=request.data, many=True)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            print("Serializer validation errors:", serializer.errors)
+            return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         created_slices = []
         errors = []
-        
 
         for item_data in serializer.validated_data:
             audio_chunk = item_data['audio_chunk']
-            start_time = item_data['start_time']
-            end_time = item_data['end_time']
-            original_text = item_data.get('original_text', '')
-            notes = item_data.get('notes', '')
-            tags = item_data.get('tags', [])
+            
+            # Verify the user owns this chunk
+            if audio_chunk.source_audio.user != request.user:
+                errors.append(f"Unauthorized: chunk {audio_chunk.id} does not belong to current user")
+                continue
 
             try:
-                # Use the service to create the audio slice, including all metadata
-                created_slice = slice_chunk_to_slice(
-                    chunk=audio_chunk,
-                    start_time=start_time,
-                    end_time=end_time,
-                    original_text=original_text,
-                    notes=notes,
-                    tags=tags
+                # Create or update the slice (update if same chunk/start/end exists)
+                slice_obj, created = AudioSlice.objects.update_or_create(
+                    audio_chunk=audio_chunk,
+                    start_time=item_data['start_time'],
+                    end_time=item_data['end_time'],
+                    defaults={
+                        'original_text': item_data.get('original_text', ''),
+                        'highlights': item_data.get('highlights', [])
+                    }
                 )
-                created_slices.append(created_slice)
+                created_slices.append(slice_obj)
+                
+                # Mark the chunk as having slices
+                if not audio_chunk.has_slices:
+                    audio_chunk.has_slices = True
+                    audio_chunk.save()
+                    
             except Exception as e:
-                errors.append(f"Error creating slice for chunk {audio_chunk.id} from {start_time}-{end_time}: {e}")
+                errors.append(f"Error creating slice for chunk {audio_chunk.id}: {e}")
         
         if errors:
-            return Response({"message": "Some slices failed to create", "errors": errors, "created_slices": AudioSliceSerializer(created_slices, many=True).data}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({
+                "message": "Some slices failed to create", 
+                "errors": errors, 
+                "created_slices": AudioSliceSerializer(created_slices, many=True).data
+            }, status=status.HTTP_400_BAD_REQUEST)
         
         return Response(AudioSliceSerializer(created_slices, many=True).data, status=status.HTTP_201_CREATED)
 

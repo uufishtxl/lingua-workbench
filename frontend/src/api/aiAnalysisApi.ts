@@ -86,6 +86,8 @@ export interface RefreshExampleResponse {
 
 export interface RefreshExampleRequest {
     word_or_phrase: string
+    definition: string
+    original_context: string
 }
 
 /**

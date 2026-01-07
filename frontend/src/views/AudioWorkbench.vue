@@ -43,7 +43,7 @@ onMounted(async () => {
       </div>
     </el-card>
     <div v-else-if="chunk" class="min-h-0 flex flex-col flex-grow p-2">
-      <AudioSlicer class="flex-grow min-h-0" :url="chunk.file" :title="chunk.title"/>
+      <AudioSlicer class="flex-grow min-h-0" :url="chunk.file" :title="chunk.title" :chunk-id="chunk.id"/>
     </div>
   </div>
 </template>
