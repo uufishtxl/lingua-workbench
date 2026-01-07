@@ -2,12 +2,14 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '@/api/axios'
+import { getSlicesByChunk, type AudioSliceResponse } from '@/api/slicerApi'
 import { ElMessage } from 'element-plus'
 import AudioSlicer from '@/components/AudioSlicer.vue'
 import ResourceNotFoundJpg from '@/assets/resource_not_found.jpg'
 
 const route = useRoute()
 const chunk = ref<any>(null)
+const savedSlices = ref<AudioSliceResponse[]>([])
 const isLoading = ref(false)
 const error = ref<string | null>(null)
 
@@ -21,9 +23,15 @@ onMounted(async () => {
 
   isLoading.value = true
   try {
+    // Fetch chunk data
     const response = await api.get(`/v1/audiochunks/${chunkId}/`)
     chunk.value = response.data
-    console.log(chunk.value.file)
+    
+    // Fetch existing slices for this chunk
+    const slices = await getSlicesByChunk(Number(chunkId))
+    savedSlices.value = slices
+    console.log("savedSlices are ", savedSlices.value)
+    
   } catch (err) {
     error.value = 'Failed to fetch audio chunk data.'
     ElMessage.error(error.value)
@@ -42,8 +50,15 @@ onMounted(async () => {
         <el-button class="absolute left-[50%] bottom-0 translate-x-[-50%] translate-y-[-50%]">Back to Chunk List</el-button>
       </div>
     </el-card>
+    
     <div v-else-if="chunk" class="min-h-0 flex flex-col flex-grow p-2">
-      <AudioSlicer class="flex-grow min-h-0" :url="chunk.file" :title="chunk.title" :chunk-id="chunk.id"/>
+      <AudioSlicer 
+        class="flex-grow min-h-0" 
+        :url="chunk.file" 
+        :title="chunk.title" 
+        :chunk-id="chunk.id"
+        :initial-slices="savedSlices"
+      />
     </div>
   </div>
 </template>
@@ -56,6 +71,5 @@ onMounted(async () => {
   flex-grow: 1;
   min-height: 0;
   padding: 12px;
-  /* Allow the body to shrink beyond its content's minimum size */
 }
 </style>

@@ -62,19 +62,15 @@ class AudioSlice(models.Model):
     """
     A slice of an audio chunk with highlights and phonetic analysis.
     
-    highlights JSON format:
+    highlights JSON format (stores raw API responses):
     [
         {
+            "id": "uuid-string",
+            "start": 15,           # Character position in original_text
+            "end": 25,
             "focus_segment": "come along",
-            "phonetic_hilis": [
-                {"type": "Linking", "note": "come 以辅音 /m/ 结尾..."},
-                {"type": "Custom", "note": "用户自定义笔记"}
-            ],
-            "definition": "come along: 出现；到来",
-            "example": {
-                "example_zh": "谁说会有更好的出现？",
-                "example_en": "Who said something better would come along?"
-            }
+            "analysis": { ... },   # Raw SoundScriptResponse
+            "dictionary": { ... }  # Raw DictionaryResponse
         }
     ]
     """
