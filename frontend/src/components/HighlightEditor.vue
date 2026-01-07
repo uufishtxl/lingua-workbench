@@ -375,14 +375,13 @@ watch(() => props.highlight, (newHighlight) => {
 
 // Initialize saved data from props when component mounts or props change
 watch(() => [props.savedAnalysis, props.savedDictionary] as const, ([newAnalysis, newDictionary]) => {
-  if (newAnalysis) {
-    analysisResult.value = newAnalysis;
-    aiStatus.value = 'active';
-  }
-  if (newDictionary) {
-    dictionaryResult.value = newDictionary;
-    dictStatus.value = 'active';
-  }
+  // IMPORTANT: Always reset first, then set new values
+  // This prevents data from previous highlight leaking when switching directly
+  analysisResult.value = newAnalysis || null;
+  aiStatus.value = newAnalysis ? 'active' : 'default';
+  
+  dictionaryResult.value = newDictionary || null;
+  dictStatus.value = newDictionary ? 'active' : 'default';
 }, { immediate: true });
 
 // Note: AI results now display separately, no auto-fill to user note

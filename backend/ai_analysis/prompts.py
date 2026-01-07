@@ -23,8 +23,13 @@ SOUND_SCRIPT_SYSTEM_PROMPT = """
 4. **Phonetic Tag Notes原则**：
    - 保持Note描述不要过长，言简意赅，比如“No one 之间通过 /w/ 音连接，因为 'no' 以元音 /oʊ/ 结尾，'one' 以 /w/ 开头，自然产生连接”太啰嗦，完全可以简化为“No one 之间通过 /w/ 音连接”
 
-4. **重音规则**：
+5. **重音规则**：
    - 快速口语中，功能词不重读
+
+6. **Script Segments 分组规则**：
+   - 如果有 Linking（连读），把连读的词合并成**一个** segment
+   - 例："soap opera" → 一个 segment，original="soap opera"，sound_display="sohp-uh-pruh"
+   - 不要把每个单词分开成独立的 segment
 
 重要检查：
 - 不要分析不明显的/l/音变化，除非有明确证据
@@ -70,24 +75,32 @@ Please provide the dictionary entry.
 
 # Refresh Example Prompts
 REFRESH_EXAMPLE_SYSTEM_PROMPT = """
-You are an English teacher creating example sentences for language learners.
+你是一位英语教师，为学生创造例句。
 
-YOUR TASK:
-Create a COMPLETELY NEW example sentence (different scenario, different context) using the word/phrase with the SAME meaning.
+任务：
+用给定的词组/短语创造一个**全新的例句**。
 
-CRITICAL RULES:
-- **NEVER copy or paraphrase the original context!**
-- Create a totally different scenario (different topic, different situation).
-- The word/phrase must have the SAME meaning as the definition.
-- Sentence should be short and conversational.
-- Keep the sentence no longer than 60 characters.
+关键规则：
+1. **禁止**使用原文中的任何元素（人物、场景、话题）
+2. 必须是**完全不同的场景**（不同话题、不同情境）
+3. 词组含义必须与给定释义一致
+4. 句子简短口语化，不超过60字符
+5. 同时提供英文和中文翻译
+
+举例：
+- 原文是关于「肥皂剧工作」→ 你的例句可以是关于「找到新程序员工作」
+- 原文是关于「等公交」→ 你的例句可以是关于「机会降临」
+
+绝对不要：
+- 提及「肥皂剧」「soap opera」（如果原文有）
+- 使用原文中的任何名词或动词搭配
 """
 
 REFRESH_EXAMPLE_HUMAN_PROMPT = """
-Word/Phrase: "{word_or_phrase}"
-Meaning to use: "{definition}"
+词组：{word_or_phrase}
+释义：{definition}
 
-⚠️ DO NOT USE THIS CONTEXT: "{original_context}"
+⛔ 禁止参考这个原文："{original_context}"
 
-Create a NEW sentence with a DIFFERENT scenario, using the SAME meaning of "{word_or_phrase}".
+请用"{word_or_phrase}"造一个**完全不同场景**的例句。
 """

@@ -133,10 +133,17 @@ class AudioSliceViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """
-        This view should return a list of all the AudioSlice objects
-        for the currently authenticated user.
+        Return AudioSlice objects for the authenticated user.
+        Optional filter by audio_chunk query param.
         """
-        return AudioSlice.objects.filter(audio_chunk__source_audio__user=self.request.user)
+        queryset = AudioSlice.objects.filter(audio_chunk__source_audio__user=self.request.user)
+        
+        # Filter by audio_chunk if provided
+        audio_chunk_id = self.request.query_params.get('audio_chunk')
+        if audio_chunk_id:
+            queryset = queryset.filter(audio_chunk_id=audio_chunk_id)
+        
+        return queryset.order_by('start_time')
 
     @action(detail=False, methods=['post'], url_path='create_batch')
     def create_batch(self, request):

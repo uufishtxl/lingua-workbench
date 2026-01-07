@@ -11,11 +11,18 @@ export interface ExampleData {
     example_en: string
 }
 
+// Re-export API response types for convenience
+export type { SoundScriptResponse, DictionaryResponse } from './aiAnalysisApi'
+import type { SoundScriptResponse, DictionaryResponse } from './aiAnalysisApi'
+
 export interface HighlightData {
+    id: string           // UUID for the highlight
+    start: number        // Character position in original_text
+    end: number          // Character position in original_text
     focus_segment: string
-    phonetic_hilis: PhoneticHili[]
-    definition?: string
-    example?: ExampleData
+    // Store raw API responses directly - no conversion needed
+    analysis?: SoundScriptResponse | null
+    dictionary?: DictionaryResponse | null
 }
 
 export interface CreateSliceRequest {
@@ -51,4 +58,22 @@ export async function createBatchSlices(
         slices
     )
     return response.data
+}
+
+/**
+ * Get all slices for a specific audio chunk.
+ * Handles DRF pagination response format.
+ */
+export async function getSlicesByChunk(
+    chunkId: number
+): Promise<AudioSliceResponse[]> {
+    const response = await apiClient.get<{ results: AudioSliceResponse[] } | AudioSliceResponse[]>(
+        '/v1/audioslices/',
+        { params: { audio_chunk: chunkId } }
+    )
+    // Handle both paginated and non-paginated responses
+    if (Array.isArray(response.data)) {
+        return response.data
+    }
+    return response.data.results || []
 }

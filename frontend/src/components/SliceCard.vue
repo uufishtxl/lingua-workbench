@@ -4,17 +4,45 @@
         <div class="w-full flex justify-between items-center text-xs">
             <p class="bg-sky-100 text-blue-400 px-2 py-1 rounded">{{ formatTime(props.start) }}~{{ formatTime(props.end) }}</p>
             <div class="flex items-center gap-1">
-                <el-button 
-                    text 
-                    type="primary" 
-                    circle 
-                    :loading="isTranscribing"
-                    @click.stop="handleTranscribe"
-                    title="Speech to Text"
-                >
-                    <ArcticonsLiveTranscribe v-if="!isTranscribing" class="text-sky-500" />
-                </el-button>
-                <el-button text type="danger" :icon="Delete" class="is-del" circle @click.stop="emit('delete', region.id)" />
+                <!-- View Mode Buttons (Default) -->
+                <template v-if="!activeHighlightId">
+                    <el-button 
+                        text 
+                        type="primary" 
+                        circle 
+                        :loading="isTranscribing"
+                        @click.stop="handleTranscribe"
+                        title="Speech to Text"
+                        :disabled="isEditingOriginal"
+                    >
+                        <ArcticonsLiveTranscribe v-if="!isTranscribing" class="text-sky-500" />
+                    </el-button>
+                    <el-button text type="danger" :icon="Delete" class="is-del" circle @click.stop="emit('delete', region.id)" :disabled="isEditingOriginal" />
+                </template>
+                
+                <!-- Edit Mode Buttons (Recording - when Highlight active) -->
+                <template v-else>
+                    <el-button 
+                        text 
+                        :type="isRecording ? 'danger' : 'primary'" 
+                        circle 
+                        @click.stop="handleRecordToggle"
+                        :title="isRecording ? 'Stop Recording' : 'Start Recording'"
+                    >
+                        <i-tabler-player-stop-filled v-if="isRecording" class="text-red-500 animate-pulse" />
+                        <i-tabler-microphone v-else class="text-sky-500" />
+                    </el-button>
+                    <el-button 
+                        text 
+                        type="primary" 
+                        circle 
+                        :disabled="!recordedAudioUrl || isRecording"
+                        @click.stop="handlePlayRecording"
+                        title="Play Recording"
+                    >
+                        <i-tabler-player-play-filled class="text-sky-500" />
+                    </el-button>
+                </template>
             </div>
         </div>
         <!-- Original Text 浏览/编辑区域 -->
@@ -36,8 +64,8 @@
                 :current-active-id="activeHighlightId" 
                 :analysis-results="analysisResults"
                 @click-highlight="handleHighlightClick" />
-            <el-button v-if="!isEditingOriginal" text class="absolute bottom-2 right-2 is-edit" :icon="Edit"
-                size="small" circle @click="startEditing" />
+            <el-button text class="absolute bottom-2 right-2 is-edit" :icon="Edit"
+                size="small" circle @click="startEditing" :disabled="isEditingOriginal || !!activeHighlightId" />
 
             <!-- Highlighter Icon -->
             <transition name="fade">
@@ -118,6 +146,8 @@ interface Hili {
     note: string;
 }
 
+import type { HighlightData } from '@/api/slicerApi';
+
 const props = defineProps<{
     url: string;
     start: number;
@@ -129,12 +159,13 @@ const props = defineProps<{
     originalText: string;
     tags: string[];
     note: string;
-  }
+  };
+    initialHighlights?: HighlightData[];
 }>();
 
 const emit = defineEmits(['delete'])
 
-const currentSlice = ref({text: "", highlights: []});
+const currentSlice = ref({text: "", highlights: [] as Hili[]});
 
 // 同步 props.region.originalText 到 currentSlice.text
 watch(
@@ -261,17 +292,29 @@ const handleTextSelection = () => {
     const selectedText = selection.toString(); // Don't trim
 
     if (selectedText && textDisplayRef.value.contains(range.commonAncestorContainer)) {
-        const offsets = getFlatTextOffsets(textDisplayRef.value, range);
-        if (offsets) {
-            const rect = range.getBoundingClientRect();
-            const parentRect = textDisplayRef.value.getBoundingClientRect();
-
-            selectedTextInfo.value = { text: selectedText, start: offsets.start, end: offsets.end, rect };
-
-            highlighterIconPosition.top = `${rect.top - parentRect.top - 30}px`;
-            highlighterIconPosition.left = `${rect.left - parentRect.left + rect.width / 2}px`;
-            highlighterIconVisible.value = true;
+        // Use string search instead of DOM position to avoid ruby text interference
+        const originalText = currentSlice.value.text;
+        const startIndex = originalText.indexOf(selectedText);
+        
+        if (startIndex === -1) {
+            // Selected text not found in original (might include ruby text content)
+            resetSelection();
+            return;
         }
+        
+        const rect = range.getBoundingClientRect();
+        const parentRect = textDisplayRef.value.getBoundingClientRect();
+
+        selectedTextInfo.value = { 
+            text: selectedText, 
+            start: startIndex, 
+            end: startIndex + selectedText.length, 
+            rect 
+        };
+
+        highlighterIconPosition.top = `${rect.top - parentRect.top - 30}px`;
+        highlighterIconPosition.left = `${rect.left - parentRect.left + rect.width / 2}px`;
+        highlighterIconVisible.value = true;
     } else {
         resetSelection();
     }
@@ -318,6 +361,15 @@ const startEditing = () => {
     resetSelection();
 };
 
+const cancelEditing = () => {
+    isEditingOriginal.value = false;
+    editingText.value = '';
+    // Stop recording if active when canceling
+    if (isRecording.value) {
+        stopRecording();
+    }
+};
+
 const saveEditing = () => {
     const newText = editingText.value;
     currentSlice.value.text = newText;
@@ -327,12 +379,73 @@ const saveEditing = () => {
     analysisResults.value.clear();
     
     isEditingOriginal.value = false;
+    // Stop recording if active when saving
+    if (isRecording.value) {
+        stopRecording();
+    }
 };
 
-const cancelEditing = () => {
-    isEditingOriginal.value = false;
-    editingText.value = '';
+// --- Recording Logic ---
+const isRecording = ref(false);
+const recordedAudioUrl = ref<string | null>(null);
+let mediaRecorder: MediaRecorder | null = null;
+let audioChunks: Blob[] = [];
+
+const handleRecordToggle = async () => {
+    if (isRecording.value) {
+        stopRecording();
+    } else {
+        await startRecording();
+    }
 };
+
+const startRecording = async () => {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = (event) => {
+            audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            if (recordedAudioUrl.value) {
+                URL.revokeObjectURL(recordedAudioUrl.value);
+            }
+            recordedAudioUrl.value = URL.createObjectURL(audioBlob);
+        };
+
+        mediaRecorder.start();
+        isRecording.value = true;
+    } catch (err) {
+        console.error('Error accessing microphone:', err);
+        // You might want to show a user-friendly error message here
+    }
+};
+
+const stopRecording = () => {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+    }
+    isRecording.value = false;
+};
+
+const handlePlayRecording = () => {
+    if (recordedAudioUrl.value) {
+        const audio = new Audio(recordedAudioUrl.value);
+        audio.play();
+    }
+};
+
+// Clean up URL on unmount
+onUnmounted(() => {
+    if (recordedAudioUrl.value) {
+        URL.revokeObjectURL(recordedAudioUrl.value);
+    }
+});
 
 const handleHighlightClick = (highlightData: Hili) => {
     resetSelection();
@@ -342,6 +455,19 @@ const handleHighlightClick = (highlightData: Hili) => {
         activeHighlightId.value = highlightData.id;
     }
 };
+
+// Stop recording when active highlight changes or is closed
+watch(activeHighlightId, (newId, oldId) => {
+    if (isRecording.value) {
+        stopRecording();
+    }
+    // Optional: Clear recorded audio when switching highlights?
+    // User said "recording doesn't need to be saved", so maybe clear it to avoid confusion.
+    if (recordedAudioUrl.value) {
+        URL.revokeObjectURL(recordedAudioUrl.value);
+        recordedAudioUrl.value = null;
+    }
+});
 
 // --- Click outside to cancel editor ---
 const editorWrapperRef = ref<HTMLElement | null>(null);
@@ -398,6 +524,31 @@ import type { SoundScriptResponse, DictionaryResponse } from '@/api/aiAnalysisAp
 const analysisResults = ref<Map<string, SoundScriptResponse>>(new Map());
 const dictionaryResults = ref<Map<string, DictionaryResponse>>(new Map());
 
+// Initialize from saved highlights (must be after analysisResults/dictionaryResults declared)
+onMounted(() => {
+    if (props.initialHighlights?.length) {
+        // Restore highlights
+        currentSlice.value.highlights = props.initialHighlights.map(hl => ({
+            id: hl.id,
+            start: hl.start,
+            end: hl.end,
+            content: hl.focus_segment,
+            tags: [],
+            note: ''
+        }));
+        
+        // Restore analysis and dictionary results into Maps
+        props.initialHighlights.forEach(hl => {
+            if (hl.analysis) {
+                analysisResults.value.set(hl.id, hl.analysis);
+            }
+            if (hl.dictionary) {
+                dictionaryResults.value.set(hl.id, hl.dictionary);
+            }
+        });
+    }
+});
+
 const handleAiResult = (result: SoundScriptResponse) => {
     if (activeHighlightId.value) {
         analysisResults.value.set(activeHighlightId.value, result);
@@ -417,25 +568,21 @@ const handleSaveData = (data: { analysis: SoundScriptResponse | null; dictionary
 };
 
 // Expose method for parent to collect data for saving
-import type { HighlightData } from '@/api/slicerApi';
+// HighlightData imported at top of script
 
 const getSliceData = () => {
-    // Convert internal data to API format
+    // Store raw API responses directly - no conversion needed
     const highlights: HighlightData[] = currentSlice.value.highlights.map((h: Hili) => {
         const analysis = analysisResults.value.get(h.id);
         const dictionary = dictionaryResults.value.get(h.id);
         
         return {
+            id: h.id,
+            start: h.start,
+            end: h.end,
             focus_segment: h.content,
-            phonetic_hilis: analysis?.phonetic_tags?.map((tag, idx) => ({
-                type: tag,
-                note: analysis.phonetic_tag_notes?.[idx] || ''
-            })) || [],
-            definition: dictionary?.definition_cn || '',
-            example: dictionary?.examples?.[0] ? {
-                example_zh: dictionary.examples[0].chinese,
-                example_en: dictionary.examples[0].english
-            } : undefined
+            analysis: analysis || null,
+            dictionary: dictionary || null
         };
     });
 

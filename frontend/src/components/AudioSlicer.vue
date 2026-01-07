@@ -7,7 +7,7 @@
             <BaseWaveSurfer ref="baseWaveSurferRef" :url="props.url" @play="isPlaying = true" @pause="isPlaying = false"
                 @region-created="handleRegionCreated" @region-updated="handleRegionUpdated"
                 @region-removed="handleRegionRemoved" @region-in="handleRegionIn" @region-out="handleRegionOut"
-                @region-clicked="handleRegionClicked" />
+                @region-clicked="handleRegionClicked" @ready="handleWaveSurferReady" />
 
             <!-- Controls -->
             <div class="flex justify-around items-center gap-4 mt-2">
@@ -37,6 +37,7 @@
                         :start="Number(region.start)"
                         :end="Number(region.end)"
                         :region="region"
+                        :initial-highlights="region.savedHighlights"
                         @delete="removeRegion"
                     />
                 </div>
@@ -46,7 +47,7 @@
             </div>
 
             <div class="mt-4 w-full text-center flex-shrink-0 flex lg:px-96">
-                <el-button class="flex-1" type="primary" @click="saveRegions" :disabled="!regionsList.length" :loading="isSaving">
+                <el-button class="flex-1" type="primary" @click="saveRegions" :disabled="!isDirty || !regionsList.length" :loading="isSaving">
                     Save All Changes
                 </el-button>
             </div>
@@ -56,20 +57,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed, onMounted, nextTick } from 'vue';
 import type { Region } from 'wavesurfer.js/dist/plugins/regions.js'
 import BaseWaveSurfer from './BaseWaveSurfer.vue';
 import SliceCard from './SliceCard.vue';
-import { createBatchSlices, type CreateSliceRequest } from '@/api/slicerApi';
+import { createBatchSlices, type CreateSliceRequest, type AudioSliceResponse } from '@/api/slicerApi';
 import { ElMessage } from 'element-plus';
 
 const baseWaveSurferRef = ref<InstanceType<typeof BaseWaveSurfer> | null>(null)
 const loopRegion = ref<boolean>(true)
 const isPlaying = ref<boolean>(false)
 const isSaving = ref<boolean>(false)
+const isDirty = ref<boolean>(false)  // Track if changes were made
 let activeRegion: Region | null = null;
 
-const props = defineProps<{ url: string; title: string | null; chunkId: number }>()
+const props = defineProps<{ 
+    url: string; 
+    title: string | null; 
+    chunkId: number;
+    initialSlices?: AudioSliceResponse[];
+}>()
 
 type audio_type = 'Link' | 'H-Del' | 'Th-Del' | 'Flap-T'
 
@@ -81,6 +88,8 @@ interface RegionInfo {
     tags: audio_type[];
     note: string;
     isTranscribing?: boolean;
+    // Link to saved slice data for restoring analysis/dictionary
+    savedHighlights?: AudioSliceResponse['highlights'];
 }
 
 const regionsList = ref<RegionInfo[]>([])
@@ -96,8 +105,68 @@ const setSliceCardRef = (index: number, el: any) => {
     }
 }
 
-watch(regionsList, (list) => {
-    list.sort((a, b) => parseFloat(a.start) - parseFloat(b.start));
+// Flag to prevent dirty state during initialization
+const isInitialized = ref(false)
+const isWaveSurferReady = ref(false)
+
+const syncRegionsToWaveSurfer = () => {
+    if (!isWaveSurferReady.value || !regionsList.value.length) return
+    
+    regionsList.value.forEach(region => {
+        // Check if region already exists in WaveSurfer to avoid duplicates
+        const existingRegions = baseWaveSurferRef.value?.getRegions()
+        const exists = existingRegions && Object.values(existingRegions).some(r => r.id === region.id)
+        
+        if (!exists) {
+            baseWaveSurferRef.value?.addRegion({
+                id: region.id,
+                start: parseFloat(region.start),
+                end: parseFloat(region.end),
+                color: 'rgba(64, 158, 255, 0.1)',
+                drag: true,
+                resize: true
+            })
+        }
+    })
+}
+
+const handleWaveSurferReady = () => {
+    isWaveSurferReady.value = true
+    syncRegionsToWaveSurfer()
+}
+
+// Initialize from saved slices when prop becomes available
+watch(() => props.initialSlices, (newSlices) => {
+    if (newSlices?.length && regionsList.value.length === 0) {
+        console.log('Initializing from saved slices:', newSlices.length)
+        regionsList.value = newSlices.map((slice) => ({
+            id: `saved-${slice.id}`,
+            start: slice.start_time.toFixed(2),
+            end: slice.end_time.toFixed(2),
+            originalText: slice.original_text,
+            tags: [],
+            note: '',
+            isTranscribing: false,
+            savedHighlights: slice.highlights
+        }))
+        
+        // Try to sync to WaveSurfer if it's already ready
+        nextTick(() => {
+            syncRegionsToWaveSurfer()
+        })
+    }
+    // Mark as initialized after first load attempt
+    nextTick(() => {
+        isInitialized.value = true
+        isDirty.value = false
+    })
+}, { immediate: true })
+
+// Mark as dirty when changes are made (only after initialization)
+watch(regionsList, () => {
+    if (isInitialized.value) {
+        isDirty.value = true
+    }
 }, { deep: true });
 
 const handleRegionCreated = (newRegion: Region) => {
@@ -185,6 +254,7 @@ const saveRegions = async () => {
         const result = await createBatchSlices(slicesData)
         console.log('Save result:', result)
         ElMessage.success(`Saved ${result.length} slices successfully!`)
+        isDirty.value = false  // Reset dirty after successful save
     } catch (error) {
         console.error('Failed to save slices:', error)
         ElMessage.error('Failed to save slices')
