@@ -114,7 +114,15 @@ const tokens = computed(() => {
 
 .highlight-group {
   cursor: pointer;
-  padding: 2px 0;
+  padding: 2px 4px;
+  background: #fef3c7;
+  border-radius: 4px;
+  margin: 0 2px;
+  transition: background 0.2s;
+}
+
+.highlight-group:hover {
+  background: #fde68a;
 }
 
 .highlight-span {

@@ -228,3 +228,28 @@ Target: [Selected Phrase]
     ```
 
 ![图片](Slice_card_0251230.jpg)
+
+
+
+那把这些调整放入 TODO 吧。先讨论 Models。
+highlights里存：
+[
+    {
+        "focus_segment": "come along",
+        "phonetic_hilis": [
+            {
+                "type": "Linking",
+                note: "come 以辅音 /m/ 结尾，along 以元音 /ə/ 开头，产生连读"
+            },
+            {
+                "type": "Reduction",
+                note: "along 的 a 弱化为 schwa 音"
+            }
+        ]，
+        "definition": "come along: 出现；到来",
+        "example": {
+            "example_zh": "谁说会有更好的出现？",
+            "example_en": "Who said something better would come along?"
+        }
+    }
+]

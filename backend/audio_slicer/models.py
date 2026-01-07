@@ -57,28 +57,35 @@ class AudioChunk(models.Model):
     def __str__(self):
         return f"{self.source_audio.drama.name} S{self.source_audio.season:02d}E{self.source_audio.episode:02d} Chunk {self.chunk_index:03d}"
 
-def audio_slice_upload_path(instance, filename):
-    """
-    Generates a dynamic upload path for AudioSlice files.
-    e.g., media/audio_slicer/slices/Friends_S10_E12/slice_uuid.mp3
-    """
-    source = instance.audio_chunk.source_audio
-    drama_name = source.drama.name.replace(' ', '_')
-    season_str = f"S{source.season:02d}"
-    episode_str = f"E{source.episode:02d}"
-    
-    return f'audio_slicer/slices/{drama_name}_{season_str}_{episode_str}/{filename}'
 
 class AudioSlice(models.Model):
+    """
+    A slice of an audio chunk with highlights and phonetic analysis.
+    
+    highlights JSON format:
+    [
+        {
+            "focus_segment": "come along",
+            "phonetic_hilis": [
+                {"type": "Linking", "note": "come 以辅音 /m/ 结尾..."},
+                {"type": "Custom", "note": "用户自定义笔记"}
+            ],
+            "definition": "come along: 出现；到来",
+            "example": {
+                "example_zh": "谁说会有更好的出现？",
+                "example_en": "Who said something better would come along?"
+            }
+        }
+    ]
+    """
     audio_chunk = models.ForeignKey(AudioChunk, on_delete=models.CASCADE)
     start_time = models.FloatField(help_text="Start time of the slice in seconds")
     end_time = models.FloatField(help_text="End time of the slice in seconds")
-    file = models.FileField(upload_to=audio_slice_upload_path)
-    original_text = models.TextField(blank=True, help_text="Original text content of the audio slice")
-    notes = models.TextField(blank=True, help_text="User's personal notes for this slice")
-    tags = models.ManyToManyField(AudioTag, blank=True)
+    original_text = models.TextField(blank=True, help_text="Full text content of the audio slice")
+    highlights = models.JSONField(default=list, blank=True, help_text="Highlighted segments with phonetic analysis")
 
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ('audio_chunk', 'start_time', 'end_time')

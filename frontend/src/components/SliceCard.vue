@@ -52,12 +52,14 @@
         <!-- Wave / Highlight Editor -->
         <div v-if="activeHighlightId && activeHighlight" ref="editorWrapperRef">
             <HighlightEditor :highlight="activeHighlight" :fullContext="currentSlice.text"
+                :savedAnalysis="savedAnalysisForActive"
+                :savedDictionary="savedDictionaryForActive"
                 @update:highlight="handleHighlightUpdate"
                 @cancel="handleHighlightCancel" @delete-highlight="handleHighlightDelete"
-                @ai-result="handleAiResult" />
+                @ai-result="handleAiResult" @save-data="handleSaveData" />
         </div>
-        <div v-else class="bg-slate-900 flex flex-col h-[140px] p-2">
-            <BaseWaveSurfer ref="wavesurferRef" :url="props.url" :height="100" :allow-selection="true"
+        <div v-else class="bg-slate-900 flex flex-col h-[210px] p-2">
+            <BaseWaveSurfer ref="wavesurferRef" :url="props.url" :height="170" :allow-selection="true"
                 :start="props.start" :end="props.end" @play="isPlaying = true" @pause="isPlaying = false"
                 @region-clicked="(region) => isLooping = region.loop" />
             <div class="flex items-center justify-between px-2">
@@ -224,6 +226,15 @@ const activeHighlight = computed<Hili | undefined>(() => {
     return currentSlice.value.highlights.find(h => h.id === activeHighlightId.value);
 });
 
+// Computed properties for saved data (needed for Vue reactivity with Map)
+const savedAnalysisForActive = computed(() => {
+    return activeHighlightId.value ? analysisResults.value.get(activeHighlightId.value) : undefined;
+});
+
+const savedDictionaryForActive = computed(() => {
+    return activeHighlightId.value ? dictionaryResults.value.get(activeHighlightId.value) : undefined;
+});
+
 // Helper to get flat text offsets from DOM Range
 function getFlatTextOffsets(container: HTMLElement, range: Range): { start: number; end: number } | null {
     const preSelectionRange = document.createRange();
@@ -383,8 +394,9 @@ const handleHighlightDelete = (highlightId: string) => {
 };
 
 // Store AI analysis results per highlight
-import type { SoundScriptResponse } from '@/api/aiAnalysisApi';
+import type { SoundScriptResponse, DictionaryResponse } from '@/api/aiAnalysisApi';
 const analysisResults = ref<Map<string, SoundScriptResponse>>(new Map());
+const dictionaryResults = ref<Map<string, DictionaryResponse>>(new Map());
 
 const handleAiResult = (result: SoundScriptResponse) => {
     if (activeHighlightId.value) {
@@ -392,6 +404,50 @@ const handleAiResult = (result: SoundScriptResponse) => {
         console.log('AI Result stored for highlight:', activeHighlightId.value, result);
     }
 };
+
+const handleSaveData = (data: { analysis: SoundScriptResponse | null; dictionary: DictionaryResponse | null }) => {
+    if (activeHighlightId.value) {
+        if (data.analysis) {
+            analysisResults.value.set(activeHighlightId.value, data.analysis);
+        }
+        if (data.dictionary) {
+            dictionaryResults.value.set(activeHighlightId.value, data.dictionary);
+        }
+    }
+};
+
+// Expose method for parent to collect data for saving
+import type { HighlightData } from '@/api/slicerApi';
+
+const getSliceData = () => {
+    // Convert internal data to API format
+    const highlights: HighlightData[] = currentSlice.value.highlights.map((h: Hili) => {
+        const analysis = analysisResults.value.get(h.id);
+        const dictionary = dictionaryResults.value.get(h.id);
+        
+        return {
+            focus_segment: h.content,
+            phonetic_hilis: analysis?.phonetic_tags?.map((tag, idx) => ({
+                type: tag,
+                note: analysis.phonetic_tag_notes?.[idx] || ''
+            })) || [],
+            definition: dictionary?.definition_cn || '',
+            example: dictionary?.examples?.[0] ? {
+                example_zh: dictionary.examples[0].chinese,
+                example_en: dictionary.examples[0].english
+            } : undefined
+        };
+    });
+
+    return {
+        start_time: props.start,
+        end_time: props.end,
+        original_text: currentSlice.value.text,
+        highlights
+    };
+};
+
+defineExpose({ getSliceData });
 </script>
 
 <style scoped>

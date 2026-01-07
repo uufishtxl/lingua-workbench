@@ -26,7 +26,9 @@ class SoundScriptResponse(BaseModel):
     full_context: str = Field(description="完整的上下文内容")
     focus_segment: str = Field(description="完整上下文中需要聚焦的文字片段")
     phonetic_tags: List[str] = Field(
-        description="最关键的语音特点标签（1-3个），比如 Reduction / Linking / Assimilation"
+        description="最关键的语音特点标签（1-3个），比如 Reduction / Linking / Assimilation / Elision。"
+                    "**重要**：确保每个标签都准确对应实际发生的语音现象。"
+                    "例如，Flap T 只在单词中有 t/d 字母且在特定位置时才发生。"
     )
     phonetic_tag_notes: List[str] = Field(
         description="与phonetic_tags对应的说明列表，用中文解释每个语音特点在focus_segment中的体现"
