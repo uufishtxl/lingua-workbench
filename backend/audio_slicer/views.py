@@ -168,16 +168,34 @@ class AudioSliceViewSet(viewsets.ModelViewSet):
                 continue
 
             try:
-                # Create or update the slice (update if same chunk/start/end exists)
-                slice_obj, created = AudioSlice.objects.update_or_create(
-                    audio_chunk=audio_chunk,
-                    start_time=item_data['start_time'],
-                    end_time=item_data['end_time'],
-                    defaults={
-                        'original_text': item_data.get('original_text', ''),
-                        'highlights': item_data.get('highlights', [])
-                    }
-                )
+                slice_id = item_data.get('id')
+                defaults = {
+                    'audio_chunk': audio_chunk,
+                    'start_time': item_data['start_time'],
+                    'end_time': item_data['end_time'],
+                    'original_text': item_data.get('original_text', ''),
+                    'highlights': item_data.get('highlights', []),
+                    'is_favorite': item_data.get('is_favorite', False)
+                }
+                
+                if slice_id:
+                    # Update by ID if provided (allows time changes)
+                    slice_obj, created = AudioSlice.objects.update_or_create(
+                        id=slice_id,
+                        defaults=defaults
+                    )
+                else:
+                    # Fallback: create new or update by time-based lookup
+                    slice_obj, created = AudioSlice.objects.update_or_create(
+                        audio_chunk=audio_chunk,
+                        start_time=item_data['start_time'],
+                        end_time=item_data['end_time'],
+                        defaults={
+                            'original_text': item_data.get('original_text', ''),
+                            'highlights': item_data.get('highlights', []),
+                            'is_favorite': item_data.get('is_favorite', False)
+                        }
+                    )
                 created_slices.append(slice_obj)
                 
                 # Mark the chunk as having slices

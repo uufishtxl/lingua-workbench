@@ -126,6 +126,7 @@ const lookupSourceAudio = async (dramaId: number | string, season: number, episo
   isLoadingChunks.value = true
   showUpload.value = false
   showChunkGrid.value = false
+  selectedChunkId.value = null  // Reset selection when loading new chunks
   try {
     const response = await api.get('/v1/audios/lookup/', {
       params: { drama_id: dramaId, season: season, episode: episode }
@@ -389,8 +390,8 @@ const handleStartEditing = () => {
         <div class="grid grid-cols-10 gap-2">
           <div v-for="chunk in chunks" :key="chunk.id" class="p-4 rounded border text-center cursor-pointer" :class="{
             'bg-blue-500 text-white': selectedChunkId === chunk.id,
-            'bg-sky-100': chunk.has_slices,
-            'bg-white': !chunk.has_slices && selectedChunkId !== chunk.id
+            'bg-white': chunk.has_slices && selectedChunkId !== chunk.id,
+            'bg-gray-200': !chunk.has_slices && selectedChunkId !== chunk.id
           }" @click="selectedChunkId = chunk.id">
             {{ String(chunk.chunk_index).padStart(3, '0') }}
           </div>

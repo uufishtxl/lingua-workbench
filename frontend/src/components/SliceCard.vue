@@ -1,8 +1,35 @@
 <template>
     <el-card>
-        <!-- Time Stamp -->
+        <!-- Time Stamp with adjustment arrows inside -->
         <div class="w-full flex justify-between items-center text-xs">
-            <p class="bg-sky-100 text-blue-400 px-2 py-1 rounded">{{ formatTime(props.start) }}~{{ formatTime(props.end) }}</p>
+            <div class="bg-sky-100 text-blue-400 px-1 py-1 rounded flex items-center gap-0.5">
+                <!-- Backward arrow (adjust start earlier) -->
+                <!-- <i-tabler-chevron-left 
+                    class="text-blue-400 text-xs cursor-pointer hover:text-blue-600" 
+                    @click.stop="emit('adjust-start', -0.5)"
+                    title="Start -0.5s"
+                /> -->
+                <span class="px-1">{{ formatTime(props.start) }}~{{ formatTime(props.end) }}</span>
+                <!-- Forward arrow (adjust end later) -->
+                <!-- <i-tabler-chevron-right 
+                    class="text-blue-400 text-xs cursor-pointer hover:text-blue-600" 
+                    @click.stop="emit('adjust-end', 0.5)"
+                    title="End +0.5s"
+                /> -->
+                <!-- Favorite toggle -->
+                <i-tabler-star-filled 
+                    v-if="isFavorite"
+                    class="text-yellow-400 text-xs cursor-pointer ml-1" 
+                    @click.stop="toggleFavorite"
+                    title="取消收藏"
+                />
+                <i-tabler-star 
+                    v-else
+                    class="text-yellow-400 text-xs cursor-pointer hover:text-yellow-400 ml-1" 
+                    @click.stop="toggleFavorite"
+                    title="收藏"
+                />
+            </div>
             <div class="flex items-center gap-1">
                 <!-- View Mode Buttons (Default) -->
                 <template v-if="!activeHighlightId">
@@ -102,17 +129,7 @@
                     </el-button>
                 </div>
                 <div>
-                    <el-dropdown @command="handleSpeedChange" trigger="click" popper-class="dark-popper">
-                        <el-button size="small" circle class="speed-control-btn control-button is-dark">
-                            <span class="text-[0.7em] text-sky-500">{{ currentPlaybackRate }}x</span>
-                        </el-button><template #dropdown>
-                            <el-dropdown-menu>
-                                <el-dropdown-item v-for="speed in speedOptions" :key="speed" :command="speed">
-                                    {{ speed }}x
-                                </el-dropdown-item>
-                            </el-dropdown-menu>
-                        </template>
-                    </el-dropdown>
+                    <PlaybackSpeedControl v-model="currentPlaybackRate" :options="speedOptions" @change="handleSpeedChange" />
                 </div>
             </div>
         </div>
@@ -131,6 +148,7 @@ import HighlightEditor from './HighlightEditor.vue';
 import { extractAudioSegment } from '@/utils/audioUtils';
 import { transcribeAudio, pollTaskUntilComplete } from '@/api/whisperApi';
 import ArcticonsLiveTranscribe from '~icons/arcticons/live-transcribe';
+import PlaybackSpeedControl from './PlaybackSpeedControl.vue';
 
 // Note: The AbbreviatedTag type is defined in HighlightEditor.vue
 // For SliceCard's internal logic, we can just use `string` for simplicity,
@@ -161,9 +179,17 @@ const props = defineProps<{
     note: string;
   };
     initialHighlights?: HighlightData[];
+    initialFavorite?: boolean;
 }>();
 
-const emit = defineEmits(['delete'])
+const emit = defineEmits(['delete', 'adjust-start', 'adjust-end', 'toggle-favorite'])
+
+// Favorite state - initialize from prop
+const isFavorite = ref(props.initialFavorite ?? false)
+const toggleFavorite = () => {
+    isFavorite.value = !isFavorite.value
+    emit('toggle-favorite', isFavorite.value)
+}
 
 const currentSlice = ref({text: "", highlights: [] as Hili[]});
 
@@ -184,7 +210,7 @@ const dynamicTextStyle = computed(() => {
     if (textLength > 150) {
         fontSize = '0.7rem';   // 11.2px
     } else if (textLength > 100) {
-        fontSize = '0.9rem';  // 12px
+        fontSize = '0.8rem';  // 12px
     } else if (textLength > 60) {
         fontSize = '1rem';   // 12.8px
     } else if (textLength > 40) {
@@ -237,7 +263,7 @@ const handleTranscribe = async () => {
 // --- Playback Speed Control ---
 const wavesurferRef = ref<any>(null); // Ref for the BaseWaveSurfer component
 const currentPlaybackRate = ref(1);
-const speedOptions = [0.5, 0.8, 1];
+const speedOptions = [0.5, 1];
 
 const handleSpeedChange = (rate: number) => {
     currentPlaybackRate.value = rate;
@@ -590,7 +616,8 @@ const getSliceData = () => {
         start_time: props.start,
         end_time: props.end,
         original_text: currentSlice.value.text,
-        highlights
+        highlights,
+        is_favorite: isFavorite.value
     };
 };
 

@@ -26,11 +26,13 @@ export interface HighlightData {
 }
 
 export interface CreateSliceRequest {
+    id?: number  // Database ID for updates (omit for new slices)
     audio_chunk: number
     start_time: number
     end_time: number
     original_text: string
     highlights: HighlightData[]
+    is_favorite?: boolean
 }
 
 export interface AudioSliceResponse {
@@ -40,6 +42,7 @@ export interface AudioSliceResponse {
     end_time: number
     original_text: string
     highlights: HighlightData[]
+    is_favorite: boolean
     created_at: string
     updated_at: string
 }
@@ -76,4 +79,11 @@ export async function getSlicesByChunk(
         return response.data
     }
     return response.data.results || []
+}
+
+/**
+ * Delete a single audio slice by ID.
+ */
+export async function deleteSlice(sliceId: number): Promise<void> {
+    await apiClient.delete(`/v1/audioslices/${sliceId}/`)
 }

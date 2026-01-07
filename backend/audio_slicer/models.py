@@ -79,6 +79,7 @@ class AudioSlice(models.Model):
     end_time = models.FloatField(help_text="End time of the slice in seconds")
     original_text = models.TextField(blank=True, help_text="Full text content of the audio slice")
     highlights = models.JSONField(default=list, blank=True, help_text="Highlighted segments with phonetic analysis")
+    is_favorite = models.BooleanField(default=False, help_text="Mark slice as favorite for review")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
