@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="t_refresh_examples">
+  <title>Refreshing Example Sentences</title>
+  <shortdesc>Generate new example sentences for a dictionary entry.</shortdesc>
+  <taskbody>
+    <steps>
+      <step>
+        <cmd>In the Dictionary panel, click the <uicontrol>Refresh</uicontrol> button.</cmd>
+      </step>
+    </steps>
+    
+    <result>
+      <p>The AI generates new contextual examples in both English and Chinese.</p>
+    </result>
+  </taskbody>
+</task>

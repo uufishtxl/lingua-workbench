@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="t_browse_chunks">
+  <title>Browsing Audio Chunks</title>
+  <shortdesc>View and select audio chunks for slice creation.</shortdesc>
+  <taskbody>
+    <steps>
+      <step>
+        <cmd>
+          Navigate to the Audio Workbench page.
+        </cmd>
+        <info>From the left sidebar, click <menucascade><uicontrol>Audio Slicer</uicontrol><uicontrol>Load Source</uicontrol></menucascade>.</info>
+      </step>
+      <step>
+        <cmd>Use the filter to select a drama or episode.</cmd>
+      </step>
+      <step>
+        <cmd>Click on a chunk card to open it in the Audio Slicer.</cmd>
+      </step>
+    </steps>
+    
+    <result>
+      <p>The waveform is displayed and you can begin creating slices.</p>
+    </result>
+  </taskbody>
+</task>

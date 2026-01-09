@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="t_highlight_text">
+  <title>Highlighting Text for Analysis</title>
+  <shortdesc>Select a phrase to analyze its pronunciation.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>The slice must have transcribed text.</p>
+    </prereq>
+    
+    <steps>
+      <step>
+        <cmd>Select text in the slice by clicking and dragging.</cmd>
+        <stepresult>
+          <p>A highlighter icon appears near your selection.</p>
+          <fig id="fig_qwp_vzh_xhc">
+            <title>Highlighting Text for Analysis</title>
+            <image href="../../../screenshots/t_highlight_text.png" width="300"
+              id="image_rwp_vzh_xhc">
+              <alt>Highlighting Text for Analysis</alt>
+            </image>
+          </fig>
+        </stepresult>
+      </step>
+      <step>
+        <cmd>Click the <ph>
+            <image href="../../../icons/solar--pen-linear.png" placement="inline" scale="4"
+              alt="Save"/>
+        </ph> icon to create a highlight.</cmd>
+        <stepresult>
+          <p>The text is highlighted and the Highlight Editor opens below.</p>
+          <p>As you can see from the image below, the text is highlighted in blue.</p>
+          <fig id="fig_z3t_j13_xhc">
+            <title>Highlighting Text: Highlight Editor</title>
+            <image href="../../../screenshots/t_highlight_editor.png" width="300"
+              id="image_ajt_j13_xhc">
+              <alt>Highlighting Text: Highlight Editor</alt>
+            </image>
+          </fig>
+        </stepresult>
+      </step>
+    </steps>
+    
+    <result>
+      <p>The highlight is created and you can now request AI analysis.</p>
+    </result>
+  </taskbody>
+</task>

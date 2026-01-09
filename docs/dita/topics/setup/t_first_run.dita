@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="t_first_run">
+  <title>Running for the First Time</title>
+  <shortdesc>Start the development servers and access the application.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Complete the <xref href="t_installation.dita">installation</xref> first.</p>
+    </prereq>
+    
+    <steps>
+      <step>
+        <cmd>Start the backend server:</cmd>
+        <info><codeblock>cd backend
+venv\Scripts\activate
+python manage.py runserver</codeblock></info>
+        <stepresult>The Django server starts on <codeph>http://localhost:8000</codeph></stepresult>
+      </step>
+      
+      <step>
+        <cmd>In a new terminal, start the frontend:</cmd>
+        <info><codeblock>cd frontend
+npm run dev</codeblock></info>
+        <stepresult>The Vite dev server starts on <codeph>http://localhost:5173</codeph></stepresult>
+      </step>
+      
+      <step audience="developer">
+        <cmd>In a new terminal, start the Whisper transcription service:</cmd>
+        <info><codeblock>cd whisper
+uv run uvicorn whisper_api:app --reload --port 8001</codeblock></info>
+        <stepresult>The Whisper API starts on <codeph>http://localhost:8001</codeph></stepresult>
+      </step>
+      
+      <step audience="developer">
+        <cmd>In a new terminal, start the Huey task queue consumer:</cmd>
+        <info><codeblock>cd whisper
+uv run huey_consumer tasks.huey</codeblock></info>
+        <stepresult>The task queue is now processing transcription jobs.</stepresult>
+      </step>
+      
+      <step>
+        <cmd>Open your browser and navigate to <codeph>http://localhost:5173</codeph></cmd>
+      </step>
+    </steps>
+    
+    <result>
+      <p>You should see the Lingua Workbench home page. Register an account to get started, then you can start uploading audio and creating slices.</p>
+    </result>
+  </taskbody>
+</task>

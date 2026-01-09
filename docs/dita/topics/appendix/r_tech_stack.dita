@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "reference.dtd">
+<reference id="r_tech_stack">
+  <title>Technology Stack</title>
+  <shortdesc>Technical details about the technologies used.</shortdesc>
+  <refbody>
+    <section>
+      <title>Frontend</title>
+      <table>
+        <tgroup cols="2">
+          <colspec colname="c1" colwidth="1*"/>
+          <colspec colname="c2" colwidth="2*"/>
+          <thead><row><entry>Technology</entry><entry>Purpose</entry></row></thead>
+          <tbody>
+            <row><entry>Vue 3</entry><entry>UI framework with Composition API</entry></row>
+            <row><entry>TypeScript</entry><entry>Type-safe JavaScript</entry></row>
+            <row><entry>Vite</entry><entry>Build tool and dev server</entry></row>
+            <row><entry>Element Plus</entry><entry>UI component library</entry></row>
+            <row><entry>Tailwind CSS</entry><entry>Utility-first CSS</entry></row>
+            <row><entry>WaveSurfer.js</entry><entry>Audio waveform visualization</entry></row>
+            <row><entry>Pinia</entry><entry>State management</entry></row>
+            <row><entry>Axios</entry><entry>HTTP client</entry></row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+    
+    <section>
+      <title>Backend</title>
+      <table>
+        <tgroup cols="2">
+          <colspec colname="c1" colwidth="1*"/>
+          <colspec colname="c2" colwidth="2*"/>
+          <thead><row><entry>Technology</entry><entry>Purpose</entry></row></thead>
+          <tbody>
+            <row><entry>Django</entry><entry>Web framework</entry></row>
+            <row><entry>Django REST Framework</entry><entry>API development</entry></row>
+            <row><entry>SimpleJWT</entry><entry>JWT authentication</entry></row>
+            <row><entry>LangChain</entry><entry>LLM orchestration</entry></row>
+            <row><entry>OpenAI API</entry><entry>AI analysis and dictionary</entry></row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+    
+    <section>
+      <title>Services</title>
+      <table>
+        <tgroup cols="2">
+          <colspec colname="c1" colwidth="1*"/>
+          <colspec colname="c2" colwidth="2*"/>
+          <thead><row><entry>Service</entry><entry>Purpose</entry></row></thead>
+          <tbody>
+            <row><entry>Whisper API</entry><entry>Speech-to-text transcription</entry></row>
+            <row><entry>OpenAI GPT-4</entry><entry>Phonetic analysis and examples</entry></row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+  </refbody>
+</reference>

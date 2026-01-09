@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="c_audio_workflow">
+  <title>Audio Workflow Overview</title>
+  <shortdesc>Understanding how audio is organized and processed in Lingua Workbench.</shortdesc>
+  <conbody>
+    <section>
+      <title>Audio Hierarchy</title>
+      <p>Audio in Lingua Workbench is organized in three levels:</p>
+      <ol>
+        <li><b>Source Audio</b> - The original uploaded file, organized by Drama → Season → Episode</li>
+        <li><b>Audio Chunks</b> - Automatically created 5-minute segments of the source audio</li>
+        <li><b>Audio Slices</b> - User-created regions within chunks for focused study</li>
+      </ol>
+    </section>
+    
+    <section>
+      <title>Processing Flow</title>
+      <p>When you upload an audio file:</p>
+      <ol>
+        <li>The file is stored and associated with a drama/episode</li>
+        <li>It is automatically split into 1-minute chunks</li>
+        <li>You can then browse chunks and create slices for study</li>
+      </ol>
+    </section>
+  </conbody>
+</concept>

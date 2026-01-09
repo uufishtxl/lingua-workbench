@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE bookmap PUBLIC "-//OASIS//DTD DITA BookMap//EN" "bookmap.dtd">
+<bookmap id="lingua_workbench_bookmap">
+  <booktitle>
+    <mainbooktitle>Lingua Workbench</mainbooktitle>
+    <booktitlealt>Personal English Listening Study Platform</booktitlealt>
+  </booktitle>
+  
+  <bookmeta>
+    <author keyref="author_name">Edith</author>
+    <critdates>
+      <created date="2026-01-08"/>
+      <revised modified="2026-01-08"/>
+    </critdates>
+    <prodinfo>
+      <prodname>Lingua Workbench</prodname>
+      <vrmlist><vrm version="1" release="0" modification="0"/></vrmlist>
+    </prodinfo>
+    <bookrights>
+      <copyrfirst><year>2026</year></copyrfirst>
+      <bookowner><organization>Edith Tang</organization></bookowner>
+    </bookrights>
+  </bookmeta>
+
+  <!-- FRONTMATTER -->
+  <frontmatter>
+    <!-- Include keys definition -->
+    <mapref href="keys.ditamap" processing-role="resource-only"/>
+    <booklists>
+      <toc/>
+    </booklists>
+    <preface href="topics/frontmatter/preface.dita"/>
+    <notices href="topics/frontmatter/notices.dita"/>
+    <topicref href="topics/frontmatter/revision_history.dita"/>
+  </frontmatter>
+
+  <!-- PART 1: Getting Started -->
+  <part navtitle="Getting Started">
+    <chapter href="topics/overview/c_product_overview.dita"/>
+    <chapter href="topics/setup/t_installation.dita"/>
+    <chapter href="topics/setup/t_first_run.dita"/>
+  </part>
+
+  <!-- PART 2: User Guide -->
+  <part navtitle="User Guide">
+    <chapter navtitle="Audio Management">
+      <topicref href="topics/audio/c_audio_workflow.dita"/>
+      <topicref href="topics/audio/t_upload_source.dita"/>
+      <topicref href="topics/audio/t_browse_chunks.dita"/>
+    </chapter>
+    
+    <chapter navtitle="Creating Slices">
+      <topicref href="topics/slices/c_what_is_slice.dita"/>
+      <topicref href="topics/slices/t_create_slice.dita"/>
+      <topicref href="topics/slices/t_transcribe_slice.dita"/>
+      <topicref href="topics/slices/t_edit_slice.dita"/>
+      <topicref href="topics/slices/t_delete_slice.dita"/>
+    </chapter>
+    
+    <chapter navtitle="Phonetic Analysis">
+      <topicref href="topics/analysis/c_sound_script.dita"/>
+      <topicref href="topics/analysis/t_highlight_text.dita"/>
+      <topicref href="topics/analysis/t_get_analysis.dita"/>
+      <topicref href="topics/analysis/t_edit_sound_display.dita"/>
+    </chapter>
+    
+    <chapter navtitle="Dictionary">
+      <topicref href="topics/dictionary/t_lookup_phrase.dita"/>
+      <topicref href="topics/dictionary/t_refresh_examples.dita"/>
+    </chapter>
+  </part>
+
+  <!-- PART 3: Reference -->
+  <part navtitle="Reference">
+    <chapter navtitle="UI Reference">
+      <topicref href="topics/reference/r_slicecard_controls.dita"/>
+      <topicref href="topics/reference/r_playback_controls.dita"/>
+      <topicref href="topics/reference/r_editor_modes.dita"/>
+    </chapter>
+    
+    <chapter navtitle="Phonetic Notation">
+      <topicref href="topics/reference/r_phonetic_tags.dita"/>
+      <topicref href="topics/reference/r_ghost_sounds.dita"/>
+    </chapter>
+  </part>
+
+  <!-- PART 4: Troubleshooting -->
+  <part navtitle="Troubleshooting">
+    <chapter href="topics/troubleshooting/ts_transcription_fails.dita"/>
+    <chapter href="topics/troubleshooting/ts_analysis_errors.dita"/>
+  </part>
+
+  <!-- APPENDICES (at root level, not inside backmatter) -->
+  <appendix href="topics/appendix/r_keyboard_shortcuts.dita"/>
+  <appendix href="topics/appendix/r_tech_stack.dita"/>
+
+  <!-- BACKMATTER -->
+  <backmatter>
+    <booklists>
+      <glossarylist>
+        <topicref href="topics/glossary/g_chunk.dita"/>
+        <topicref href="topics/glossary/g_drama.dita"/>
+        <topicref href="topics/glossary/g_slice.dita"/>
+        <topicref href="topics/glossary/g_sound_script.dita"/>
+        <topicref href="topics/glossary/g_transcription.dita"/>
+      </glossarylist>
+      <indexlist/>
+    </booklists>
+  </backmatter>
+</bookmap>

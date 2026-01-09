@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map PUBLIC "-//OASIS//DTD DITA Map//EN" "map.dtd">
+<!--
+  Keys definition file for reusable variables
+  Usage: <keyword keyref="author_name"/>
+-->
+<map id="keys">
+  <title>Keys Definition</title>
+  
+  <!-- ============ AUTHOR INFO ============ -->
+  <keydef keys="author_name">
+    <topicmeta>
+      <keywords><keyword>Edith Tang</keyword></keywords>
+    </topicmeta>
+  </keydef>
+  
+  <keydef keys="author_email">
+    <topicmeta>
+      <keywords><keyword>your-email@example.com</keyword></keywords>
+    </topicmeta>
+  </keydef>
+  
+  <!-- ============ PRODUCT INFO ============ -->
+  <keydef keys="product_name">
+    <topicmeta>
+      <keywords><keyword>Lingua Workbench</keyword></keywords>
+    </topicmeta>
+  </keydef>
+  
+  <keydef keys="product_version">
+    <topicmeta>
+      <keywords><keyword>1.0</keyword></keywords>
+    </topicmeta>
+  </keydef>
+  
+  <keydef keys="product_tagline">
+    <topicmeta>
+      <keywords><keyword>Personal English Listening Study Platform</keyword></keywords>
+    </topicmeta>
+  </keydef>
+  
+  <!-- ============ DATES ============ -->
+  <keydef keys="copyright_year">
+    <topicmeta>
+      <keywords><keyword>2026</keyword></keywords>
+    </topicmeta>
+  </keydef>
+  
+  <keydef keys="release_date">
+    <topicmeta>
+      <keywords><keyword>January 8, 2026</keyword></keywords>
+    </topicmeta>
+  </keydef>
+  
+</map>

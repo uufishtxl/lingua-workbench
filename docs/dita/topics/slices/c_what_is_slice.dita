@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="c_what_is_slice">
+  <title>What is an Audio Slice?</title>
+  <shortdesc>Understanding audio slices and their role in language learning.</shortdesc>
+  <conbody>
+    <section>
+      <title>Definition</title>
+      <p>An <term>audio slice</term> is a user-defined region within an audio chunk. Each slice represents a meaningful utterance, sentence, or phrase that you want to study.</p>
+    </section>
+    
+    <section>
+      <title>Slice Components</title>
+      <p>Each slice contains:</p>
+      <ul>
+        <li><b>Time boundaries</b> - Start and end times within the chunk</li>
+        <li><b>Transcription</b> - The text content (via Whisper or manual input)</li>
+        <li><b>Highlights</b> - Selected text portions for phonetic analysis</li>
+        <li><b>Favorite flag</b> - Mark important sentences for review</li>
+      </ul>
+    </section>
+    
+    <section>
+      <title>Best Practices</title>
+      <ul>
+        <li>Keep slices focused on single sentences or short exchanges</li>
+        <li>Use the time adjustment arrows to fine-tune boundaries</li>
+        <li>Star slices that contain challenging pronunciations</li>
+      </ul>
+    </section>
+  </conbody>
+</concept>

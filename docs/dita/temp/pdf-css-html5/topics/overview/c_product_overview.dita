@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?><?workdir /C:\projects\lingua-workbench\docs\dita\temp\pdf-css-html5\topics\overview?><?workdir-uri file:/C:/projects/lingua-workbench/docs/dita/temp/pdf-css-html5/topics/overview/?><?path2project ..\..\?><?path2project-uri ../../?><?path2rootmap-uri ../../?><?doctype-public -//OASIS//DTD DITA Concept//EN?><?doctype-system concept.dtd?><concept xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" class="- topic/topic concept/concept " ditaarch:DITAArchVersion="1.3" domains="(topic concept) (topic abbrev-d) a(props deliveryTarget) (topic equation-d) (topic hazard-d) (topic hi-d) (topic indexing-d) (topic markup-d) (topic mathml-d) (topic pr-d) (topic relmgmt-d) (topic sw-d) (topic svg-d) (topic ui-d) (topic ut-d) (topic markup-d xml-d)" id="c_product_overview" specializations="@props/deliveryTarget" xtrc="concept:1;3:34" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">
+  <title class="- topic/title " xtrc="title:1;4:10" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">Product Overview</title>
+  <shortdesc class="- topic/shortdesc " xtrc="shortdesc:1;5:14" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">Lingua Workbench is a personal language learning platform for studying spoken English.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " xtrc="author:1;10:13" xtrf="file:/C:/projects/lingua-workbench/docs/dita/bookmap.ditamap">Your Name</author><critdates class="- topic/critdates " xtrc="critdates:1;11:16" xtrf="file:/C:/projects/lingua-workbench/docs/dita/bookmap.ditamap">
+      <created class="- topic/created " date="2026-01-08" xtrc="created:1;12:35" xtrf="file:/C:/projects/lingua-workbench/docs/dita/bookmap.ditamap"/>
+      <revised class="- topic/revised " modified="2026-01-08" xtrc="revised:1;13:39" xtrf="file:/C:/projects/lingua-workbench/docs/dita/bookmap.ditamap"/>
+    </critdates><metadata class="- topic/metadata "><prodinfo class="- topic/prodinfo " xtrc="prodinfo:1;15:15" xtrf="file:/C:/projects/lingua-workbench/docs/dita/bookmap.ditamap">
+      <prodname class="- topic/prodname " xtrc="prodname:1;16:17" xtrf="file:/C:/projects/lingua-workbench/docs/dita/bookmap.ditamap">Lingua Workbench</prodname>
+      <vrmlist class="- topic/vrmlist " xtrc="vrmlist:1;17:16" xtrf="file:/C:/projects/lingua-workbench/docs/dita/bookmap.ditamap"><vrm class="- topic/vrm " modification="0" release="0" version="1" xtrc="vrm:1;17:63" xtrf="file:/C:/projects/lingua-workbench/docs/dita/bookmap.ditamap"/></vrmlist>
+    </prodinfo></metadata></prolog>
+  <conbody class="- topic/body  concept/conbody " xtrc="conbody:1;6:12" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">
+    <section class="- topic/section " xtrc="section:1;7:14" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">
+      <title class="- topic/title " xtrc="title:2;8:14" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">What is Lingua Workbench?</title>
+      <p class="- topic/p " xtrc="p:1;9:10" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">Lingua Workbench helps you analyze and study spoken English from audio sources like TV shows and movies. It provides tools for:</p>
+      <ul class="- topic/ul " xtrc="ul:1;10:11" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">
+        <li class="- topic/li " xtrc="li:1;11:13" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">Uploading and managing audio files organized by drama/season/episode</li>
+        <li class="- topic/li " xtrc="li:2;12:13" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">Creating precise audio slices from longer recordings</li>
+        <li class="- topic/li " xtrc="li:3;13:13" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">AI-powered transcription and phonetic analysis</li>
+        <li class="- topic/li " xtrc="li:4;14:13" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">Context-aware dictionary lookups</li>
+      </ul>
+    </section>
+    
+    <section class="- topic/section " xtrc="section:2;18:14" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">
+      <title class="- topic/title " xtrc="title:3;19:14" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">Key Features</title>
+      <p class="- topic/p " xtrc="p:2;20:10" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">The platform includes:</p>
+      <ul class="- topic/ul " xtrc="ul:2;21:11" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">
+        <li class="- topic/li " xtrc="li:5;22:13" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita"><b class="+ topic/ph hi-d/b " xtrc="b:1;22:16" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">Audio Slicer</b> - Interactive waveform selection and region management</li>
+        <li class="- topic/li " xtrc="li:6;23:13" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita"><b class="+ topic/ph hi-d/b " xtrc="b:2;23:16" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">Sound Script Analysis</b> - AI-generated phonetic breakdown of phrases</li>
+        <li class="- topic/li " xtrc="li:7;24:13" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita"><b class="+ topic/ph hi-d/b " xtrc="b:3;24:16" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">Dictionary Integration</b> - Bilingual definitions with contextual examples</li>
+        <li class="- topic/li " xtrc="li:8;25:13" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita"><b class="+ topic/ph hi-d/b " xtrc="b:4;25:16" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">Playback Controls</b> - Variable speed, loop, and region playback</li>
+      </ul>
+    </section>
+    
+    <section class="- topic/section " xtrc="section:3;29:14" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">
+      <title class="- topic/title " xtrc="title:4;30:14" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">Target Audience</title>
+      <p class="- topic/p " xtrc="p:3;31:10" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/overview/c_product_overview.dita">This tool is designed for English learners who want to master natural spoken English through authentic audio sources.</p>
+    </section>
+  </conbody>
+</concept>

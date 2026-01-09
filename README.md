@@ -1,6 +1,6 @@
 # Lingua Workbench 🎧
 
-A personal language learning platform designed for analyzing and studying spoken English from audio/video sources like TV shows and movies.
+A personal language learning platform designed for analyzing and studying spoken English from audio sources like TV shows and movies.
 
 ![Demo Screenshot](./docs/screenshots/demo-placeholder.png)
 

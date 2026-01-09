@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="ts_transcription_fails" outputclass="troubleshooting">
+  <title>Transcription Fails or Returns Empty</title>
+  <shortdesc>Resolve issues with Whisper transcription.</shortdesc>
+  <taskbody>
+    <context>
+      <p><b>Symptom:</b> Clicking the Transcribe button results in empty text or an error.</p>
+    </context>
+    
+    <steps>
+      <stepsection>Possible Causes and Solutions:</stepsection>
+      
+      <step>
+        <cmd>Check that the Whisper service is running.</cmd>
+        <info>Ensure the Whisper API container is started.</info>
+      </step>
+      
+      <step>
+        <cmd>Verify the audio region is not empty.</cmd>
+        <info>The selected region must contain audible speech.</info>
+      </step>
+      
+      <step>
+        <cmd>Check browser console for errors.</cmd>
+        <info>Network or API errors will appear in the console.</info>
+      </step>
+      
+      <step>
+        <cmd>Ensure the audio format is supported (MP3, WAV).</cmd>
+      </step>
+    </steps>
+  </taskbody>
+</task>

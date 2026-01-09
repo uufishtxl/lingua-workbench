@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="t_lookup_phrase">
+  <title>Looking Up a Phrase</title>
+  <shortdesc>Get dictionary definitions for a highlighted phrase.</shortdesc>
+  <taskbody>
+    <steps>
+      <step>
+        <cmd>With a highlight active, click the <uicontrol>Dictionary</uicontrol> button.</cmd>
+      </step>
+      <step>
+        <cmd>Review the definition and example sentences.</cmd>
+      </step>
+    </steps>
+    
+    <result>
+      <p>The dictionary panel shows bilingual definitions with contextual examples.</p>
+    </result>
+  </taskbody>
+</task>

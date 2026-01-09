@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="t_get_analysis">
+  <title>Getting AI Analysis</title>
+  <shortdesc>Request phonetic analysis for a highlighted phrase.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>You must have a highlight selected.</p>
+    </prereq>
+    
+    <steps>
+      <step>
+        <cmd>With a highlight active, click the ✨ button in the Highlight Editor.</cmd>
+        <info><fig id="fig_jl1_yb3_xhc">
+            <title>Requesting AI Analysis</title>
+            <image href="../../../screenshots/t_request_ai_analysis.png" width="300" alt="Requesting AI Analysis" />
+        </fig>The AI processes the phrase and returns
+          analysis. This may take a while.</info>
+      </step>
+      <step>
+        <cmd>Review the phonetic tags and sound display.</cmd>
+      </step>
+    </steps>
+    
+    <result>
+      <p>The analysis shows phonetic breakdown with Ruby text annotations above the original text.</p>
+      <fig id="t_review_phonetic_analysis">
+        <title>Reviewing Phonetic Analysis</title>
+        <image href="../../../screenshots/t_review_phonetic_analysis.png" width="300" alt="Reviewing Phonetic Analysis" />
+      </fig>
+    </result>
+  </taskbody>
+</task>

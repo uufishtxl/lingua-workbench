@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="t_delete_slice">
+  <title>Deleting a Slice</title>
+  <shortdesc>Remove a slice from your collection.</shortdesc>
+  <taskbody>
+    <context>
+      <p>Deleting a saved slice immediately removes it from the server. This action cannot be undone.</p>
+    </context>
+    
+    <steps>
+      <step>
+        <cmd>Click the <ph>
+            <image href="../../../icons/gg--trash.png" placement="inline" scale="4" alt="Save"/>
+          </ph> button on the slice card.</cmd>
+        <info><fig>
+            <p>
+              <fig id="fig_mgd_fjh_xhc">
+                <title>Deleting a Slice</title>
+                <image href="../../../screenshots/t_delete_slice.png" width="300"
+                  id="image_ngd_fjh_xhc">
+                  <alt>Deleting a Slice</alt>
+                </image>
+              </fig>
+            </p>
+          </fig></info>
+      </step>
+    </steps>
+    
+    <result>
+      <p>For saved slices, the deletion is immediate. For unsaved slices, only the local region is removed.</p>
+    </result>
+  </taskbody>
+</task>

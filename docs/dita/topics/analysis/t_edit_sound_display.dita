@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="t_edit_sound_display">
+  <title>Editing Sound Display</title>
+  <shortdesc>Correct or refine the AI's pronunciation analysis.</shortdesc>
+  <taskbody>
+    <context>
+      <p>Sometimes the AI makes mistakes in phonetic analysis. You can manually correct the sound_display values.</p>
+    </context>
+    
+    <steps>
+      <step>
+        <cmd>Switch to Sound Display mode by clicking the mode toggle button.</cmd>
+      </step>
+      <step>
+        <cmd>Click on a segment to select it for editing.</cmd>
+        <stepresult>The segment's sound_display appears in the input field.</stepresult>
+      </step>
+      <step>
+        <cmd>Edit the pronunciation text.</cmd>
+      </step>
+      <step>
+        <cmd>Click <uicontrol>Save</uicontrol> to apply changes.</cmd>
+      </step>
+    </steps>
+  </taskbody>
+</task>

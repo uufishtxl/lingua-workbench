@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="t_upload_source">
+  <title>Uploading Source Audio</title>
+  <shortdesc>Upload an audio file from a TV show or movie.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>You need an audio file in MP3 or WAV format.</p>
+    </prereq>
+    
+    <steps>
+      <step>
+        <cmd>Navigate to the Audio Upload page.</cmd>
+        <info>From the left sidebar, click <menucascade><uicontrol>Audio Slicer</uicontrol><uicontrol>Load Source</uicontrol></menucascade>.</info>
+      </step>
+      <step>
+        <cmd>Select a Drama from the dropdown (e.g., "Friends").</cmd>
+        <info><note type="restriction">Creating new Dramas is currently not available to users.</note></info>
+      </step>
+      <step>
+        <cmd>Enter the Season and Episode numbers.</cmd>
+      </step>
+      <step>
+        <cmd>
+          Optionally add an episode title.
+        </cmd>
+        <info><note type="restriction">Adding an episode title is currently not available to users.</note></info>
+      </step>
+      <step>
+        <cmd>Click <uicontrol>Choose File</uicontrol> and select your audio file.</cmd>
+      </step>
+      <step>
+        <cmd>Click <uicontrol>Upload</uicontrol>.</cmd>
+      </step>
+    </steps>
+    
+    <result>
+      <p>The audio is uploaded and automatically chunked. You can now browse the chunks.</p>
+    </result>
+  </taskbody>
+</task>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE glossentry PUBLIC "-//OASIS//DTD DITA Glossary Entry//EN" "glossentry.dtd">
+<glossentry id="g_chunk">
+  <glossterm>Chunk</glossterm>
+  <glossdef>A fixed-duration segment (e.g., 30 seconds) automatically generated when source audio is uploaded.</glossdef>
+  <glossBody>
+    <glossUsage>Chunks serve as browsable units from which users can create slices.</glossUsage>
+  </glossBody>
+</glossentry>

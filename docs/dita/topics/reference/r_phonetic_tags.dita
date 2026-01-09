@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "reference.dtd">
+<reference id="r_phonetic_tags">
+  <title>Phonetic Tags Reference</title>
+  <shortdesc>Reference for phonetic tag types used in analysis.</shortdesc>
+  <refbody>
+    <table>
+      <tgroup cols="3">
+        <colspec colname="c1" colwidth="1*"/>
+        <colspec colname="c2" colwidth="1*"/>
+        <colspec colname="c3" colwidth="2*"/>
+        <thead>
+          <row><entry>Tag</entry><entry>中文</entry><entry>Description</entry></row>
+        </thead>
+        <tbody>
+          <row><entry>reduction</entry><entry>弱化</entry><entry>Vowel reduced to schwa</entry></row>
+          <row><entry>linking</entry><entry>连读</entry><entry>Consonant-vowel linking across words</entry></row>
+          <row><entry>assimilation</entry><entry>同化</entry><entry>Sound changes due to adjacent sounds</entry></row>
+          <row><entry>h_deletion</entry><entry>H删除</entry><entry>Initial /h/ dropped in function words</entry></row>
+          <row><entry>flap_t</entry><entry>闪音T</entry><entry>T/D flapped between vowels</entry></row>
+          <row><entry>glottal_stop</entry><entry>喉塞音</entry><entry>T replaced with glottal stop</entry></row>
+          <row><entry>elision</entry><entry>省略</entry><entry>Sounds deleted entirely</entry></row>
+        </tbody>
+      </tgroup>
+    </table>
+  </refbody>
+</reference>
