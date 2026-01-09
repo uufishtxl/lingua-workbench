@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE glossentry PUBLIC "-//OASIS//DTD DITA Glossary Entry//EN" "glossentry.dtd">
+<glossentry id="g_sound_script">
+  <glossterm>Sound Script</glossterm>
+  <glossdef>An AI-generated phonetic analysis that shows how words are actually pronounced in connected speech.</glossdef>
+  <glossBody>
+    <glossUsage>Sound scripts highlight features like liaisons, reductions, and assimilations.</glossUsage>
+  </glossBody>
+</glossentry>

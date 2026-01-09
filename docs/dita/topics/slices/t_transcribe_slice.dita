@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="t_transcribe_slice">
+  <title>Transcribing a Slice</title>
+  <shortdesc>Use AI to automatically transcribe the audio in a slice.</shortdesc>
+  <taskbody>
+    <steps>
+      <step>
+        <cmd>Locate the slice you want to transcribe.</cmd>
+      </step>
+      <step>
+        <cmd>Click the <ph>
+            <image href="../../../icons/arcticons--live-transcribe.png" placement="inline" scale="4"
+              alt="Save"/>
+          </ph> button.</cmd>
+        <stepresult>The button shows a loading indicator while processing.</stepresult>
+      </step>
+      <step>
+        <cmd>Wait for the transcription to complete.</cmd>
+        <stepresult>The transcribed text appears in the slice card.</stepresult>
+      </step>
+      <step importance="optional">
+        <cmd>Click the <ph>
+            <image href="../../../icons/lucide--edit.png" placement="inline" scale="4"
+              alt="Save"/>
+        </ph> button to correct any transcription errors.</cmd>
+      </step>
+    </steps>
+    
+    <result>
+      <p>The slice now contains the transcribed text, ready for highlighting and analysis.<fig
+          id="fig_zmr_kgh_xhc">
+          <p>
+            <fig id="fig_vxw_mgh_xhc">
+              <title>Text Transcription</title>
+              <image href="../../../screenshots/t_transcribe.png" width="300" id="image_wxw_mgh_xhc">
+                <alt>Text Transcription</alt>
+              </image>
+            </fig>
+          </p>
+        </fig></p>
+    </result>
+  </taskbody>
+</task>

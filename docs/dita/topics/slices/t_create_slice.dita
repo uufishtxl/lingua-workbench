@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="t_create_slice">
+  <title>Creating a Slice</title>
+  <shortdesc>Select a region on the waveform to create an audio slice.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>You must have an audio chunk open in the Audio Slicer.</p>
+    </prereq>
+    
+    <steps>
+      <step>
+        <cmd>Click and drag on the waveform to select a region.</cmd>
+        <info>The selected region is highlighted in blue.</info>
+      </step>
+      <step>
+        <cmd>Release the mouse button to create the slice.
+        </cmd>
+        <stepresult> A new SliceCard appears in the panel below. <fig>
+            <p>
+              <fig id="fig_rx5_xgh_xhc">
+                <title>Audio Slice</title>
+                <image href="../../../screenshots/t_create_a_slice.png" width="300"
+                  id="image_sx5_xgh_xhc">
+                  <alt>Audio Slice</alt>
+                </image>
+              </fig>
+            </p>
+          </fig>
+        </stepresult>
+      </step>
+      <step importance="optional">
+        <cmd>Fine-tune the boundaries using the ◀ and ▶ arrows on the timestamp.</cmd>
+        <info>Each click adjusts the time by 0.5 seconds.</info>
+      </step>
+    </steps>
+    
+    <result>
+      <p>The slice is created locally. Use <uicontrol>Save All Changes</uicontrol> to persist to the server.</p>
+    </result>
+  </taskbody>
+</task>

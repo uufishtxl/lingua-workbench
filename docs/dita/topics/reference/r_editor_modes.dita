@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "reference.dtd">
+<reference id="r_editor_modes">
+  <title>Editor Modes Reference</title>
+  <shortdesc>Reference for Highlight Editor modes.</shortdesc>
+  <refbody>
+    <section>
+      <title>AI Note Mode</title>
+      <p>Displays phonetic tags with their notes. Click a tag to edit its annotation.</p>
+    </section>
+    
+    <section>
+      <title>Sound Display Mode</title>
+      <p>Displays script segments in format: [original] sound_display. Click a segment to edit its pronunciation.</p>
+    </section>
+    
+    <section>
+      <title>Mode Toggle</title>
+      <p>Click the mode toggle button to switch between the two modes.</p>
+    </section>
+  </refbody>
+</reference>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="revision_history">
+  <title>Revision History</title>
+  <body>
+    <p>This section documents the revision history of Lingua Workbench.</p>
+    
+    <table>
+      <tgroup cols="4">
+        <colspec colname="version" colwidth="1*"/>
+        <colspec colname="date" colwidth="1*"/>
+        <colspec colname="author" colwidth="1*"/>
+        <colspec colname="changes" colwidth="3*"/>
+        <thead>
+          <row>
+            <entry>Version</entry>
+            <entry>Date</entry>
+            <entry>Author</entry>
+            <entry>Changes</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry>1.0</entry>
+            <entry>2026-01-08</entry>
+            <entry><ph conref="../../warehouse.dita#warehouse/ph_author"/></entry>
+            <entry>
+              <ul>
+                <li>Initial release</li>
+                <li>Audio management (upload, chunk, slice)</li>
+                <li>Whisper transcription integration</li>
+                <li>AI phonetic analysis (Sound Script)</li>
+                <li>Dictionary with bilingual examples</li>
+                <li>Playback speed control</li>
+                <li>Favorite marking</li>
+                <li>Time adjustment arrows</li>
+                <li>Independent slice deletion</li>
+              </ul>
+            </entry>
+          </row>
+          <!-- Future versions will be added here -->
+        </tbody>
+      </tgroup>
+    </table>
+  </body>
+</topic>

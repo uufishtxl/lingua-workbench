@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="notices">
+  <title>Notices</title>
+  <body>
+    <section>
+      <title>Copyright</title>
+      <p>Copyright © 2026 <ph conref="../../warehouse.dita#warehouse/ph_author"/>. All rights reserved.</p>
+      <p>This documentation is provided for personal and educational use only.</p>
+    </section>
+    
+    <section>
+      <title>Trademarks</title>
+      <ul>
+        <li>Vue.js is a trademark of Evan You.</li>
+        <li>Django is a registered trademark of the Django Software Foundation.</li>
+        <li>OpenAI and Whisper are trademarks of OpenAI, Inc.</li>
+        <li>All other trademarks are the property of their respective owners.</li>
+      </ul>
+    </section>
+    
+    <section>
+      <title>Third-Party Services</title>
+      <p>This application uses the following third-party services:</p>
+      <ul>
+        <li><b>OpenAI API</b> – For phonetic analysis and dictionary features</li>
+        <li><b>Whisper API</b> – For speech-to-text transcription</li>
+      </ul>
+      <p>Usage of these services is subject to their respective terms of service and pricing.</p>
+    </section>
+    
+    <section>
+      <title>Disclaimer</title>
+      <p>This software is provided "as is" without warranty of any kind. The author is not responsible for any damages arising from the use of this software.</p>
+    </section>
+  </body>
+</topic>

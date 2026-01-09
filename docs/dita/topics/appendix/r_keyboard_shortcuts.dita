@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "reference.dtd">
+<reference id="r_keyboard_shortcuts">
+  <title>Keyboard Shortcuts</title>
+  <shortdesc>Quick reference for keyboard shortcuts.</shortdesc>
+  <refbody>
+    <section>
+      <title>Available Shortcuts</title>
+      <table>
+        <tgroup cols="2">
+          <colspec colname="c1" colwidth="1*"/>
+          <colspec colname="c2" colwidth="2*"/>
+          <thead>
+            <row><entry>Shortcut</entry><entry>Action</entry></row>
+          </thead>
+          <tbody>
+            <row><entry>Space</entry><entry>Play/Pause audio</entry></row>
+            <row><entry>Esc</entry><entry>Close active highlight editor</entry></row>
+          </tbody>
+        </tgroup>
+      </table>
+      <note>More shortcuts may be added in future versions.</note>
+    </section>
+  </refbody>
+</reference>

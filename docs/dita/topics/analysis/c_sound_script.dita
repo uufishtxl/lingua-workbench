@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="c_sound_script">
+  <title>Sound Script Analysis</title>
+  <shortdesc>Understanding AI-generated phonetic analysis.</shortdesc>
+  <conbody>
+    <section>
+      <title>What is Sound Script?</title>
+      <p>Sound Script is an AI-generated phonetic breakdown of spoken English phrases. It analyzes how words are actually pronounced in connected speech, identifying:</p>
+      <ul>
+        <li><b>Reductions</b> - Vowels weakening to schwa sounds</li>
+        <li><b>Linking</b> - Words connecting across boundaries</li>
+        <li><b>Assimilations</b> - Sounds changing due to neighboring sounds</li>
+        <li><b>Deletions</b> - Sounds that are dropped (h-deletion, t-deletion)</li>
+      </ul>
+    </section>
+    
+    <section>
+      <title>Sound Display Notation</title>
+      <p>The <b>Sound Display</b> shows pronunciation using:</p>
+      <ul>
+        <li>Phonetic spelling (e.g., "wuh-duh-we" for "what do we")</li>
+        <li>Strikethrough text(s) for ghost/silent sounds: <codeph><line-through>t</line-through>uh</codeph></li>
+        <li>Hyphens to show syllable/word boundaries</li>
+      </ul>
+    </section>
+    
+    <section>
+      <title>Ruby Text Display</title>
+      <p>The UI displays pronunciation above the original text using Ruby annotation, making it easy
+        to compare written and spoken forms.<fig id="fig_gvj_5kh_xhc">
+          <p>
+            <fig id="fig_pjq_vkh_xhc">
+              <title>Sound Script: Ruby Text Annotation</title>
+              <image href="../../../screenshots/c_sound_script__ruby_text.png" width="300"
+                id="image_qjq_vkh_xhc">
+                <alt>Sound Script: Ruby Text Annotation</alt>
+              </image>
+            </fig>
+          </p>
+        </fig></p>
+    </section>
+  </conbody>
+</concept>

@@ -208,11 +208,11 @@ const dynamicTextStyle = computed(() => {
     let fontSize = '1.2rem';  // 默认 16px
     
     if (textLength > 150) {
-        fontSize = '0.7rem';   // 11.2px
+        fontSize = '0.65rem';   // 11.2px
     } else if (textLength > 100) {
-        fontSize = '0.8rem';  // 12px
+        fontSize = '0.75rem';  // 12px
     } else if (textLength > 60) {
-        fontSize = '1rem';   // 12.8px
+        fontSize = '0.9rem';   // 12.8px
     } else if (textLength > 40) {
         fontSize = '1.2rem'; // 14px
     }

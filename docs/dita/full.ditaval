@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  DITAVAL file for full documentation (Developers + English learners)
+  Includes all content
+-->
+<val>
+  <!-- Include all audience types -->
+  <prop action="include" att="audience" val="developer"/>
+  <prop action="include" att="audience" val="user"/>
+</val>

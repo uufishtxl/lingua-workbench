@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="c_product_overview">
+  <title>Product Overview</title>
+  <shortdesc>Lingua Workbench is a personal language learning platform for studying spoken English.</shortdesc>
+  <conbody>
+    <section>
+      <title>What is Lingua Workbench?</title>
+      <p>Lingua Workbench helps you analyze and study spoken English from audio sources like TV shows and movies. It provides tools for:</p>
+      <ul>
+        <li>Uploading and managing audio files organized by drama/season/episode</li>
+        <li>Creating precise audio slices from longer recordings</li>
+        <li>AI-powered transcription and phonetic analysis</li>
+        <li>Context-aware dictionary lookups</li>
+      </ul>
+    </section>
+    
+    <section>
+      <title>Key Features</title>
+      <p>The platform includes:</p>
+      <ul>
+        <li><b>Audio Slicer</b> - Interactive waveform selection and region management</li>
+        <li><b>Sound Script Analysis</b> - AI-generated phonetic breakdown of phrases</li>
+        <li><b>Dictionary Integration</b> - Bilingual definitions with contextual examples</li>
+        <li><b>Playback Controls</b> - Variable speed, loop, and region playback</li>
+      </ul>
+    </section>
+    
+    <section>
+      <title>Target Audience</title>
+      <p>This tool is designed for English learners who want to master natural spoken English through authentic audio sources.</p>
+    </section>
+  </conbody>
+</concept>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map>
+   <appContext helpID="preface" path="topics/frontmatter/preface.html"/>
+   <appContext helpID="notices" path="topics/frontmatter/notices.html"/>
+   <appContext helpID="revision_history"
+               path="topics/frontmatter/revision_history.html"/>
+   <appContext helpID="c_product_overview"
+               path="topics/overview/c_product_overview.html"/>
+   <appContext helpID="t_installation" path="topics/setup/t_installation.html"/>
+   <appContext helpID="t_first_run" path="topics/setup/t_first_run.html"/>
+   <appContext helpID="c_audio_workflow" path="topics/audio/c_audio_workflow.html"/>
+   <appContext helpID="t_upload_source" path="topics/audio/t_upload_source.html"/>
+   <appContext helpID="t_browse_chunks" path="topics/audio/t_browse_chunks.html"/>
+   <appContext helpID="c_what_is_slice" path="topics/slices/c_what_is_slice.html"/>
+   <appContext helpID="t_create_slice" path="topics/slices/t_create_slice.html"/>
+   <appContext helpID="t_transcribe_slice"
+               path="topics/slices/t_transcribe_slice.html"/>
+   <appContext helpID="t_edit_slice" path="topics/slices/t_edit_slice.html"/>
+   <appContext helpID="t_delete_slice" path="topics/slices/t_delete_slice.html"/>
+   <appContext helpID="c_sound_script" path="topics/analysis/c_sound_script.html"/>
+   <appContext helpID="t_highlight_text" path="topics/analysis/t_highlight_text.html"/>
+   <appContext helpID="t_get_analysis" path="topics/analysis/t_get_analysis.html"/>
+   <appContext helpID="t_edit_sound_display"
+               path="topics/analysis/t_edit_sound_display.html"/>
+   <appContext helpID="t_lookup_phrase" path="topics/dictionary/t_lookup_phrase.html"/>
+   <appContext helpID="t_refresh_examples"
+               path="topics/dictionary/t_refresh_examples.html"/>
+   <appContext helpID="r_slicecard_controls"
+               path="topics/reference/r_slicecard_controls.html"/>
+   <appContext helpID="r_playback_controls"
+               path="topics/reference/r_playback_controls.html"/>
+   <appContext helpID="r_editor_modes" path="topics/reference/r_editor_modes.html"/>
+   <appContext helpID="r_phonetic_tags" path="topics/reference/r_phonetic_tags.html"/>
+   <appContext helpID="r_ghost_sounds" path="topics/reference/r_ghost_sounds.html"/>
+   <appContext helpID="ts_transcription_fails"
+               path="topics/troubleshooting/ts_transcription_fails.html"/>
+   <appContext helpID="ts_analysis_errors"
+               path="topics/troubleshooting/ts_analysis_errors.html"/>
+   <appContext helpID="r_keyboard_shortcuts"
+               path="topics/appendix/r_keyboard_shortcuts.html"/>
+   <appContext helpID="r_tech_stack" path="topics/appendix/r_tech_stack.html"/>
+</map>

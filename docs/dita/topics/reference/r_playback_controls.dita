@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "reference.dtd">
+<reference id="r_playback_controls">
+  <title>Playback Controls Reference</title>
+  <shortdesc>Reference for audio playback controls.</shortdesc>
+  <refbody>
+    <section>
+      <title>Speed Control</title>
+      <p>Available playback speeds: 0.5x, 0.75x, 1.0x (normal), 1.25x, 1.5x</p>
+    </section>
+    
+    <section>
+      <title>Loop Mode</title>
+      <p>When enabled, the active region plays repeatedly until stopped.</p>
+    </section>
+    
+    <section>
+      <title>Region Playback</title>
+      <p>Click on a SliceCard to play that region only.</p>
+    </section>
+  </refbody>
+</reference>

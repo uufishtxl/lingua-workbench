@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  DITAVAL file for user-only documentation (English learners)
+  Excludes developer-specific content marked with audience="developer"
+-->
+<val>
+  <!-- Exclude developer content -->
+  <prop action="exclude" att="audience" val="developer"/>
+  
+  <!-- Include user content (default) -->
+  <prop action="include" att="audience" val="user"/>
+</val>

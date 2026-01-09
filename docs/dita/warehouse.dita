@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<!--
+  Warehouse file for reusable content (conref library)
+  Usage: <ph conref="warehouse.dita#warehouse/author_name"/>
+-->
+<topic id="warehouse">
+  <title>Content Warehouse</title>
+  <body>
+    <!-- ============ PRODUCT INFO ============ -->
+    <p id="product_name">Lingua Workbench</p>
+    <p id="product_version">1.0</p>
+    <p id="product_tagline">Personal English Listening Study Platform</p>
+    
+    <!-- ============ AUTHOR INFO ============ -->
+    <p id="author_name">Edith Tang</p>
+    <p id="author_email">[your-email@example.com]</p>
+    
+    <!-- ============ REPOSITORY INFO ============ -->
+    <codeblock id="clone_command">
+      git clone https://github.com/uufishtxl/lingua-workbench.git
+      cd lingua-workbench
+    </codeblock>
+    
+    <!-- ============ DATES ============ -->
+    <p id="copyright_year">2026</p>
+    <p id="release_date">January 8, 2026</p>
+    
+    <!-- ============ COMMON PHRASES ============ -->
+    <p><ph id="ph_product">Lingua Workbench</ph></p>
+    <p><ph id="ph_author">Edith Tang</ph></p>
+    <p><ph id="ph_company">Edith Tang</ph></p>
+    
+    <!-- ============ UI LABELS ============ -->
+    <p><uicontrol id="ui_save_all">Save All Changes</uicontrol></p>
+    <p><uicontrol id="ui_transcribe">Transcribe</uicontrol></p>
+    <p><uicontrol id="ui_analyze">Analyze</uicontrol></p>
+    <p><uicontrol id="ui_dictionary">Dictionary</uicontrol></p>
+    
+    <!-- ============ NOTES (Reusable) ============ -->
+    <note id="note_api_required" type="important">
+      This feature requires a valid OpenAI API key.
+    </note>
+    
+    <note id="note_save_reminder" type="tip">
+      Remember to click <uicontrol>Save All Changes</uicontrol> to persist your work.
+    </note>
+  </body>
+</topic>

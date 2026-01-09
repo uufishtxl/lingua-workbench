@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE glossentry PUBLIC "-//OASIS//DTD DITA Glossary Entry//EN" "glossentry.dtd">
+<glossentry id="g_slice">
+  <glossterm>Slice</glossterm>
+  <glossdef>A short audio segment extracted from a source file, used as a study unit for listening practice.</glossdef>
+  <glossBody>
+    <glossSurfaceForm>Slices</glossSurfaceForm>
+    <glossUsage>Each slice contains a transcription and can be analyzed for phonetic features.</glossUsage>
+  </glossBody>
+</glossentry>

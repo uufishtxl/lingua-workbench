@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?><?workdir /C:\projects\lingua-workbench\docs\dita\temp\pdf-css-html5\topics\reference?><?workdir-uri file:/C:/projects/lingua-workbench/docs/dita/temp/pdf-css-html5/topics/reference/?><?path2project ..\..\?><?path2project-uri ../../?><?path2rootmap-uri ../../?><?doctype-public -//OASIS//DTD DITA Reference//EN?><?doctype-system reference.dtd?><reference xmlns:dita-ot="http://dita-ot.sourceforge.net/ns/201007/dita-ot" xmlns:ditaarch="http://dita.oasis-open.org/architecture/2005/" class="- topic/topic       reference/reference " ditaarch:DITAArchVersion="1.3" domains="(topic reference) (topic abbrev-d) a(props deliveryTarget) (topic equation-d) (topic hazard-d) (topic hi-d) (topic indexing-d) (topic markup-d) (topic mathml-d) (topic pr-d) (topic relmgmt-d) (topic sw-d) (topic svg-d) (topic ui-d) (topic ut-d) (topic markup-d xml-d)" id="r_playback_controls" specializations="@props/deliveryTarget" xtrc="reference:1;3:37" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/reference/r_playback_controls.dita">
+  <title class="- topic/title " xtrc="title:1;4:10" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/reference/r_playback_controls.dita">Playback Controls Reference</title>
+  <shortdesc class="- topic/shortdesc " xtrc="shortdesc:1;5:14" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/reference/r_playback_controls.dita">Reference for audio playback controls.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " xtrc="author:1;10:13" xtrf="file:/C:/projects/lingua-workbench/docs/dita/bookmap.ditamap">Your Name</author><critdates class="- topic/critdates " xtrc="critdates:1;11:16" xtrf="file:/C:/projects/lingua-workbench/docs/dita/bookmap.ditamap">
+      <created class="- topic/created " date="2026-01-08" xtrc="created:1;12:35" xtrf="file:/C:/projects/lingua-workbench/docs/dita/bookmap.ditamap"/>
+      <revised class="- topic/revised " modified="2026-01-08" xtrc="revised:1;13:39" xtrf="file:/C:/projects/lingua-workbench/docs/dita/bookmap.ditamap"/>
+    </critdates><metadata class="- topic/metadata "><prodinfo class="- topic/prodinfo " xtrc="prodinfo:1;15:15" xtrf="file:/C:/projects/lingua-workbench/docs/dita/bookmap.ditamap">
+      <prodname class="- topic/prodname " xtrc="prodname:1;16:17" xtrf="file:/C:/projects/lingua-workbench/docs/dita/bookmap.ditamap">Lingua Workbench</prodname>
+      <vrmlist class="- topic/vrmlist " xtrc="vrmlist:1;17:16" xtrf="file:/C:/projects/lingua-workbench/docs/dita/bookmap.ditamap"><vrm class="- topic/vrm " modification="0" release="0" version="1" xtrc="vrm:1;17:63" xtrf="file:/C:/projects/lingua-workbench/docs/dita/bookmap.ditamap"/></vrmlist>
+    </prodinfo></metadata></prolog>
+  <refbody class="- topic/body        reference/refbody " xtrc="refbody:1;6:12" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/reference/r_playback_controls.dita">
+    <section class="- topic/section " xtrc="section:1;7:14" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/reference/r_playback_controls.dita">
+      <title class="- topic/title " xtrc="title:2;8:14" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/reference/r_playback_controls.dita">Speed Control</title>
+      <p class="- topic/p " xtrc="p:1;9:10" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/reference/r_playback_controls.dita">Available playback speeds: 0.5x, 0.75x, 1.0x (normal), 1.25x, 1.5x</p>
+    </section>
+    
+    <section class="- topic/section " xtrc="section:2;12:14" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/reference/r_playback_controls.dita">
+      <title class="- topic/title " xtrc="title:3;13:14" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/reference/r_playback_controls.dita">Loop Mode</title>
+      <p class="- topic/p " xtrc="p:2;14:10" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/reference/r_playback_controls.dita">When enabled, the active region plays repeatedly until stopped.</p>
+    </section>
+    
+    <section class="- topic/section " xtrc="section:3;17:14" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/reference/r_playback_controls.dita">
+      <title class="- topic/title " xtrc="title:4;18:14" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/reference/r_playback_controls.dita">Region Playback</title>
+      <p class="- topic/p " xtrc="p:3;19:10" xtrf="file:/C:/projects/lingua-workbench/docs/dita/topics/reference/r_playback_controls.dita">Click on a SliceCard to play that region only.</p>
+    </section>
+  </refbody>
+</reference>

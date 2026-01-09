@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="ts_analysis_errors" outputclass="troubleshooting">
+  <title>AI Analysis Errors</title>
+  <shortdesc>Resolve issues with phonetic analysis.</shortdesc>
+  <taskbody>
+    <context>
+      <p><b>Symptom:</b> Analysis fails or returns unexpected results.</p>
+    </context>
+    
+    <steps>
+      <stepsection>Troubleshooting Steps:</stepsection>
+      
+      <step>
+        <cmd>Check your OpenAI API key is valid and has credits.</cmd>
+      </step>
+      
+      <step>
+        <cmd>Ensure the highlighted text is meaningful (not just punctuation).</cmd>
+      </step>
+      
+      <step>
+        <cmd>Try a shorter phrase if the text is very long.</cmd>
+      </step>
+      
+      <step>
+        <cmd>Check the Django server logs for API errors.</cmd>
+      </step>
+    </steps>
+  </taskbody>
+</task>

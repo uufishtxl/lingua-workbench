@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd">
+<topic id="preface">
+  <title>Preface</title>
+  <body>
+    <section>
+      <title>About This Guide</title>
+      <p>This documentation provides comprehensive guidance for using Lingua Workbench, a personal language learning platform for studying spoken English from authentic audio sources.</p>
+    </section>
+    
+    <section>
+      <title>Who Should Use This Guide</title>
+      <p>This guide is intended for:</p>
+      <ul>
+        <li><b>Language learners</b> who want to improve their English listening skills through TV shows and movies</li>
+        <li><b>Developers</b> who want to set up and customize the platform</li>
+        <li><b>Contributors</b> who want to understand the system architecture</li>
+      </ul>
+    </section>
+    
+    <section>
+      <title>How This Guide is Organized</title>
+      <p>This guide is divided into the following parts:</p>
+      <ul>
+        <li><b>Getting Started</b> – Installation and first-run instructions</li>
+        <li><b>User Guide</b> – Step-by-step procedures for using all features</li>
+        <li><b>Reference</b> – Lookup information for controls, tags, and technical details</li>
+        <li><b>Troubleshooting</b> – Solutions to common problems</li>
+        <li><b>Appendix</b> – Additional reference materials</li>
+      </ul>
+    </section>
+    
+    <section>
+      <title>Conventions Used</title>
+      <p>This documentation uses the following conventions:</p>
+      <ul>
+        <li><uicontrol>Bold text in boxes</uicontrol> indicates UI buttons or controls</li>
+        <li><codeph>Monospace text</codeph> indicates code, commands, or file paths</li>
+        <li><b>Bold text</b> indicates important terms or emphasis</li>
+      </ul>
+    </section>
+  </body>
+</topic>

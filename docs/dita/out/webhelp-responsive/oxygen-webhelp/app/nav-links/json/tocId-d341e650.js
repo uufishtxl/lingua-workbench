@@ -1,0 +1,1 @@
+oxy_webhelp_navlinks = {"tocId-d341e650":{"topics":[{"title":"UI Reference","href":"topics\/reference\/r_slicecard_controls.html","menu":{"hasChildren":true},"tocID":"tocId-d341e651","next":"tocId-d341e651"},{"title":"Phonetic Notation","href":"topics\/reference\/r_phonetic_tags.html","menu":{"hasChildren":true},"tocID":"tocId-d341e736","next":"tocId-d341e736"}]}};

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="t_installation">
+  <title>Installing Lingua Workbench</title>
+  <shortdesc>Set up the development environment for Lingua Workbench.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>Before you begin, ensure you have:</p>
+      <ul>
+        <li>Node.js 20+ or 22+</li>
+        <li>Python 3.11+</li>
+        <li>ffmpeg (for audio processing)</li>
+        <li>Git</li>
+      </ul>
+    </prereq>
+    
+    <context>
+      <p>Lingua Workbench consists of a Vue 3 frontend and Django backend. Both need to be set up separately.</p>
+    </context>
+    
+    <steps>
+      <step audience="developer">
+        <cmd>Clone the repository:</cmd>
+        <info><codeblock conref="../../warehouse.dita#warehouse/clone_command"/></info>
+      </step>
+      
+      <step audience="developer">
+        <cmd>Set up the frontend:</cmd>
+        <substeps>
+          <substep><cmd>Navigate to the frontend directory: <codeph>cd frontend</codeph></cmd></substep>
+          <substep><cmd>Install dependencies: <codeph>npm install</codeph></cmd></substep>
+        </substeps>
+      </step>
+      
+      <step audience="developer">
+        <cmd>Set up the backend:</cmd>
+        <substeps>
+          <substep><cmd>Navigate to the backend directory: <codeph>cd ../backend</codeph></cmd></substep>
+          <substep><cmd>Create a virtual environment: <codeph>python -m venv venv</codeph></cmd></substep>
+          <substep><cmd>Activate the virtual environment: <codeph>venv\Scripts\activate</codeph> (Windows)</cmd></substep>
+          <substep><cmd>Install dependencies: <codeph>pip install -r requirements.txt</codeph></cmd></substep>
+          <substep><cmd>Run migrations: <codeph>python manage.py migrate</codeph></cmd>
+            <info>This creates the SQLite database automatically.</info>
+          </substep>
+          <substep importance="optional">
+            <cmd>Create a superuser for admin access: <codeph>python manage.py createsuperuser</codeph></cmd>
+          </substep>
+        </substeps>
+      </step>
+      
+      <step>
+        <cmd>Create environment files with your API keys.</cmd>
+      </step>
+    </steps>
+    
+    <result>
+      <p>Both frontend and backend are now ready to run.</p>
+    </result>
+  </taskbody>
+</task>

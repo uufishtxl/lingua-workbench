@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE glossentry PUBLIC "-//OASIS//DTD DITA Glossary Entry//EN" "glossentry.dtd">
+<glossentry id="g_drama">
+  <glossterm>Drama</glossterm>
+  <glossdef>A TV show, movie, or podcast series that serves as the source of audio materials.</glossdef>
+  <glossBody>
+    <glossSurfaceForm>Dramas</glossSurfaceForm>
+    <glossUsage>Each drama contains multiple episodes organized by season.</glossUsage>
+  </glossBody>
+</glossentry>

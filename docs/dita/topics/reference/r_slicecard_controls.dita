@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "-//OASIS//DTD DITA Reference//EN" "reference.dtd">
+<reference id="r_slicecard_controls">
+  <title>SliceCard Controls Reference</title>
+  <shortdesc>Reference for all controls available on a SliceCard.</shortdesc>
+  <refbody>
+    <section>
+      <title>Timestamp Bar</title>
+      <table>
+        <tgroup cols="3">
+          <colspec colname="c1" colwidth="1*"/>
+          <colspec colname="c2" colwidth="2*"/>
+          <colspec colname="c3" colwidth="2*"/>
+          <thead>
+            <row><entry>Icon</entry><entry>Action</entry><entry>Description</entry></row>
+          </thead>
+          <tbody>
+            <row><entry>◀</entry><entry>Adjust Start</entry><entry>Move start time 0.5s earlier</entry></row>
+            <row><entry>▶</entry><entry>Adjust End</entry><entry>Move end time 0.5s later</entry></row>
+            <row><entry>★</entry><entry>Toggle Favorite</entry><entry>Mark/unmark as favorite</entry></row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+    
+    <section>
+      <title>Action Buttons</title>
+      <table>
+        <tgroup cols="2">
+          <colspec colname="c1" colwidth="1*"/>
+          <colspec colname="c2" colwidth="3*"/>
+          <thead>
+            <row><entry>Button</entry><entry>Function</entry></row>
+          </thead>
+          <tbody>
+            <row><entry>Transcribe</entry><entry>Send audio to Whisper for transcription</entry></row>
+            <row><entry>Delete</entry><entry>Remove the slice (immediate for saved slices)</entry></row>
+            <row><entry>Edit</entry><entry>Enter text editing mode</entry></row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+  </refbody>
+</reference>
