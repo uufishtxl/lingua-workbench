@@ -10,9 +10,7 @@
     
     <steps>
       <step>
-        <cmd>Click the <ph>
-            <image href="../../../icons/gg--trash.png" placement="inline" scale="4" alt="Save"/>
-          </ph> button on the slice card.</cmd>
+        <cmd>Click the <uicontrol conref="../../warehouse.dita#warehouse/icon_delete"/> button on the slice card.</cmd>
         <info><fig>
             <p>
               <fig id="fig_mgd_fjh_xhc">

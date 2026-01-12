@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<{
   end?: number
   allowSelection?: boolean
 }>(), {
-  height: 100,
+  height: 90,
   allowSelection: true,
 })
 

@@ -23,10 +23,7 @@
         </stepresult>
       </step>
       <step>
-        <cmd>Click the <ph>
-            <image href="../../../icons/solar--pen-linear.png" placement="inline" scale="4"
-              alt="Save"/>
-        </ph> icon to create a highlight.</cmd>
+        <cmd>Click the <uicontrol conref="../../warehouse.dita#warehouse/icon_highlighter"/> icon to create a highlight.</cmd>
         <stepresult>
           <p>The text is highlighted and the Highlight Editor opens below.</p>
           <p>As you can see from the image below, the text is highlighted in blue.</p>

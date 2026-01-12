@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# Screenshots output (keep .gitkeep)
+screenshots/*.png
+
+# Auth config contains sensitive token
+auth.config.json
+
+# TypeScript build output
+dist/
+
+# Logs
+*.log

@@ -9,10 +9,7 @@
         <cmd>Locate the slice you want to transcribe.</cmd>
       </step>
       <step>
-        <cmd>Click the <ph>
-            <image href="../../../icons/arcticons--live-transcribe.png" placement="inline" scale="4"
-              alt="Save"/>
-          </ph> button.</cmd>
+        <cmd>Click the <uicontrol conref="../../warehouse.dita#warehouse/icon_transcribe"/> button.</cmd>
         <stepresult>The button shows a loading indicator while processing.</stepresult>
       </step>
       <step>
@@ -20,10 +17,7 @@
         <stepresult>The transcribed text appears in the slice card.</stepresult>
       </step>
       <step importance="optional">
-        <cmd>Click the <ph>
-            <image href="../../../icons/lucide--edit.png" placement="inline" scale="4"
-              alt="Save"/>
-        </ph> button to correct any transcription errors.</cmd>
+        <cmd>Click the <uicontrol conref="../../warehouse.dita#warehouse/icon_edit"/> button to correct any transcription errors.</cmd>
       </step>
     </steps>
     

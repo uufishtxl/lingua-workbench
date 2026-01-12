@@ -11,6 +11,7 @@
     <steps>
       <step>
         <cmd>Switch to Sound Display mode by clicking the mode toggle button.</cmd>
+        <info><fig></fig></info>
       </step>
       <step>
         <cmd>Click on a segment to select it for editing.</cmd>

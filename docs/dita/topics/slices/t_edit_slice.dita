@@ -6,9 +6,7 @@
   <taskbody>
     <steps>
       <step>
-        <cmd>Click the <ph>
-            <image href="../../../icons/lucide--edit.png" placement="inline" scale="4" alt="Save"/>
-          </ph> button at the bottom-right of the text area.</cmd>
+        <cmd>Click the <uicontrol conref="../../warehouse.dita#warehouse/icon_edit"/> button at the bottom-right of the text area.</cmd>
         <stepresult>The text becomes editable in a textarea.<fig id="fig_jl4_g3h_xhc">
             <p>
               <fig id="fig_mlb_33h_xhc">
@@ -25,16 +23,10 @@
         <cmd>Make your changes to the text.</cmd>
       </step>
       <step>
-        <cmd>Click the <ph>
-            <image href="../../../icons/majesticons--save-line.png" placement="inline" scale="4"
-              alt="Save"/>
-          </ph> button to save changes.</cmd>
+        <cmd>Click the <uicontrol conref="../../warehouse.dita#warehouse/icon_save"/> button to save changes.</cmd>
       </step>
       <step importance="optional">
-        <cmd>Click the <ph>
-            <image href="../../../icons/material-symbols--close-rounded.png" placement="inline"
-              scale="4" alt="Save"/>
-          </ph> button to discard changes.</cmd>
+        <cmd>Click the <uicontrol conref="../../warehouse.dita#warehouse/icon_close"/> button to discard changes.</cmd>
       </step>
     </steps>
   </taskbody>
