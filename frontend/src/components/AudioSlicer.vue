@@ -1,8 +1,8 @@
 <template>
-    <div class="wave-surfer__wrapper flex flex-col gap-4 h-full overflow-hidden">
+    <div class="wave-surfer__wrapper flex flex-col gap-[2px] h-full overflow-hidden">
         <!-- Wave Container -->
         <el-card class="flex-none">
-            <p class="text-xs text-gray-400 mb-2">Source: {{ props.title }}</p>
+            <p class="text-xs text-gray-400 mb-1">Source: {{ props.title }}</p>
 
             <BaseWaveSurfer ref="baseWaveSurferRef" :url="props.url" @play="isPlaying = true" @pause="isPlaying = false"
                 @region-created="handleRegionCreated" @region-updated="handleRegionUpdated"
@@ -26,7 +26,7 @@
 
         <!-- Region List -->
         <el-card class="flex-1 overflow-y-hidden flex flex-col">
-            <h2 class="font-bold mb-4 border-b-[0.5px] border-blue-100/50 pb-2">Selected Regions</h2>
+            <h2 class="font-bold mb-2 border-b-[0.5px] border-blue-100/50 pb-0">Selected Regions</h2>
             
             <div class="flex-1 overflow-y-auto min-h-0">
                 <div v-if="regionsList.length > 0" class="grid gap-1" style="grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));">

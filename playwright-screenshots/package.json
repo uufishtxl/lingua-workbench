@@ -1,0 +1,15 @@
+{
+  "name": "playwright-screenshots",
+  "version": "1.0.0",
+  "description": "Playwright 自动化截图工具 - 截取 Lingua Workbench 前端页面组件",
+  "scripts": {
+    "screenshot": "npx ts-node src/screenshot.ts",
+    "screenshot:debug": "npx ts-node src/screenshot.ts --headed"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^20.10.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.0"
+  }
+}

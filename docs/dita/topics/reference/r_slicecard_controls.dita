@@ -15,8 +15,8 @@
             <row><entry>Icon</entry><entry>Action</entry><entry>Description</entry></row>
           </thead>
           <tbody>
-            <row><entry>◀</entry><entry>Adjust Start</entry><entry>Move start time 0.5s earlier</entry></row>
-            <row><entry>▶</entry><entry>Adjust End</entry><entry>Move end time 0.5s later</entry></row>
+            <row><entry>&lt;</entry><entry>Adjust Start</entry><entry>Move start time <keyword keyref="time_finetune" />s earlier</entry></row>
+            <row><entry>&gt;</entry><entry>Adjust End</entry><entry>Move end time <keyword keyref="time_finetune" />s later</entry></row>
             <row><entry>★</entry><entry>Toggle Favorite</entry><entry>Mark/unmark as favorite</entry></row>
           </tbody>
         </tgroup>
@@ -33,9 +33,13 @@
             <row><entry>Button</entry><entry>Function</entry></row>
           </thead>
           <tbody>
-            <row><entry>Transcribe</entry><entry>Send audio to Whisper for transcription</entry></row>
-            <row><entry>Delete</entry><entry>Remove the slice (immediate for saved slices)</entry></row>
-            <row><entry>Edit</entry><entry>Enter text editing mode</entry></row>
+            <row><entry><uicontrol conref="../../warehouse.dita#warehouse/icon_transcribe"/></entry><entry>Send audio to Whisper for transcription</entry></row>
+            <row><entry><uicontrol conref="../../warehouse.dita#warehouse/icon_save"/></entry><entry>Save your changes</entry></row>
+            <row><entry><uicontrol conref="../../warehouse.dita#warehouse/icon_close"/></entry><entry>Cancel and quit</entry></row>
+            <row><entry><uicontrol conref="../../warehouse.dita#warehouse/icon_delete"/></entry><entry>Remove the slice (immediate for saved slices)</entry></row>
+            <row><entry><uicontrol conref="../../warehouse.dita#warehouse/icon_edit"/></entry><entry>Enter text editing mode</entry></row>
+            <row><entry><uicontrol conref="../../warehouse.dita#warehouse/icon_notes"/></entry><entry>Toggle AI Note Mode off to edit sound display</entry></row>
+            <row><entry><uicontrol conref="../../warehouse.dita#warehouse/icon_sound_display"/></entry><entry>Toggle Sound Display Mode off and display the notes</entry></row>
           </tbody>
         </tgroup>
       </table>

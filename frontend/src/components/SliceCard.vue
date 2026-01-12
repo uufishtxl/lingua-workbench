@@ -2,20 +2,20 @@
     <el-card>
         <!-- Time Stamp with adjustment arrows inside -->
         <div class="w-full flex justify-between items-center text-xs">
-            <div class="bg-sky-100 text-blue-400 px-1 py-1 rounded flex items-center gap-0.5">
+            <div class="group bg-sky-100 text-blue-400 px-1 py-1 rounded flex items-center justify-center w-[7.5rem] transition-all duration-200">
                 <!-- Backward arrow (adjust start earlier) -->
-                <!-- <i-tabler-chevron-left 
-                    class="text-blue-400 text-xs cursor-pointer hover:text-blue-600" 
-                    @click.stop="emit('adjust-start', -0.5)"
-                    title="Start -0.5s"
-                /> -->
-                <span class="px-1">{{ formatTime(props.start) }}~{{ formatTime(props.end) }}</span>
+                <i-tabler-chevron-left 
+                    class="text-blue-400 text-xs cursor-pointer hover:text-blue-600 w-0 opacity-0 group-hover:w-3 group-hover:opacity-100 transition-all duration-200 overflow-hidden flex-shrink-0" 
+                    @click.stop="emit('adjust-start', -0.2)"
+                    title="Start -0.2s"
+                />
+                <span class="tracking-widest group-hover:tracking-normal transition-all duration-200">{{ formatTime(props.start) }}~{{ formatTime(props.end) }}</span>
                 <!-- Forward arrow (adjust end later) -->
-                <!-- <i-tabler-chevron-right 
-                    class="text-blue-400 text-xs cursor-pointer hover:text-blue-600" 
-                    @click.stop="emit('adjust-end', 0.5)"
-                    title="End +0.5s"
-                /> -->
+                <i-tabler-chevron-right 
+                    class="text-blue-400 text-xs cursor-pointer hover:text-blue-600 w-0 opacity-0 group-hover:w-3 group-hover:opacity-100 transition-all duration-200 overflow-hidden flex-shrink-0" 
+                    @click.stop="emit('adjust-end', 0.2)"
+                    title="End +0.2s"
+                />
                 <!-- Favorite toggle -->
                 <i-tabler-star-filled 
                     v-if="isFavorite"
@@ -209,12 +209,12 @@ const dynamicTextStyle = computed(() => {
     
     if (textLength > 150) {
         fontSize = '0.65rem';   // 11.2px
-    } else if (textLength > 100) {
+    } else if (textLength > 90) {
         fontSize = '0.75rem';  // 12px
     } else if (textLength > 60) {
-        fontSize = '0.9rem';   // 12.8px
+        fontSize = '0.85rem';   // 12.8px
     } else if (textLength > 40) {
-        fontSize = '1.2rem'; // 14px
+        fontSize = '1.1rem'; // 14px
     }
     
     return { fontSize };

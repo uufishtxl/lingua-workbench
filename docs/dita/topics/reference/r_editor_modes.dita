@@ -16,7 +16,7 @@
     
     <section>
       <title>Mode Toggle</title>
-      <p>Click the mode toggle button to switch between the two modes.</p>
+      <p>Click <uicontrol conref="../../warehouse.dita#warehouse/icon_notes"/> / <uicontrol conref="../../warehouse.dita#warehouse/icon_sound_display"/> to switch between the two modes.</p>
     </section>
   </refbody>
 </reference>
