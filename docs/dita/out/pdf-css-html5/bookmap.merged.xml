@@ -39,7 +39,7 @@
     </prodinfo></topicmeta></topicref></frontmatter>
 
   
-  <part is-chapter="true" is-part="true" class="- map/topicref bookmap/part " navtitle="Getting Started"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d248e129">Getting Started</navtitle></topicmeta><chapter is-chapter="true" class="- map/topicref bookmap/chapter " href="#unique_4" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_product_overview"><resourceid appid="c_product_overview" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_4" class="- topic/navtitle ">Product Overview</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Lingua Workbench is a personal language learning platform for studying spoken English.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+  <part is-chapter="true" is-part="true" class="- map/topicref bookmap/part " navtitle="Getting Started"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d260e129">Getting Started</navtitle></topicmeta><chapter is-chapter="true" class="- map/topicref bookmap/chapter " href="#unique_4" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_product_overview"><resourceid appid="c_product_overview" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_4" class="- topic/navtitle ">Product Overview</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Lingua Workbench is a personal language learning platform for studying spoken English.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
@@ -60,7 +60,7 @@
     </prodinfo></topicmeta></chapter></part>
 
   
-  <part is-chapter="true" is-part="true" class="- map/topicref bookmap/part " navtitle="User Guide"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d248e212">User Guide</navtitle></topicmeta><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Audio Management"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d248e213">Audio Management</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_7" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_audio_workflow"><resourceid appid="c_audio_workflow" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_7" class="- topic/navtitle ">Audio Workflow Overview</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Understanding how audio is organized and processed in Lingua Workbench.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+  <part is-chapter="true" is-part="true" class="- map/topicref bookmap/part " navtitle="User Guide"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d260e212">User Guide</navtitle></topicmeta><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Audio Management"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d260e213">Audio Management</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_7" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_audio_workflow"><resourceid appid="c_audio_workflow" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_7" class="- topic/navtitle ">Audio Workflow Overview</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Understanding how audio is organized and processed in Lingua Workbench.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
@@ -78,7 +78,7 @@
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta></topicref></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Creating Slices"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d248e295">Creating Slices</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_10" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_what_is_slice"><resourceid appid="c_what_is_slice" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_10" class="- topic/navtitle ">What is an Audio Slice?</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Understanding audio slices and their role in language learning.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+    </prodinfo></topicmeta></topicref></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Creating Slices"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d260e295">Creating Slices</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_10" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_what_is_slice"><resourceid appid="c_what_is_slice" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_10" class="- topic/navtitle ">What is an Audio Slice?</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Understanding audio slices and their role in language learning.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
@@ -108,7 +108,7 @@
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta></topicref></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Phonetic Analysis"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d248e431">Phonetic Analysis</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_15" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_sound_script"><resourceid appid="c_sound_script" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_15" class="- topic/navtitle ">Sound Script Analysis</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Understanding AI-generated phonetic analysis.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+    </prodinfo></topicmeta></topicref></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Phonetic Analysis"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d260e431">Phonetic Analysis</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_15" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_sound_script"><resourceid appid="c_sound_script" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_15" class="- topic/navtitle ">Sound Script Analysis</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Understanding AI-generated phonetic analysis.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
@@ -132,7 +132,7 @@
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta></topicref></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Dictionary"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d248e540">Dictionary</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_19" type="task"><topicmeta class="- map/topicmeta " data-topic-id="t_lookup_phrase"><resourceid appid="t_lookup_phrase" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_19" class="- topic/navtitle ">Looking Up a Phrase</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Get dictionary definitions for a highlighted phrase.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+    </prodinfo></topicmeta></topicref></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Dictionary"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d260e540">Dictionary</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_19" type="task"><topicmeta class="- map/topicmeta " data-topic-id="t_lookup_phrase"><resourceid appid="t_lookup_phrase" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_19" class="- topic/navtitle ">Looking Up a Phrase</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Get dictionary definitions for a highlighted phrase.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
@@ -147,7 +147,7 @@
     </prodinfo></topicmeta></topicref></chapter></part>
 
   
-  <part is-chapter="true" is-part="true" class="- map/topicref bookmap/part " navtitle="Reference"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d248e597">Reference</navtitle></topicmeta><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="UI Reference"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d248e598">UI Reference</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_21" type="reference"><topicmeta class="- map/topicmeta " data-topic-id="r_slicecard_controls"><resourceid appid="r_slicecard_controls" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_21" class="- topic/navtitle ">SliceCard Controls Reference</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Reference for all controls available on a SliceCard.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+  <part is-chapter="true" is-part="true" class="- map/topicref bookmap/part " navtitle="Reference"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d260e597">Reference</navtitle></topicmeta><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="UI Reference"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d260e598">UI Reference</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_21" type="reference"><topicmeta class="- map/topicmeta " data-topic-id="r_slicecard_controls"><resourceid appid="r_slicecard_controls" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_21" class="- topic/navtitle ">SliceCard Controls Reference</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Reference for all controls available on a SliceCard.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
@@ -165,7 +165,7 @@
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta></topicref></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Phonetic Notation"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d248e680">Phonetic Notation</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_24" type="reference"><topicmeta class="- map/topicmeta " data-topic-id="r_phonetic_tags"><resourceid appid="r_phonetic_tags" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_24" class="- topic/navtitle ">Phonetic Tags Reference</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Reference for phonetic tag types used in analysis.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+    </prodinfo></topicmeta></topicref></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Phonetic Notation"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d260e680">Phonetic Notation</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_24" type="reference"><topicmeta class="- map/topicmeta " data-topic-id="r_phonetic_tags"><resourceid appid="r_phonetic_tags" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_24" class="- topic/navtitle ">Phonetic Tags Reference</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Reference for phonetic tag types used in analysis.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
@@ -180,7 +180,7 @@
     </prodinfo></topicmeta></topicref></chapter></part>
 
   
-  <part is-chapter="true" is-part="true" class="- map/topicref bookmap/part " navtitle="Troubleshooting"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d248e736">Troubleshooting</navtitle></topicmeta><chapter is-chapter="true" class="- map/topicref bookmap/chapter " href="#unique_26" type="task"><topicmeta class="- map/topicmeta " data-topic-id="ts_transcription_fails"><resourceid appid="ts_transcription_fails" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_26" class="- topic/navtitle ">Transcription Fails or Returns Empty</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Resolve issues with Whisper transcription.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+  <part is-chapter="true" is-part="true" class="- map/topicref bookmap/part " navtitle="Troubleshooting"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d260e736">Troubleshooting</navtitle></topicmeta><chapter is-chapter="true" class="- map/topicref bookmap/chapter " href="#unique_26" type="task"><topicmeta class="- map/topicmeta " data-topic-id="ts_transcription_fails"><resourceid appid="ts_transcription_fails" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_26" class="- topic/navtitle ">Transcription Fails or Returns Empty</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Resolve issues with Whisper transcription.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
@@ -211,7 +211,7 @@
     </prodinfo></topicmeta></appendix>
 
   
-  <backmatter class="- map/topicref bookmap/backmatter "><booklists class="- map/topicref bookmap/booklists "><glossarylist class="- map/topicref bookmap/glossarylist " href="#d248e850"><topicmeta class="- map/topicmeta "><navtitle href="#d248e850" class="- topic/navtitle ">Glossary</navtitle></topicmeta></glossarylist></booklists></backmatter>
+  <backmatter class="- map/topicref bookmap/backmatter "><booklists class="- map/topicref bookmap/booklists "><glossarylist class="- map/topicref bookmap/glossarylist " href="#d260e850"><topicmeta class="- map/topicmeta "><navtitle href="#d260e850" class="- topic/navtitle ">Glossary</navtitle></topicmeta></glossarylist></booklists></backmatter>
 </opentopic:map><topic class="- topic/topic " id="unique_1" is-frontmatter="true" topicrefclass="- map/topicref bookmap/preface " nd:nd-id="preface" oid="preface" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Preface</ph></title><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -305,7 +305,7 @@
       </tgroup>
     </table>
   </body>
-</topic><topic xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" break-before="true" is-chapter="true" is-part="true" class="+ topic/topic pdf2-d/placeholder " id="d248e129" topicrefclass="- map/topicref bookmap/part "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Getting Started</ph></title><concept break-before="true" is-chapter="true" class="- topic/topic concept/concept " id="unique_4" topicrefclass="- map/topicref bookmap/chapter " nd:nd-id="c_product_overview" oid="c_product_overview" specializations="@props/deliveryTarget">
+</topic><topic xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" break-before="true" is-chapter="true" is-part="true" class="+ topic/topic pdf2-d/placeholder " id="d260e129" topicrefclass="- map/topicref bookmap/part "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Getting Started</ph></title><concept break-before="true" is-chapter="true" class="- topic/topic concept/concept " id="unique_4" topicrefclass="- map/topicref bookmap/chapter " nd:nd-id="c_product_overview" oid="c_product_overview" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Product Overview</ph></title>
   <shortdesc class="- topic/shortdesc ">Lingua Workbench is a personal language learning platform for studying spoken English.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -418,7 +418,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
       <p class="- topic/p ">You should see the Lingua Workbench home page. Register an account to get started, then you can start uploading audio and creating slices.</p>
     </result>
   </taskbody>
-</task></topic><topic xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" break-before="true" is-chapter="true" is-part="true" class="+ topic/topic pdf2-d/placeholder " id="d248e212" topicrefclass="- map/topicref bookmap/part "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">User Guide</ph></title><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d248e213" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Audio Management</ph></title><concept class="- topic/topic concept/concept " id="unique_7" topicrefclass="- map/topicref " nd:nd-id="c_audio_workflow" oid="c_audio_workflow" specializations="@props/deliveryTarget">
+</task></topic><topic xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" break-before="true" is-chapter="true" is-part="true" class="+ topic/topic pdf2-d/placeholder " id="d260e212" topicrefclass="- map/topicref bookmap/part "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">User Guide</ph></title><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d260e213" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Audio Management</ph></title><concept class="- topic/topic concept/concept " id="unique_7" topicrefclass="- map/topicref " nd:nd-id="c_audio_workflow" oid="c_audio_workflow" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Audio Workflow Overview</ph></title>
   <shortdesc class="- topic/shortdesc ">Understanding how audio is organized and processed in Lingua Workbench.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -502,7 +502,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
       <p class="- topic/p ">The waveform is displayed and you can begin creating slices.</p>
     </result>
   </taskbody>
-</task></topic><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d248e295" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Creating Slices</ph></title><concept class="- topic/topic concept/concept " id="unique_10" topicrefclass="- map/topicref " nd:nd-id="c_what_is_slice" oid="c_what_is_slice" specializations="@props/deliveryTarget">
+</task></topic><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d260e295" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Creating Slices</ph></title><concept class="- topic/topic concept/concept " id="unique_10" topicrefclass="- map/topicref " nd:nd-id="c_what_is_slice" oid="c_what_is_slice" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">What is an Audio Slice?</ph></title>
   <shortdesc class="- topic/shortdesc ">Understanding audio slices and their role in language learning.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -549,7 +549,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
         <cmd class="- topic/ph task/cmd ">Release the mouse button to create the slice.
         </cmd>
         <stepresult class="- topic/itemgroup task/stepresult "> A new SliceCard appears in the panel below. <fig class="- topic/fig "><p class="- topic/p ">
-              <fig class="- topic/fig " id="unique_11_Connect_42_fig_rx5_xgh_xhc" nd:nd-id="fig_rx5_xgh_xhc"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Audio Slice</ph></title><image class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/t_create_a_slice.png" id="unique_11_Connect_42_image_sx5_xgh_xhc" nd:nd-id="image_sx5_xgh_xhc" placement="inline" width="300">
+              <fig class="- topic/fig " id="unique_11_Connect_42_fig_lwb_audio-slicer_slice-audio" nd:nd-id="fig_lwb_audio-slicer_slice-audio"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Audio Slice</ph></title><image class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/fig_lwb_audio-slicer_slice-audio.png" id="unique_11_Connect_42_image_sx5_xgh_xhc" nd:nd-id="image_sx5_xgh_xhc" placement="inline" width="300">
                   <alt class="- topic/alt ">Audio Slice</alt>
                 </image></fig>
             </p></fig>
@@ -586,11 +586,9 @@ uv run huey_consumer tasks.huey</codeblock></info>
       </step></steps>
     
     <result class="- topic/section task/result ">
-      <p class="- topic/p ">The slice now contains the transcribed text, ready for highlighting and analysis.<fig class="- topic/fig " id="unique_12_Connect_42_fig_zmr_kgh_xhc" nd:nd-id="fig_zmr_kgh_xhc"><p class="- topic/p ">
-            <fig class="- topic/fig " id="unique_12_Connect_42_fig_vxw_mgh_xhc" nd:nd-id="fig_vxw_mgh_xhc"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Text Transcription</ph></title><image class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/t_transcribe.png" id="unique_12_Connect_42_image_wxw_mgh_xhc" nd:nd-id="image_wxw_mgh_xhc" placement="inline" width="300">
+      <p class="- topic/p ">The slice now contains the transcribed text, ready for highlighting and analysis.<fig class="- topic/fig " id="unique_12_Connect_42_fig_lwb_audio-slicer_transcribe-text" nd:nd-id="fig_lwb_audio-slicer_transcribe-text"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Text Transcription</ph></title><image class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/fig_lwb_audio-slicer_transcribe-text.png" id="unique_12_Connect_42_image_wxw_mgh_xhc" nd:nd-id="image_wxw_mgh_xhc" placement="inline" width="300">
                 <alt class="- topic/alt ">Text Transcription</alt>
-              </image></fig>
-          </p></fig></p>
+              </image></fig></p>
     </result>
   </taskbody>
 </task><task class="- topic/topic task/task " id="unique_13" topicrefclass="- map/topicref " nd:nd-id="t_edit_slice" oid="t_edit_slice" specializations="@props/deliveryTarget">
@@ -605,11 +603,9 @@ uv run huey_consumer tasks.huey</codeblock></info>
   <taskbody class="- topic/body task/taskbody ">
     <steps class="- topic/ol task/steps "><step class="- topic/li task/step ">
         <cmd class="- topic/ph task/cmd ">Click the <uicontrol class="+ topic/ph ui-d/uicontrol "><image alt="Edit" class="- topic/image " dita-ot:image-width="512" dita-ot:image-height="512" href="file:/C:/projects/lingua-workbench/docs/icons/lucide--edit.png" placement="inline" scale="4"/></uicontrol> button at the bottom-right of the text area.</cmd>
-        <stepresult class="- topic/itemgroup task/stepresult ">The text becomes editable in a textarea.<fig class="- topic/fig " id="unique_13_Connect_42_fig_jl4_g3h_xhc" nd:nd-id="fig_jl4_g3h_xhc"><p class="- topic/p ">
-              <fig class="- topic/fig " id="unique_13_Connect_42_fig_mlb_33h_xhc" nd:nd-id="fig_mlb_33h_xhc"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Editing Slice Text</ph></title><image class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/t_transcribe_edit.png" id="unique_13_Connect_42_image_nlb_33h_xhc" nd:nd-id="image_nlb_33h_xhc" placement="inline" width="300">
+        <stepresult class="- topic/itemgroup task/stepresult ">The text becomes editable in a textarea.<fig class="- topic/fig " id="unique_13_Connect_42_fig_lwb_audio-slicer_edit-transcription" nd:nd-id="fig_lwb_audio-slicer_edit-transcription"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Editing Slice Text</ph></title><image class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/fig_lwb_audio-slicer_edit-transcription.png" id="unique_13_Connect_42_image_nlb_33h_xhc" nd:nd-id="image_nlb_33h_xhc" placement="inline" width="300">
                   <alt class="- topic/alt ">Editing Slice Text</alt>
-                </image></fig>
-            </p></fig></stepresult>
+                </image></fig></stepresult>
       </step><step class="- topic/li task/step ">
         <cmd class="- topic/ph task/cmd ">Make your changes to the text.</cmd>
       </step><step class="- topic/li task/step ">
@@ -634,18 +630,17 @@ uv run huey_consumer tasks.huey</codeblock></info>
     
     <steps class="- topic/ol task/steps "><step class="- topic/li task/step ">
         <cmd class="- topic/ph task/cmd ">Click the <uicontrol class="+ topic/ph ui-d/uicontrol "><image alt="Delete" class="- topic/image " dita-ot:image-width="512" dita-ot:image-height="512" href="file:/C:/projects/lingua-workbench/docs/icons/gg--trash.png" placement="inline" scale="4"/></uicontrol> button on the slice card.</cmd>
-        <info class="- topic/itemgroup task/info "><fig class="- topic/fig "><p class="- topic/p ">
-              <fig class="- topic/fig " id="unique_14_Connect_42_fig_mgd_fjh_xhc" nd:nd-id="fig_mgd_fjh_xhc"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Deleting a Slice</ph></title><image class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/t_delete_slice.png" id="unique_14_Connect_42_image_ngd_fjh_xhc" nd:nd-id="image_ngd_fjh_xhc" placement="inline" width="300">
+        <info class="- topic/itemgroup task/info ">
+          <fig class="- topic/fig " id="unique_14_Connect_42_fig_lwb_audio-slicer_slice-audio-delete" nd:nd-id="fig_lwb_audio-slicer_slice-audio-delete"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Deleting a Slice</ph></title><image class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/fig_lwb_audio-slicer_slice-audio.png" id="unique_14_Connect_42_image_ngd_fjh_xhc" nd:nd-id="image_ngd_fjh_xhc" placement="inline" width="300">
                   <alt class="- topic/alt ">Deleting a Slice</alt>
-                </image></fig>
-            </p></fig></info>
+                </image></fig></info>
       </step></steps>
     
     <result class="- topic/section task/result ">
       <p class="- topic/p ">For saved slices, the deletion is immediate. For unsaved slices, only the local region is removed.</p>
     </result>
   </taskbody>
-</task></topic><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d248e431" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Phonetic Analysis</ph></title><concept class="- topic/topic concept/concept " id="unique_15" topicrefclass="- map/topicref " nd:nd-id="c_sound_script" oid="c_sound_script" specializations="@props/deliveryTarget">
+</task></topic><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d260e431" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Phonetic Analysis</ph></title><concept class="- topic/topic concept/concept " id="unique_15" topicrefclass="- map/topicref " nd:nd-id="c_sound_script" oid="c_sound_script" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Sound Script Analysis</ph></title>
   <shortdesc class="- topic/shortdesc ">Understanding AI-generated phonetic analysis.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -670,11 +665,9 @@ uv run huey_consumer tasks.huey</codeblock></info>
     <section class="- topic/section ">
       <title class="- topic/title ">Ruby Text Display</title>
       <p class="- topic/p ">The UI displays pronunciation above the original text using Ruby annotation, making it easy
-        to compare written and spoken forms.<fig class="- topic/fig " id="unique_15_Connect_42_fig_gvj_5kh_xhc" nd:nd-id="fig_gvj_5kh_xhc"><p class="- topic/p ">
-            <fig class="- topic/fig " id="unique_15_Connect_42_fig_pjq_vkh_xhc" nd:nd-id="fig_pjq_vkh_xhc"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Sound Script: Ruby Text Annotation</ph></title><image class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/c_sound_script__ruby_text.png" id="unique_15_Connect_42_image_qjq_vkh_xhc" nd:nd-id="image_qjq_vkh_xhc" placement="inline" width="300">
+        to compare written and spoken forms.<fig class="- topic/fig " id="unique_15_Connect_42_fig_lwb_audio-slicer_complete-editing" nd:nd-id="fig_lwb_audio-slicer_complete-editing"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Sound Script: Ruby Text Annotation</ph></title><image class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/fig_lwb_audio-slicer_complete-editing.png" id="unique_15_Connect_42_image_qjq_vkh_xhc" nd:nd-id="image_qjq_vkh_xhc" placement="inline" width="300">
                 <alt class="- topic/alt ">Sound Script: Ruby Text Annotation</alt>
-              </image></fig>
-          </p></fig></p>
+              </image></fig></p>
     </section>
   </conbody>
 </concept><task class="- topic/topic task/task " id="unique_16" topicrefclass="- map/topicref " nd:nd-id="t_highlight_text" oid="t_highlight_text" specializations="@props/deliveryTarget">
@@ -695,7 +688,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
         <cmd class="- topic/ph task/cmd ">Select text in the slice by clicking and dragging.</cmd>
         <stepresult class="- topic/itemgroup task/stepresult ">
           <p class="- topic/p ">A highlighter icon appears near your selection.</p>
-          <fig class="- topic/fig " id="unique_16_Connect_42_fig_qwp_vzh_xhc" nd:nd-id="fig_qwp_vzh_xhc"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Highlighting Text for Analysis</ph></title><image class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/t_highlight_text.png" id="unique_16_Connect_42_image_rwp_vzh_xhc" nd:nd-id="image_rwp_vzh_xhc" placement="inline" width="300">
+          <fig class="- topic/fig " id="unique_16_Connect_42_fig_lwb_audio-slicer_highlight-text-01" nd:nd-id="fig_lwb_audio-slicer_highlight-text-01"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Highlighting Text for Analysis</ph></title><image class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/fig_lwb_audio-slicer_highlight-text-01.png" id="unique_16_Connect_42_image_rwp_vzh_xhc" nd:nd-id="image_rwp_vzh_xhc" placement="inline" width="300">
               <alt class="- topic/alt ">Highlighting Text for Analysis</alt>
             </image></fig>
         </stepresult>
@@ -704,7 +697,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
         <stepresult class="- topic/itemgroup task/stepresult ">
           <p class="- topic/p ">The text is highlighted and the Highlight Editor opens below.</p>
           <p class="- topic/p ">As you can see from the image below, the text is highlighted in blue.</p>
-          <fig class="- topic/fig " id="unique_16_Connect_42_fig_z3t_j13_xhc" nd:nd-id="fig_z3t_j13_xhc"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Highlighting Text: Highlight Editor</ph></title><image class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/t_highlight_editor.png" id="unique_16_Connect_42_image_ajt_j13_xhc" nd:nd-id="image_ajt_j13_xhc" placement="inline" width="300">
+          <fig class="- topic/fig " id="unique_16_Connect_42_fig_lwb_audio-slicer_highlight-text-02" nd:nd-id="fig_lwb_audio-slicer_highlight-text-02"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Highlighting Text: Highlight Editor</ph></title><image class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/fig_lwb_audio-slicer_highlight-text-02.png" id="unique_16_Connect_42_image_ajt_j13_xhc" nd:nd-id="image_ajt_j13_xhc" placement="inline" width="300">
               <alt class="- topic/alt ">Highlighting Text: Highlight Editor</alt>
             </image></fig>
         </stepresult>
@@ -729,16 +722,14 @@ uv run huey_consumer tasks.huey</codeblock></info>
     </prereq>
     
     <steps class="- topic/ol task/steps "><step class="- topic/li task/step ">
-        <cmd class="- topic/ph task/cmd ">With a highlight active, click the ✨ button in the Highlight Editor.</cmd>
-        <info class="- topic/itemgroup task/info "><fig class="- topic/fig " id="unique_17_Connect_42_fig_jl1_yb3_xhc" nd:nd-id="fig_jl1_yb3_xhc"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Requesting AI Analysis</ph></title><image alt="Requesting AI Analysis" class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/t_request_ai_analysis.png" placement="inline" width="300"/></fig>The AI processes the phrase and returns
-          analysis. This may take a while.</info>
+        <cmd class="- topic/ph task/cmd ">With a highlight active, click the <uicontrol class="+ topic/ph ui-d/uicontrol ">✨</uicontrol> button in the Highlight Editor.</cmd>
       </step><step class="- topic/li task/step ">
         <cmd class="- topic/ph task/cmd ">Review the phonetic tags and sound display.</cmd>
       </step></steps>
     
     <result class="- topic/section task/result ">
       <p class="- topic/p ">The analysis shows phonetic breakdown with Ruby text annotations above the original text.</p>
-      <fig class="- topic/fig " id="unique_17_Connect_42_t_review_phonetic_analysis" nd:nd-id="t_review_phonetic_analysis"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Reviewing Phonetic Analysis</ph></title><image alt="Reviewing Phonetic Analysis" class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/t_review_phonetic_analysis.png" placement="inline" width="300"/></fig>
+      <fig class="- topic/fig " id="unique_17_Connect_42_fig_lwb_audio-slicer_ai-sound-result" nd:nd-id="fig_lwb_audio-slicer_ai-sound-result"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Reviewing Phonetic Analysis</ph></title><image alt="Reviewing Phonetic Analysis" class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/fig_lwb_audio-slicer_ai-sound-result.png" placement="inline" width="300"/></fig>
     </result>
   </taskbody>
 </task><task class="- topic/topic task/task " id="unique_18" topicrefclass="- map/topicref " nd:nd-id="t_edit_sound_display" oid="t_edit_sound_display" specializations="@props/deliveryTarget">
@@ -756,18 +747,24 @@ uv run huey_consumer tasks.huey</codeblock></info>
     </context>
     
     <steps class="- topic/ol task/steps "><step class="- topic/li task/step ">
-        <cmd class="- topic/ph task/cmd ">Switch to Sound Display mode by clicking the mode toggle button.</cmd>
-        <info class="- topic/itemgroup task/info "><fig class="- topic/fig "/></info>
+        <cmd class="- topic/ph task/cmd ">Switch to Sound Display mode by clicking the <uicontrol class="+ topic/ph ui-d/uicontrol "><image alt="AI Notes" class="- topic/image " dita-ot:image-width="512" dita-ot:image-height="512" href="file:/C:/projects/lingua-workbench/docs/icons/gg--notes.png" placement="inline" scale="4"/></uicontrol>button.</cmd>
       </step><step class="- topic/li task/step ">
         <cmd class="- topic/ph task/cmd ">Click on a segment to select it for editing.</cmd>
-        <stepresult class="- topic/itemgroup task/stepresult ">The segment's sound_display appears in the input field.</stepresult>
+        <stepresult class="- topic/itemgroup task/stepresult ">The segment's sound_display appears in the input field.
+        </stepresult>
       </step><step class="- topic/li task/step ">
         <cmd class="- topic/ph task/cmd ">Edit the pronunciation text.</cmd>
       </step><step class="- topic/li task/step ">
-        <cmd class="- topic/ph task/cmd ">Click <uicontrol class="+ topic/ph ui-d/uicontrol ">Save</uicontrol> to apply changes.</cmd>
+        <cmd class="- topic/ph task/cmd ">Click <uicontrol class="+ topic/ph ui-d/uicontrol "><image alt="Save" class="- topic/image " dita-ot:image-width="512" dita-ot:image-height="512" href="file:/C:/projects/lingua-workbench/docs/icons/majesticons--save-line.png" placement="inline" scale="4"/></uicontrol> inside of the text
+          area to apply changes.</cmd>
       </step></steps>
+    <result class="- topic/section task/result ">
+      <p class="- topic/p ">
+        <fig class="- topic/fig " id="unique_18_Connect_42_fig_lwb_audio-slicer_edit-sound-display" nd:nd-id="fig_lwb_audio-slicer_edit-sound-display"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Editing Sound Display</ph></title><image alt="Editing Sound Display" class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/fig_lwb_audio-slicer_edit-sound-display.png" placement="inline" width="300"/></fig>
+      </p>
+    </result>
   </taskbody>
-</task></topic><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d248e540" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Dictionary</ph></title><task class="- topic/topic task/task " id="unique_19" topicrefclass="- map/topicref " nd:nd-id="t_lookup_phrase" oid="t_lookup_phrase" specializations="@props/deliveryTarget">
+</task></topic><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d260e540" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Dictionary</ph></title><task class="- topic/topic task/task " id="unique_19" topicrefclass="- map/topicref " nd:nd-id="t_lookup_phrase" oid="t_lookup_phrase" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Looking Up a Phrase</ph></title>
   <shortdesc class="- topic/shortdesc ">Get dictionary definitions for a highlighted phrase.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -778,13 +775,14 @@ uv run huey_consumer tasks.huey</codeblock></info>
     </prodinfo></metadata></prolog>
   <taskbody class="- topic/body task/taskbody ">
     <steps class="- topic/ol task/steps "><step class="- topic/li task/step ">
-        <cmd class="- topic/ph task/cmd ">With a highlight active, click the <uicontrol class="+ topic/ph ui-d/uicontrol ">Dictionary</uicontrol> button.</cmd>
+        <cmd class="- topic/ph task/cmd ">With a highlight active, click the <uicontrol class="+ topic/ph ui-d/uicontrol ">✨</uicontrol> button.</cmd>
       </step><step class="- topic/li task/step ">
         <cmd class="- topic/ph task/cmd ">Review the definition and example sentences.</cmd>
       </step></steps>
     
     <result class="- topic/section task/result ">
       <p class="- topic/p ">The dictionary panel shows bilingual definitions with contextual examples.</p>
+      <p class="- topic/p "><fig class="- topic/fig " id="unique_19_Connect_42_fig_lwb_audio-slicer_ai-definition-result" nd:nd-id="fig_lwb_audio-slicer_ai-definition-result"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Dictionary Analysis</ph></title><image alt="Dictionary Analysis" class="- topic/image " href="file:/C:/projects/lingua-workbench/docs/screenshots/fig_lwb_audio-slicer_ai-definition-result.png" placement="inline" width="300"/></fig></p>
     </result>
   </taskbody>
 </task><task class="- topic/topic task/task " id="unique_20" topicrefclass="- map/topicref " nd:nd-id="t_refresh_examples" oid="t_refresh_examples" specializations="@props/deliveryTarget">
@@ -798,14 +796,14 @@ uv run huey_consumer tasks.huey</codeblock></info>
     </prodinfo></metadata></prolog>
   <taskbody class="- topic/body task/taskbody ">
     <steps class="- topic/ol task/steps "><step class="- topic/li task/step ">
-        <cmd class="- topic/ph task/cmd ">In the Dictionary panel, click the <uicontrol class="+ topic/ph ui-d/uicontrol ">Refresh</uicontrol> button.</cmd>
+        <cmd class="- topic/ph task/cmd ">In the Dictionary panel, click the <uicontrol class="+ topic/ph ui-d/uicontrol ">✨</uicontrol> button.</cmd>
       </step></steps>
     
     <result class="- topic/section task/result ">
       <p class="- topic/p ">The AI generates new contextual examples in both English and Chinese.</p>
     </result>
   </taskbody>
-</task></topic></topic><topic xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" break-before="true" is-chapter="true" is-part="true" class="+ topic/topic pdf2-d/placeholder " id="d248e597" topicrefclass="- map/topicref bookmap/part "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Reference</ph></title><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d248e598" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">UI Reference</ph></title><reference class="- topic/topic       reference/reference " id="unique_21" topicrefclass="- map/topicref " nd:nd-id="r_slicecard_controls" oid="r_slicecard_controls" specializations="@props/deliveryTarget">
+</task></topic></topic><topic xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" break-before="true" is-chapter="true" is-part="true" class="+ topic/topic pdf2-d/placeholder " id="d260e597" topicrefclass="- map/topicref bookmap/part "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Reference</ph></title><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d260e598" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">UI Reference</ph></title><reference class="- topic/topic       reference/reference " id="unique_21" topicrefclass="- map/topicref " nd:nd-id="r_slicecard_controls" oid="r_slicecard_controls" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">SliceCard Controls Reference</ph></title>
   <shortdesc class="- topic/shortdesc ">Reference for all controls available on a SliceCard.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -906,7 +904,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
       <p class="- topic/p ">Click <uicontrol class="+ topic/ph ui-d/uicontrol "><image alt="AI Notes" class="- topic/image " dita-ot:image-width="512" dita-ot:image-height="512" href="file:/C:/projects/lingua-workbench/docs/icons/gg--notes.png" placement="inline" scale="4"/></uicontrol> / <uicontrol class="+ topic/ph ui-d/uicontrol "><image alt="Sound Display" class="- topic/image " dita-ot:image-width="512" dita-ot:image-height="512" href="file:/C:/projects/lingua-workbench/docs/icons/tabler--abc.png" placement="inline" scale="4"/></uicontrol> to switch between the two modes.</p>
     </section>
   </refbody>
-</reference></topic><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d248e680" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Phonetic Notation</ph></title><reference class="- topic/topic       reference/reference " id="unique_24" topicrefclass="- map/topicref " nd:nd-id="r_phonetic_tags" oid="r_phonetic_tags" specializations="@props/deliveryTarget">
+</reference></topic><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d260e680" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Phonetic Notation</ph></title><reference class="- topic/topic       reference/reference " id="unique_24" topicrefclass="- map/topicref " nd:nd-id="r_phonetic_tags" oid="r_phonetic_tags" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Phonetic Tags Reference</ph></title>
   <shortdesc class="- topic/shortdesc ">Reference for phonetic tag types used in analysis.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -974,7 +972,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
       </table>
     </section>
   </refbody>
-</reference></topic></topic><topic xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" break-before="true" is-chapter="true" is-part="true" class="+ topic/topic pdf2-d/placeholder " id="d248e736" topicrefclass="- map/topicref bookmap/part "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Troubleshooting</ph></title><task break-before="true" is-chapter="true" class="- topic/topic task/task " id="unique_26" topicrefclass="- map/topicref bookmap/chapter " nd:nd-id="ts_transcription_fails" oid="ts_transcription_fails" outputclass="troubleshooting" specializations="@props/deliveryTarget">
+</reference></topic></topic><topic xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" break-before="true" is-chapter="true" is-part="true" class="+ topic/topic pdf2-d/placeholder " id="d260e736" topicrefclass="- map/topicref bookmap/part "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Troubleshooting</ph></title><task break-before="true" is-chapter="true" class="- topic/topic task/task " id="unique_26" topicrefclass="- map/topicref bookmap/chapter " nd:nd-id="ts_transcription_fails" oid="ts_transcription_fails" outputclass="troubleshooting" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Transcription Fails or Returns Empty</ph></title>
   <shortdesc class="- topic/shortdesc ">Resolve issues with Whisper transcription.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -985,7 +983,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
     </prodinfo></metadata></prolog>
   <taskbody class="- topic/body task/taskbody ">
     <context class="- topic/section task/context ">
-      <p class="- topic/p "><b class="+ topic/ph hi-d/b ">Symptom:</b> Clicking the Transcribe button results in empty text or an error.</p>
+      <p class="- topic/p "><b class="+ topic/ph hi-d/b ">Symptom:</b> Clicking the <uicontrol class="+ topic/ph ui-d/uicontrol "><image alt="Transcribe" class="- topic/image " dita-ot:image-width="512" dita-ot:image-height="512" href="file:/C:/projects/lingua-workbench/docs/icons/arcticons--live-transcribe.png" placement="inline" scale="4"/></uicontrol> button results in empty text or an error.</p>
     </context>
     
     <steps class="- topic/ol task/steps "><stepsection class="- topic/li task/stepsection ">Possible Causes and Solutions:</stepsection><step class="- topic/li task/step ">
@@ -1117,7 +1115,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
       </table>
     </section>
   </refbody>
-</reference><topic id="d248e850" class="- topic/topic bookmap/glossarylist "><title class="- topic/title ">Glossary</title><glossentry xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" class="- topic/topic concept/concept glossentry/glossentry " id="unique_30" is-backmatter="true" topicrefclass="- map/topicref " nd:nd-id="g_chunk" oid="g_chunk" specializations="@props/deliveryTarget">
+</reference><topic id="d260e850" class="- topic/topic bookmap/glossarylist "><title class="- topic/title ">Glossary</title><glossentry xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" class="- topic/topic concept/concept glossentry/glossentry " id="unique_30" is-backmatter="true" topicrefclass="- map/topicref " nd:nd-id="g_chunk" oid="g_chunk" specializations="@props/deliveryTarget">
   <glossterm class="- topic/title concept/title glossentry/glossterm "><ph class="- topic/ph topic/title-wrapper ">Chunk</ph></glossterm>
   <glossdef class="- topic/abstract concept/abstract glossentry/glossdef ">A fixed-duration segment (e.g., 30 seconds) automatically generated when source audio is uploaded.</glossdef><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>

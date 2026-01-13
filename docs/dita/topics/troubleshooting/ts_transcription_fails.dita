@@ -5,7 +5,7 @@
   <shortdesc>Resolve issues with Whisper transcription.</shortdesc>
   <taskbody>
     <context>
-      <p><b>Symptom:</b> Clicking the Transcribe button results in empty text or an error.</p>
+      <p><b>Symptom:</b> Clicking the <uicontrol conref="../../warehouse.dita#warehouse/icon_transcribe" /> button results in empty text or an error.</p>
     </context>
     
     <steps>

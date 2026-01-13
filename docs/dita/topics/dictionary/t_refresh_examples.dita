@@ -6,7 +6,7 @@
   <taskbody>
     <steps>
       <step>
-        <cmd>In the Dictionary panel, click the <uicontrol>Refresh</uicontrol> button.</cmd>
+        <cmd>In the Dictionary panel, click the <uicontrol conref="../../warehouse.dita#warehouse/icon_aigen"/> button.</cmd>
       </step>
     </steps>
     

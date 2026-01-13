@@ -10,12 +10,7 @@
     
     <steps>
       <step>
-        <cmd>With a highlight active, click the ✨ button in the Highlight Editor.</cmd>
-        <info><fig id="fig_jl1_yb3_xhc">
-            <title>Requesting AI Analysis</title>
-            <image href="../../../screenshots/t_request_ai_analysis.png" width="300" alt="Requesting AI Analysis" />
-        </fig>The AI processes the phrase and returns
-          analysis. This may take a while.</info>
+        <cmd>With a highlight active, click the <uicontrol>✨</uicontrol> button in the Highlight Editor.</cmd>
       </step>
       <step>
         <cmd>Review the phonetic tags and sound display.</cmd>
@@ -24,9 +19,9 @@
     
     <result>
       <p>The analysis shows phonetic breakdown with Ruby text annotations above the original text.</p>
-      <fig id="t_review_phonetic_analysis">
+      <fig id="fig_lwb_audio-slicer_ai-sound-result">
         <title>Reviewing Phonetic Analysis</title>
-        <image href="../../../screenshots/t_review_phonetic_analysis.png" width="300" alt="Reviewing Phonetic Analysis" />
+        <image href="../../../screenshots/fig_lwb_audio-slicer_ai-sound-result.png" width="300" alt="Reviewing Phonetic Analysis" />
       </fig>
     </result>
   </taskbody>

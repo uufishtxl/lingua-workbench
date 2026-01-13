@@ -28,16 +28,12 @@
     <section>
       <title>Ruby Text Display</title>
       <p>The UI displays pronunciation above the original text using Ruby annotation, making it easy
-        to compare written and spoken forms.<fig id="fig_gvj_5kh_xhc">
-          <p>
-            <fig id="fig_pjq_vkh_xhc">
+        to compare written and spoken forms.<fig id="fig_lwb_audio-slicer_complete-editing">
               <title>Sound Script: Ruby Text Annotation</title>
-              <image href="../../../screenshots/c_sound_script__ruby_text.png" width="300"
+              <image href="../../../screenshots/fig_lwb_audio-slicer_complete-editing.png" width="300"
                 id="image_qjq_vkh_xhc">
                 <alt>Sound Script: Ruby Text Annotation</alt>
               </image>
-            </fig>
-          </p>
         </fig></p>
     </section>
   </conbody>

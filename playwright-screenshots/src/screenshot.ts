@@ -95,7 +95,7 @@ async function stage1_InitialState(page: Page, sliceCard: Locator): Promise<void
     console.log('\n📸 Stage 1: 初始状态截图...');
     await sliceCard.scrollIntoViewIfNeeded();
     await page.waitForTimeout(500);
-    await captureSliceCard(sliceCard, '01_initial');
+    await captureSliceCard(sliceCard, 'fig_lwb_audio-slicer_slice-audio');
 }
 
 /**
@@ -137,7 +137,7 @@ async function stage2_Transcription(page: Page, sliceCard: Locator): Promise<voi
         console.log('   ⚠️ 转录等待超时，继续截图...');
     }
 
-    await captureSliceCard(sliceCard, '02_transcribed');
+    await captureSliceCard(sliceCard, 'fig_lwb_audio-slicer_transcribe-text');
 }
 
 /**
@@ -157,7 +157,7 @@ async function stage3_EditMode(page: Page, sliceCard: Locator): Promise<void> {
     await editBtn.click();
     await page.waitForTimeout(500);
 
-    await captureSliceCard(sliceCard, '03_edit_mode');
+    await captureSliceCard(sliceCard, 'fig_lwb_audio-slicer_edit-transcription');
 }
 
 /**
@@ -257,33 +257,18 @@ async function stage4_TextHighlight(page: Page, sliceCard: Locator): Promise<voi
     await textArea.dispatchEvent('mouseup');
     await page.waitForTimeout(500);
 
-    await captureSliceCard(sliceCard, '04_text_selected');
+    await captureSliceCard(sliceCard, 'fig_lwb_audio-slicer_highlight-text-01');
 
     // 如果看到高亮按钮，点击它
     const highlighterBtn = sliceCard.locator('.highlighter-icon');
     if (await highlighterBtn.count() > 0) {
         await highlighterBtn.click();
         await page.waitForTimeout(500);
-        await captureSliceCard(sliceCard, '05_highlighted');
+        await captureSliceCard(sliceCard, 'fig_lwb_audio-slicer_highlight-text-02');
     }
 }
 
-/**
- * Stage 5: 点击高亮文本，进入笔记编辑模式
- */
-async function stage5_EnterHighlightEditor(page: Page, sliceCard: Locator): Promise<void> {
-    console.log('\n📸 Stage 5: 进入高亮编辑模式...');
-
-    // 等待 HighlightEditor 出现（dark-editor 类）
-    await page.waitForTimeout(500);
-
-    const highlightEditor = sliceCard.locator('.dark-editor');
-    if (await highlightEditor.count() > 0) {
-        await captureSliceCard(sliceCard, '06_highlight_editor');
-    } else {
-        console.log('⚠️ HighlightEditor 未出现');
-    }
-}
+// Stage 5 removed: was capturing redundant 06_highlight_editor (same as 05)
 
 /**
  * Stage 6: 点击 AI 按钮，等待分析结果
@@ -320,7 +305,7 @@ async function stage6_AIAnalysis(page: Page, sliceCard: Locator): Promise<void> 
     ).catch(() => console.log('   AI 分析超时，继续...'));
 
     await page.waitForTimeout(500);
-    await captureSliceCard(sliceCard, '07_ai_result');
+    await captureSliceCard(sliceCard, 'fig_lwb_audio-slicer_ai-sound-result');
 }
 
 /**
@@ -357,23 +342,73 @@ async function stage7_SoundScriptEdit(page: Page, sliceCard: Locator): Promise<v
         await page.waitForTimeout(300);
     }
 
-    await captureSliceCard(sliceCard, '08_sound_edited');
+    await captureSliceCard(sliceCard, 'fig_lwb_audio-slicer_edit-sound-display');
 }
 
 /**
- * Stage 8: 切换回 Note 模式
+ * Stage 8: 点击第二个 AI 按钮，获取词义解释
  */
-async function stage8_BackToNoteMode(page: Page, sliceCard: Locator): Promise<void> {
-    console.log('\n📸 Stage 8: 切换回 Note 模式...');
+async function stage8_DictionaryAI(page: Page, sliceCard: Locator): Promise<void> {
+    console.log('\n📸 Stage 8: AI 词义解释...');
 
-    // 再次点击模式切换按钮
+    // 切换回 Note 模式（如果在 Sound 模式）
     const modeToggleBtn = sliceCard.locator('.mode-toggle-btn');
     if (await modeToggleBtn.count() > 0) {
         await modeToggleBtn.click();
         await page.waitForTimeout(300);
     }
 
-    await captureSliceCard(sliceCard, '09_note_mode');
+    // 点击第二个 ✨ 按钮（Dictionary 分析，在 .dict-definition 区域内）
+    const dictAiBtn = sliceCard.locator('.dict-definition .dict-ai-btn');
+
+    if (await dictAiBtn.count() === 0) {
+        console.log('⚠️ 未找到词义 AI 按钮');
+        return;
+    }
+
+    await dictAiBtn.click({ force: true });
+    console.log('   等待词义解释结果...');
+
+    // 等待 loading 状态消失（最多等 60 秒）
+    await page.waitForFunction(
+        (selector) => {
+            const btn = document.querySelector(selector);
+            return btn && !btn.classList.contains('is-loading');
+        },
+        '.dict-definition .dict-ai-btn',
+        { timeout: 60000 }
+    ).catch(() => console.log('   词义解释超时，继续...'));
+
+    await page.waitForTimeout(500);
+    await captureSliceCard(sliceCard, 'fig_lwb_audio-slicer_ai-definition-result');
+}
+
+/**
+ * Stage 9: 点击高亮文字退出编辑器，完成编辑
+ */
+async function stage9_CompleteEditing(page: Page, sliceCard: Locator): Promise<void> {
+    console.log('\n📸 Stage 9: 完成编辑...');
+
+    // 点击高亮文字区域退出 HighlightEditor
+    // 高亮文字 class 是 .highlight-group (带ruby) 或 .highlight-span (不带ruby)
+    const highlightedText = sliceCard.locator('.highlight-group, .highlight-span').first();
+
+    if (await highlightedText.count() > 0) {
+        await highlightedText.click();
+        await page.waitForTimeout(500);
+    } else {
+        // 备选：点击文本显示区域
+        const textArea = sliceCard.locator('.text-display-area');
+        if (await textArea.count() > 0) {
+            await textArea.click();
+            await page.waitForTimeout(500);
+        }
+    }
+
+    // 等待 HighlightEditor 关闭
+    await page.waitForTimeout(300);
+
+    await captureSliceCard(sliceCard, 'fig_lwb_audio-slicer_complete-editing');
 }
 
 /**
@@ -388,7 +423,7 @@ async function main(): Promise<void> {
 
     const browser = await chromium.launch({ headless: !isHeaded });
     const context = await browser.newContext({
-        viewport: { width: 1280, height: 720 },
+        viewport: { width: 1920, height: 1080 },
         deviceScaleFactor: CONFIG.deviceScaleFactor,
         // 绕过缓存，确保获取最新内容
         bypassCSP: true,
@@ -423,10 +458,10 @@ async function main(): Promise<void> {
         await stage2_Transcription(page, sliceCard);
         await stage3_EditMode(page, sliceCard);
         await stage4_TextHighlight(page, sliceCard);
-        await stage5_EnterHighlightEditor(page, sliceCard);
         await stage6_AIAnalysis(page, sliceCard);
         await stage7_SoundScriptEdit(page, sliceCard);
-        await stage8_BackToNoteMode(page, sliceCard);
+        await stage8_DictionaryAI(page, sliceCard);
+        await stage9_CompleteEditing(page, sliceCard);
 
         console.log('\n🎉 所有阶段截图完成！');
 

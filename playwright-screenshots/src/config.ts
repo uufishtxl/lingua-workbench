@@ -18,7 +18,7 @@ export const CONFIG = {
     outputDir: path.resolve(__dirname, '../screenshots'),
 
     /** 视口大小 */
-    viewport: { width: 1280, height: 720 },
+    viewport: { width: 1920, height: 1080 },
 
     /** 设备像素比（200% 缩放 = 2） */
     deviceScaleFactor: 2,

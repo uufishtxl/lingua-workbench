@@ -18,9 +18,9 @@
         </cmd>
         <stepresult> A new SliceCard appears in the panel below. <fig>
             <p>
-              <fig id="fig_rx5_xgh_xhc">
+              <fig id="fig_lwb_audio-slicer_slice-audio">
                 <title>Audio Slice</title>
-                <image href="../../../screenshots/t_create_a_slice.png" width="300"
+                <image href="../../../screenshots/fig_lwb_audio-slicer_slice-audio.png" width="300"
                   id="image_sx5_xgh_xhc">
                   <alt>Audio Slice</alt>
                 </image>

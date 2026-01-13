@@ -23,15 +23,12 @@
     
     <result>
       <p>The slice now contains the transcribed text, ready for highlighting and analysis.<fig
-          id="fig_zmr_kgh_xhc">
-          <p>
-            <fig id="fig_vxw_mgh_xhc">
+          id="fig_lwb_audio-slicer_transcribe-text">
+          
               <title>Text Transcription</title>
-              <image href="../../../screenshots/t_transcribe.png" width="300" id="image_wxw_mgh_xhc">
+              <image href="../../../screenshots/fig_lwb_audio-slicer_transcribe-text.png" width="300" id="image_wxw_mgh_xhc">
                 <alt>Text Transcription</alt>
               </image>
-            </fig>
-          </p>
         </fig></p>
     </result>
   </taskbody>
