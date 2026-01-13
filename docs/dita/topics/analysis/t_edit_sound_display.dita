@@ -10,19 +10,28 @@
     
     <steps>
       <step>
-        <cmd>Switch to Sound Display mode by clicking the mode toggle button.</cmd>
-        <info><fig></fig></info>
+        <cmd>Switch to Sound Display mode by clicking the <uicontrol conref="../../warehouse.dita#warehouse/icon_notes" />button.</cmd>
       </step>
       <step>
         <cmd>Click on a segment to select it for editing.</cmd>
-        <stepresult>The segment's sound_display appears in the input field.</stepresult>
+        <stepresult>The segment's sound_display appears in the input field.
+        </stepresult>
       </step>
       <step>
         <cmd>Edit the pronunciation text.</cmd>
       </step>
       <step>
-        <cmd>Click <uicontrol>Save</uicontrol> to apply changes.</cmd>
+        <cmd>Click <uicontrol conref="../../warehouse.dita#warehouse/icon_save"/> inside of the text
+          area to apply changes.</cmd>
       </step>
     </steps>
+    <result>
+      <p>
+        <fig id="fig_lwb_audio-slicer_edit-sound-display">
+          <title>Editing Sound Display</title>
+          <image href="../../../screenshots/fig_lwb_audio-slicer_edit-sound-display.png" width="300" alt="Editing Sound Display"/>
+        </fig>
+      </p>
+    </result>
   </taskbody>
 </task>

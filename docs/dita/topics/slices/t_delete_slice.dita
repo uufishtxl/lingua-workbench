@@ -11,16 +11,13 @@
     <steps>
       <step>
         <cmd>Click the <uicontrol conref="../../warehouse.dita#warehouse/icon_delete"/> button on the slice card.</cmd>
-        <info><fig>
-            <p>
-              <fig id="fig_mgd_fjh_xhc">
+        <info>
+          <fig id="fig_lwb_audio-slicer_slice-audio-delete">
                 <title>Deleting a Slice</title>
-                <image href="../../../screenshots/t_delete_slice.png" width="300"
+                <image href="../../../screenshots/fig_lwb_audio-slicer_slice-audio.png" width="300"
                   id="image_ngd_fjh_xhc">
                   <alt>Deleting a Slice</alt>
                 </image>
-              </fig>
-            </p>
           </fig></info>
       </step>
     </steps>

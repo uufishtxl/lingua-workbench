@@ -7,16 +7,13 @@
     <steps>
       <step>
         <cmd>Click the <uicontrol conref="../../warehouse.dita#warehouse/icon_edit"/> button at the bottom-right of the text area.</cmd>
-        <stepresult>The text becomes editable in a textarea.<fig id="fig_jl4_g3h_xhc">
-            <p>
-              <fig id="fig_mlb_33h_xhc">
+        <stepresult>The text becomes editable in a textarea.<fig id="fig_lwb_audio-slicer_edit-transcription">
+            
                 <title>Editing Slice Text</title>
-                <image href="../../../screenshots/t_transcribe_edit.png" width="300"
+                <image href="../../../screenshots/fig_lwb_audio-slicer_edit-transcription.png" width="300"
                   id="image_nlb_33h_xhc">
                   <alt>Editing Slice Text</alt>
                 </image>
-              </fig>
-            </p>
           </fig></stepresult>
       </step>
       <step>

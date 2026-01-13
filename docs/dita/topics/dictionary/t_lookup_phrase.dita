@@ -6,7 +6,7 @@
   <taskbody>
     <steps>
       <step>
-        <cmd>With a highlight active, click the <uicontrol>Dictionary</uicontrol> button.</cmd>
+        <cmd>With a highlight active, click the <uicontrol conref="../../warehouse.dita#warehouse/icon_aigen"></uicontrol> button.</cmd>
       </step>
       <step>
         <cmd>Review the definition and example sentences.</cmd>
@@ -15,6 +15,10 @@
     
     <result>
       <p>The dictionary panel shows bilingual definitions with contextual examples.</p>
+      <p><fig id="fig_lwb_audio-slicer_ai-definition-result">
+          <title>Dictionary Analysis</title>
+          <image href="../../../screenshots/fig_lwb_audio-slicer_ai-definition-result.png" alt="Dictionary Analysis" width="300" />
+      </fig></p>
     </result>
   </taskbody>
 </task>

@@ -1,51 +1,61 @@
 # Lingua Workbench 🎧
 
-A personal language learning platform designed for analyzing and studying spoken English from audio sources like TV shows and movies.
+A personal language learning platform for analyzing and studying spoken English from audio sources like TV shows and movies.
 
-![Demo Screenshot](./docs/screenshots/demo-placeholder.png)
+![Audio Slicer Demo](./docs/screenshots/fig_lwb_audio-slicer_complete-editing.png)
 
 ## ✨ Features
 
 ### 🎵 Audio Management
-- **Source Audio Upload**: Upload audio files from TV shows/movies, organized by drama/season/episode
-- **Auto Chunking**: Automatically splits long audio files into manageable chunks (5-minute segments)
-- **Waveform Visualization**: Interactive waveform display with region selection
+- **Source Audio Upload**: Upload audio files organized by drama/season/episode
+- **Auto Chunking**: Automatically splits long audio into 5-minute chunks
+- **Waveform Visualization**: Interactive waveform with region selection
 
 ### ✂️ Audio Slicing & Annotation
 - **Region Selection**: Click and drag on waveform to create audio slices
-- **Whisper Transcription**: AI-powered speech-to-text for automatic transcription
-- **Text Highlighting**: Select text portions to create highlights for deeper analysis
+- **Whisper Transcription**: AI-powered speech-to-text transcription
+- **Text Highlighting**: Select text to create highlights for deeper analysis
 
-![Slice Editor](./docs/screenshots/slice-editor-placeholder.png)
+![Transcription](./docs/screenshots/fig_lwb_audio-slicer_transcribe-text.png)
 
-### 🔊 AI Phonetic Analysis
-- **Sound Script Analysis**: AI-generated phonetic breakdown of highlighted phrases
-- **Phonetic Tags**: Automatic detection of:
-  - Reductions (弱化)
-  - Linking (连读)
-  - Assimilations (同化)
-  - Flap T / Glottal Stop
-- **Ruby Text Display**: Shows pronunciation above original text
-- **Ghost Sound Styling**: Strikethrough for omitted/silent sounds marked with `[brackets]`
+### 🔊 Sound Script Analysis
+Sound Script provides AI-generated phonetic breakdown of spoken phrases, showing how words are actually pronounced in connected speech:
 
-![Phonetic Analysis](./docs/screenshots/phonetic-analysis-placeholder.png)
+| Tag | 中文 | Description |
+|-----|------|-------------|
+| Reduction | 弱化 | Vowel reduced to schwa |
+| Linking | 连读 | Consonant-vowel linking across words |
+| Assimilation | 同化 | Sound changes due to adjacent sounds |
+| H-deletion | H删除 | Initial /h/ dropped in function words |
+| Flap T | 闪音T | T/D flapped between vowels |
+| Glottal Stop | 喉塞音 | T replaced with glottal stop |
+
+**Sound Display Notation**:
+- Phonetic spelling (e.g., "wuh-duh-we" for "what do we")
+- ~~Strikethrough~~ for ghost/silent sounds
+- Ruby text showing pronunciation above original text
+
+![AI Sound Analysis](./docs/screenshots/fig_lwb_audio-slicer_ai-sound-result.png)
 
 ### 📖 Dictionary Integration
 - **AI Dictionary Lookup**: Context-aware definitions for words/phrases
 - **Bilingual Examples**: Example sentences in both English and Chinese
 - **Example Refresh**: Generate new contextual examples on demand
 
+![AI Dictionary](./docs/screenshots/fig_lwb_audio-slicer_ai-definition-result.png)
+
 ### 🛠️ Editing Capabilities
 - **Dual Edit Modes**: 
-  - **AI Note Mode**: Edit phonetic annotations and notes
+  - **AI Note Mode**: Edit phonetic tags and notes
   - **Sound Display Mode**: Correct AI's pronunciation analysis
 - **Time Adjustment**: Fine-tune slice boundaries with ±0.5s arrows
 - **Favorite Marking**: Star important sentences for review
-- **Independent Delete**: Instant server-side deletion for saved slices
+
+![Edit Mode](./docs/screenshots/fig_lwb_audio-slicer_edit-transcription.png)
 
 ### 🎛️ Playback Controls
-- **Variable Speed Playback**: Adjustable playback speeds (0.5x - 1.5x)
-- **Loop Playback**: Repeat audio regions for focused practice
+- **Variable Speed**: 0.5x - 1.5x playback speeds
+- **Loop Playback**: Repeat audio regions for practice
 - **Region Playback**: Click to play individual slices
 
 ## 🏗️ Tech Stack
@@ -53,11 +63,11 @@ A personal language learning platform designed for analyzing and studying spoken
 ### Frontend
 | Technology | Purpose |
 |------------|---------|
-| Vue 3 | Reactive UI framework |
-| TypeScript | Type-safe development |
-| Vite | Fast build tool |
+| Vue 3 | UI framework with Composition API |
+| TypeScript | Type-safe JavaScript |
+| Vite | Build tool and dev server |
 | Element Plus | UI component library |
-| Tailwind CSS | Utility-first styling |
+| Tailwind CSS | Utility-first CSS |
 | WaveSurfer.js | Audio waveform visualization |
 | Pinia | State management |
 | Axios | HTTP client |
@@ -67,15 +77,15 @@ A personal language learning platform designed for analyzing and studying spoken
 |------------|---------|
 | Django | Web framework |
 | Django REST Framework | API development |
-| SimpleJWT | Authentication |
-| LangChain + OpenAI | AI analysis |
-| SQLite/PostgreSQL | Database |
+| SimpleJWT | JWT authentication |
+| LangChain | LLM orchestration |
+| OpenAI API | AI analysis and dictionary |
 
 ### Services
 | Service | Purpose |
 |---------|---------|
 | Whisper API | Speech-to-text transcription |
-| OpenAI GPT | Phonetic analysis & dictionary |
+| OpenAI GPT-4 | Phonetic analysis and examples |
 
 ## 📁 Project Structure
 
@@ -93,13 +103,16 @@ lingua-workbench/
 │   ├── ai_analysis/        # AI analysis app
 │   └── requirements.in
 ├── whisper/                 # Whisper API service
-└── README.md
+├── docs/                    # Documentation
+│   ├── dita/               # DITA source files
+│   └── screenshots/        # Product screenshots
+└── playwright-screenshots/  # Automated screenshot tool
 ```
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 20+ or 22+
+- Node.js 20+
 - Python 3.11+
 - ffmpeg (for audio processing)
 
@@ -134,14 +147,12 @@ OPENAI_API_KEY=your-openai-key
 
 | Feature | Screenshot |
 |---------|------------|
-| Audio Chunks | ![Chunks](./docs/screenshots/chunks-placeholder.png) |
-| Slice Editor | ![Editor](./docs/screenshots/editor-placeholder.png) |
-| Phonetic Analysis | ![Analysis](./docs/screenshots/analysis-placeholder.png) |
-| Dictionary | ![Dictionary](./docs/screenshots/dictionary-placeholder.png) |
-
-## 🎬 Demo Video
-
-[Watch Demo Video](./docs/demo-placeholder.mp4)
+| Audio Slice | ![Slice](./docs/screenshots/fig_lwb_audio-slicer_slice-audio.png) |
+| Transcription | ![Transcribe](./docs/screenshots/fig_lwb_audio-slicer_transcribe-text.png) |
+| Text Highlight | ![Highlight](./docs/screenshots/fig_lwb_audio-slicer_highlight-text-02.png) |
+| Sound Analysis | ![Sound](./docs/screenshots/fig_lwb_audio-slicer_ai-sound-result.png) |
+| Dictionary | ![Dict](./docs/screenshots/fig_lwb_audio-slicer_ai-definition-result.png) |
+| Completed | ![Complete](./docs/screenshots/fig_lwb_audio-slicer_complete-editing.png) |
 
 ## 📝 License
 

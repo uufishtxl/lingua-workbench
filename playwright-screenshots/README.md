@@ -87,11 +87,15 @@ npm run screenshot:debug
 
 | 阶段 | 文件名 | 说明 |
 |------|--------|------|
-| 1 | `01_initial.png` | SliceCard 初始状态（波形） |
-| 2 | `02_transcribed.png` | 转录完成后（有文本） |
-| 3 | `03_edit_mode.png` | 编辑模式 |
-| 4 | `04_text_selected.png` | 选中指定文本 |
-| 5 | `05_highlighted.png` | 高亮完成 |
+| 1 | `fig_lwb_audio-slicer_slice-audio.png` | SliceCard 初始状态（波形） |
+| 2 | `fig_lwb_audio-slicer_transcribe-text.png` | 转录完成后（有文本） |
+| 3 | `fig_lwb_audio-slicer_edit-transcription.png` | 编辑模式 |
+| 4 | `fig_lwb_audio-slicer_highlight-text-01.png` | 选中指定文本 |
+| 5 | `fig_lwb_audio-slicer_highlight-text-02.png` | 高亮完成 |
+| 6 | `fig_lwb_audio-slicer_ai-sound-result.png` | AI 发音分析结果 |
+| 7 | `fig_lwb_audio-slicer_edit-sound-display.png` | 编辑 Sound Display |
+| 8 | `fig_lwb_audio-slicer_ai-definition-result.png` | AI 词义解释结果 |
+| 9 | `fig_lwb_audio-slicer_complete-editing.png` | 退出编辑器完成编辑 |
 
 ---
 

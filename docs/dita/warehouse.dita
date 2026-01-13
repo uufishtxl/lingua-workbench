@@ -46,6 +46,7 @@
     <p><uicontrol id="icon_notes"><image href="../icons/gg--notes.png" placement="inline" scale="4" alt="AI Notes"/></uicontrol></p>
     <p><uicontrol id="icon_sound_display"><image href="../icons/tabler--abc.png" placement="inline" scale="4" alt="Sound Display"/></uicontrol></p>
     <p><uicontrol id="icon_highlighter"><image href="../icons/solar--pen-linear.png" placement="inline" scale="4" alt="Highlighter"/></uicontrol></p>
+    <p><uicontrol id="icon_aigen">✨</uicontrol></p>
     
     <!-- ============ NOTES (Reusable) ============ -->
     <note id="note_api_required" type="important">
