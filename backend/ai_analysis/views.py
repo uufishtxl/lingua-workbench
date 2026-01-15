@@ -170,6 +170,7 @@ class RefreshExampleView(APIView):
         word_or_phrase = request.data.get('word_or_phrase')
         definition = request.data.get('definition', '')
         original_context = request.data.get('original_context', '')
+        current_example = request.data.get('current_example')
         
         # Validation
         if not word_or_phrase:
@@ -182,7 +183,8 @@ class RefreshExampleView(APIView):
             result = refresh_example(
                 word_or_phrase=word_or_phrase,
                 definition=definition,
-                original_context=original_context
+                original_context=original_context,
+                current_example=current_example
             )
             
             # Convert Pydantic model to dict

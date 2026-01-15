@@ -32,7 +32,8 @@ export interface CreateSliceRequest {
     end_time: number
     original_text: string
     highlights: HighlightData[]
-    is_favorite?: boolean
+    is_pronunciation_hard?: boolean
+    is_idiom?: boolean
 }
 
 export interface AudioSliceResponse {
@@ -42,7 +43,8 @@ export interface AudioSliceResponse {
     end_time: number
     original_text: string
     highlights: HighlightData[]
-    is_favorite: boolean
+    is_pronunciation_hard: boolean
+    is_idiom: boolean
     created_at: string
     updated_at: string
 }

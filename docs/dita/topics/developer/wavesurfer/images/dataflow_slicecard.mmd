@@ -1,0 +1,12 @@
+flowchart LR
+    SC["SliceCard"]
+    
+    subgraph BWS["BaseWaveSurfer"]
+        props["Props"]
+        emits["Emits"]
+        expose["Expose"]
+    end
+
+    SC -->|"url, start, end, allowSelection=false"| props
+    emits -.->|"play, pause"| SC
+    expose -.->|"playPause(), setPlaybackRate()"| SC

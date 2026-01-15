@@ -1,15 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { SoundScriptResponse, ScriptSegment } from '@/api/aiAnalysisApi';
-
-interface Hili {
-  id: string;
-  start: number;
-  end: number;
-  content: string;
-  tags: string[];
-  note: string;
-}
+import type { Hili } from '@/types/highlight';
 
 const props = defineProps<{
   text: string;

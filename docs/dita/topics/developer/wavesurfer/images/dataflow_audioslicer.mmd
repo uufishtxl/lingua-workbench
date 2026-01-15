@@ -1,0 +1,13 @@
+flowchart LR
+    AS["AudioSlicer"]
+    
+    subgraph BWS["BaseWaveSurfer"]
+        props["Props"]
+        emits["Emits"]
+        expose["Expose"]
+    end
+
+    AS -->|"url, allowSelection=true"| props
+    emits -.->|"region-created/updated/clicked"| AS
+    emits -.->|"play, pause, ready"| AS
+    expose -.->|"playPause(), addRegion()"| AS

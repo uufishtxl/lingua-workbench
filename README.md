@@ -109,6 +109,16 @@ lingua-workbench/
 └── playwright-screenshots/  # Automated screenshot tool
 ```
 
+## 🔧 Developer Documentation
+
+For developers contributing to the codebase, detailed component architecture documentation is available:
+
+| Component | Description | Docs |
+|-----------|-------------|------|
+| `BaseWaveSurfer` | Waveform visualization & region management | [Architecture](./docs/dita/topics/developer/wavesurfer/c_basewavesurfer.dita) |
+
+> The waveform is the foundation of all audio interactions. See [jottings/BaseWaveSurfer.md](./jottings/BaseWaveSurfer.md) for detailed API reference.
+
 ## 🚀 Getting Started
 
 ### Prerequisites

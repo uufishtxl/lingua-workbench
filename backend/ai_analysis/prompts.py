@@ -153,6 +153,7 @@ REFRESH_EXAMPLE_HUMAN_PROMPT = """
 释义：{definition}
 
 ⛔ 禁止参考这个原文："{original_context}"
+注意：现在有当前例句："{current_example}"，请不要重复这个例句。
 
 请用"{word_or_phrase}"造一个**完全不同场景**的例句。
 """

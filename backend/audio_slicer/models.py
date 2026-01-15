@@ -79,10 +79,16 @@ class AudioSlice(models.Model):
     end_time = models.FloatField(help_text="End time of the slice in seconds")
     original_text = models.TextField(blank=True, help_text="Full text content of the audio slice")
     highlights = models.JSONField(default=list, blank=True, help_text="Highlighted segments with phonetic analysis")
-    is_favorite = models.BooleanField(default=False, help_text="Mark slice as favorite for review")
+
+    is_pronunciation_hard = models.BooleanField(default=False, help_text="Mark slice as hard for pronunciation")
+    is_idiom = models.BooleanField(default=False, help_text="Mark slice as containing idioms")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    ########### ↓↓↓↓↓ D E P R E C I A T E D ↓↓↓↓↓ ###########
+    # is_favorite = models.BooleanField(default=False, help_text="Mark slice as favorite for review")
+    # favorite_category = models.CharField(max_length=50, blank=True, null=True, help_text="Category of favorite:'pronunciation', 'idiom'")
 
     class Meta:
         unique_together = ('audio_chunk', 'start_time', 'end_time')

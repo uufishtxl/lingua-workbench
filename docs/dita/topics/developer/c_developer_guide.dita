@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="c_developer_guide" audience="developer">
+  <title>Developer Guide</title>
+  <shortdesc>Technical documentation for developers contributing to or extending Lingua Workbench.</shortdesc>
+  <prolog>
+    <metadata>
+      <audience type="programmer" job="developer"/>
+    </metadata>
+  </prolog>
+  <conbody>
+    <section>
+      <title>About This Guide</title>
+      <p>This section contains architecture documentation, component designs, and implementation details intended for developers working on the Lingua Workbench codebase.</p>
+      <note type="important">This documentation is intended for developers only. End users should refer to the main user guide.</note>
+    </section>
+    
+    <section>
+      <title>Frontend Components</title>
+      <p>Key Vue components and their architecture:</p>
+      <ul>
+        <li><xref href="wavesurfer/c_basewavesurfer.dita">BaseWaveSurfer</xref> - Audio waveform visualization and region management</li>
+      </ul>
+    </section>
+    
+    <section>
+      <title>Additional Resources</title>
+      <ul>
+        <li>Internal jottings: <filepath>jottings/</filepath> directory</li>
+        <li>Tech stack reference: <xref href="../appendix/r_tech_stack.dita">Technology Stack</xref></li>
+      </ul>
+    </section>
+  </conbody>
+</concept>

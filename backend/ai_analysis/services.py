@@ -185,7 +185,8 @@ def get_refresh_example_chain():
 def refresh_example(
     word_or_phrase: str,
     definition: str,
-    original_context: str
+    original_context: str,
+    current_example: str
 ) -> RefreshExampleResponse:
     """
     Generate a new example sentence for a word/phrase.
@@ -203,7 +204,8 @@ def refresh_example(
     result = chain.invoke({
         "word_or_phrase": word_or_phrase,
         "definition": definition,
-        "original_context": original_context
+        "original_context": original_context,
+        "current_example": current_example
     })
     
     return result

@@ -35,23 +35,30 @@ const emit = defineEmits<{
 
 const waveformContainer = ref<HTMLElement | null>(null)
 const wavesurfer = ref<WaveSurfer | null>(null)
-const wsRegions = ref<RegionsPlugin | null>(null)
-const selectedRegion = ref<Region | null>(null);
-const managedRegion = ref<Region | null>(null);
+const wsRegions = ref<RegionsPlugin | null>(null) // 创建的区域
+const selectedRegion = ref<Region | null>(null); // 当前选中的区域
+const managedRegion = ref<Region | null>(null); // 哨兵区域
 
-const REGION_ID = 'start-end-segment'
+const REGION_ID = 'start-end-segment' // 哨兵区域 ID（固定 ID，以示区分）
 
 const syncStartEndRegion = (start?: number, end?: number) => {
   if (!wavesurfer.value || !wsRegions.value) return
 
   const existingRegions = Object.values(wsRegions.value.getRegions())
-  const region = existingRegions.find(r => r.id === REGION_ID)
-  if (region) {
-    region.remove()
+  console.log('[syncStartEndRegion] 调用', { start, end, existingRegionsCount: existingRegions.length })
+  console.log('[syncStartEndRegion] 现有区域 IDs:', existingRegions.map(r => r.id))
+  
+  // 🔧 修复：删除所有同 ID 的哨兵区域（防止高频更新时重复创建）
+  const regionsToRemove = existingRegions.filter(r => r.id === REGION_ID)
+  if (regionsToRemove.length > 0) {
+    regionsToRemove.forEach(r => r.remove())
     managedRegion.value = null
   }
 
   if (start !== undefined && end !== undefined && end > start) {
+    // 哨兵区域：表示用户选择的区域（在 SliceCard 中会用到，只会传入 start 和 end，不允许拖动和调整大小）
+    // 非哨兵区域 ID 由 WaveSurfer.js 自动创建
+    // console.log('[syncStartEndRegion] 正在创建新哨兵区域...', { start, end })
     managedRegion.value = wsRegions.value.addRegion({
       id: REGION_ID,
       start,
@@ -61,6 +68,7 @@ const syncStartEndRegion = (start?: number, end?: number) => {
       resize: false,
       // loop: false // We handle looping manually for better control
     })
+    // console.log('[syncStartEndRegion] 新区域创建完成, ID:', managedRegion.value?.id)
 
     if (waveformContainer.value) {
         const segmentDuration = end - start;
@@ -68,14 +76,17 @@ const syncStartEndRegion = (start?: number, end?: number) => {
             const containerWidth = waveformContainer.value.clientWidth;
             const paddedSegmentDuration = segmentDuration * 1.4; 
             const pxPerSec = containerWidth / paddedSegmentDuration;
+            // console.log('[syncStartEndRegion] zooming to:', pxPerSec);
             wavesurfer.value.zoom(pxPerSec);
         }
     }
     
+    // 🎯 确保波形渲染完成后再跳转到中心位置
     setTimeout(() => {
       const duration = wavesurfer.value?.getDuration()
       if (duration && duration > 0) {
-        const centerProgress = ((start + end) / 2) / duration;
+        // 进度指向 start，如果要指向中间位置：((start + end) / 2) / duration
+        const centerProgress = start / duration;
         wavesurfer.value?.seekTo(centerProgress);
       }
     }, 10);
@@ -83,6 +94,7 @@ const syncStartEndRegion = (start?: number, end?: number) => {
 }
 
 onMounted(() => {
+  // 确保容器在 DOM 挂载完成后，创建 WaveSurfer 实例（需要传入 DOM 容器元素和配置参数），之后 WaveSurfer 即可在容器内绑定 canvas 并渲染波形。
   if (waveformContainer.value) {
     wavesurfer.value = WaveSurfer.create({
       container: waveformContainer.value,
@@ -96,7 +108,7 @@ onMounted(() => {
       height: props.height,
     })
 
-    wavesurfer.value.on('play', () => emit('play'))
+    wavesurfer.value.on('play', () => emit('play')) // 通过 on 监听 wavesurfer 的特定事件
     wavesurfer.value.on('pause', () => emit('pause'))
 
     // Manual looping logic
@@ -133,7 +145,7 @@ onMounted(() => {
 
       syncStartEndRegion(props.start, props.end)
       
-      emit('ready', wavesurfer.value)
+      emit('ready', wavesurfer.value! as WaveSurfer)
     })
 
     wavesurfer.value.on('error', (err) => console.error('Wavesurfer error:', err))
@@ -192,13 +204,6 @@ defineExpose({
   getRegions: () => wsRegions.value?.getRegions(),
   addRegion: (options: any) => wsRegions.value?.addRegion(options),
   setPlaybackRate: (rate: number) => wavesurfer.value?.setPlaybackRate(rate),
-  toggleLoop: () => {
-    if (selectedRegion.value) {
-      selectedRegion.value.setLoop(!selectedRegion.value.loop);
-      return selectedRegion.value.loop;
-    }
-    return false;
-  }
 })
 </script>
 

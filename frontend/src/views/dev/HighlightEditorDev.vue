@@ -88,17 +88,7 @@ import { ref } from 'vue'
 import HighlightEditor from '@/components/HighlightEditor.vue'
 import InteractiveTextWithHilis from '@/components/InteractiveTextWithHilis.vue'
 
-// Types
-type AbbreviatedTag = 'FT' | 'RED' | 'LINK' | 'RESYL' | 'FT_HYPHEN'
-
-interface Hili {
-  id: string
-  start: number
-  end: number
-  content: string
-  tags: AbbreviatedTag[]
-  note: string
-}
+import type { Hili } from '@/types/highlight'
 
 interface RubySegment {
   original: string

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="c_basewavesurfer" audience="developer">
+  <title>BaseWaveSurfer Component Architecture</title>
+  <shortdesc>Technical documentation for the BaseWaveSurfer Vue component, which provides waveform visualization and region management.</shortdesc>
+  <prolog>
+    <metadata>
+      <audience type="programmer" job="developer"/>
+    </metadata>
+  </prolog>
+  <conbody>
+    <section>
+      <title>Overview</title>
+      <p>The <codeph>BaseWaveSurfer</codeph> component is a Vue 3 wrapper around <xref href="https://wavesurfer.xyz/" format="html" scope="external">WaveSurfer.js</xref>, providing audio waveform visualization with region selection and loop playback capabilities.</p>
+      <p>This component serves as the foundation for all audio interactions in the application.</p>
+    </section>
+    
+    <section>
+      <title>Usage Scenarios</title>
+      <table>
+        <tgroup cols="4">
+          <colspec colname="c1" colwidth="1*"/>
+          <colspec colname="c2" colwidth="1*"/>
+          <colspec colname="c3" colwidth="1.5*"/>
+          <colspec colname="c4" colwidth="2*"/>
+          <thead>
+            <row>
+              <entry>Scenario</entry>
+              <entry>Parent Component</entry>
+              <entry>Props</entry>
+              <entry>Purpose</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>Main Waveform</entry>
+              <entry><codeph>AudioSlicer</codeph></entry>
+              <entry><codeph>url</codeph></entry>
+              <entry>Users drag to create multiple regions</entry>
+            </row>
+            <row>
+              <entry>Slice Card Waveform</entry>
+              <entry><codeph>SliceCard</codeph></entry>
+              <entry><codeph>url</codeph>, <codeph>start</codeph>, <codeph>end</codeph></entry>
+              <entry>Display fixed segment with loop playback</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+
+    <section>
+      <title>Data Flow: AudioSlicer</title>
+      <p>In the AudioSlicer context, users interact with the waveform to create regions:</p>
+      <fig>
+        <title>AudioSlicer ↔ BaseWaveSurfer Data Flow</title>
+        <image href="images/dataflow_audioslicer.png" placement="break">
+          <alt>Data flow diagram showing AudioSlicer passing url prop to BaseWaveSurfer, receiving region events and using exposed methods</alt>
+        </image>
+      </fig>
+      <ul>
+        <li><b>Props</b>: <codeph>url</codeph>, <codeph>allowSelection=true</codeph></li>
+        <li><b>Events</b>: <codeph>region-created</codeph>, <codeph>region-updated</codeph>, <codeph>region-clicked</codeph>, <codeph>play</codeph>, <codeph>pause</codeph>, <codeph>ready</codeph></li>
+        <li><b>Exposed Methods</b>: <codeph>playPause()</codeph>, <codeph>addRegion()</codeph></li>
+      </ul>
+    </section>
+
+    <section>
+      <title>Data Flow: SliceCard</title>
+      <p>In the SliceCard context, a fixed region is displayed with loop playback:</p>
+      <fig>
+        <title>SliceCard ↔ BaseWaveSurfer Data Flow</title>
+        <image href="images/dataflow_slicecard.png" placement="break">
+          <alt>Data flow diagram showing SliceCard passing url, start, end props to BaseWaveSurfer</alt>
+        </image>
+      </fig>
+      <ul>
+        <li><b>Props</b>: <codeph>url</codeph>, <codeph>start</codeph>, <codeph>end</codeph>, <codeph>allowSelection=false</codeph></li>
+        <li><b>Events</b>: <codeph>play</codeph>, <codeph>pause</codeph></li>
+        <li><b>Exposed Methods</b>: <codeph>playPause()</codeph>, <codeph>setPlaybackRate()</codeph></li>
+      </ul>
+    </section>
+
+    <section>
+      <title>Key Concepts</title>
+      <dl>
+        <dlentry>
+          <dt>Managed Region (Sentinel Region)</dt>
+          <dd>When <codeph>start</codeph> and <codeph>end</codeph> props are provided, the component creates a special region with ID <codeph>'start-end-segment'</codeph>. This region is used for visual highlighting, loop playback, and smart cursor positioning. Its <codeph>region-created</codeph> event is filtered out to avoid interfering with user-created regions.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Smart Zoom</dt>
+          <dd>When creating a sentinel region, the component automatically calculates zoom level so the region occupies approximately 70% of the viewport width.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Manual Loop</dt>
+          <dd>Loop playback is implemented manually via the <codeph>audioprocess</codeph> event, seeking back to <codeph>start</codeph> when playback reaches <codeph>end</codeph>.</dd>
+        </dlentry>
+      </dl>
+    </section>
+
+    <section>
+      <title>Source Code</title>
+      <p>Component location: <filepath>frontend/src/components/BaseWaveSurfer.vue</filepath></p>
+      <p>For detailed API documentation, see the component's internal jottings at <filepath>jottings/BaseWaveSurfer.md</filepath>.</p>
+    </section>
+  </conbody>
+</concept>
