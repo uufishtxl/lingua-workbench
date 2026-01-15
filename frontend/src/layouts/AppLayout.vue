@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter, RouterLink } from 'vue-router' // 保留 RouterLink 用于 Header
 import logoUrl from '@/assets/logo.svg'
+import TokenExpirationWarning from '@/components/TokenExpirationWarning.vue'
 import RiArchive2Fill from '~icons/ri/archive-2-fill';
 // 1. 引入 ElementPlus 图标
 import {
@@ -27,6 +28,13 @@ const handleLogout = () => {
   router.push({ name: 'login' })
 }
 
+// Start token expiration monitor on mount (for page refresh scenarios)
+onMounted(() => {
+  if (authStore.isAuthenticated) {
+    authStore.startExpirationMonitor()
+  }
+})
+
 // 2. 额外：处理 el-dropdown 的命令
 const handleCommand = (command: string | number | object) => {
   if (command === 'logout') {
@@ -36,8 +44,11 @@ const handleCommand = (command: string | number | object) => {
 </script>
 
 <template>
+  <!-- Token Expiration Warning Bar -->
+  <TokenExpirationWarning />
+  
   <el-container class="h-screen overflow-hidden">
-    <el-header class="shadow py-4 px-8 border-b-1 border-b-gray-300 flex justify-between items-center"
+    <el-header class="shadow py-2 px-8 border-b-1 border-b-gray-300 flex justify-between items-center"
       style="background-color: #f1f5f9;">
       <div class="flex items-center">
         <img :src="logoUrl" alt="Logo" class="w-8 h-8 mr-3" />
@@ -166,6 +177,6 @@ const handleCommand = (command: string | number | object) => {
 }
 
 :deep(.el-main) {
-  padding: 8px;
+  padding: 4px 8px;
 }
 </style>

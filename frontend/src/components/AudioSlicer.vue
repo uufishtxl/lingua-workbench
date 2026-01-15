@@ -1,5 +1,5 @@
 <template>
-    <div class="wave-surfer__wrapper flex flex-col gap-[2px] h-full overflow-hidden">
+    <div class="wave-surfer__wrapper flex flex-col gap-[4px] h-full overflow-hidden">
         <!-- Wave Container -->
         <el-card class="flex-none">
             <p class="text-xs text-gray-400 mb-1">Source: {{ props.title }}</p>
@@ -29,7 +29,7 @@
             <h2 class="font-bold mb-2 border-b-[0.5px] border-blue-100/50 pb-0">Selected Regions</h2>
             
             <div class="flex-1 overflow-y-auto min-h-0">
-                <div v-if="regionsList.length > 0" class="grid gap-1" style="grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));">
+                <div v-if="regionsList.length > 0" class="grid gap-[3px]" style="grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));">
                     <SliceCard 
                         v-for="(region, index) in sortedRegionsList" 
                         :key="region.id" 
@@ -39,11 +39,12 @@
                         :end="Number(region.end)"
                         :region="region"
                         :initial-highlights="region.savedHighlights"
-                        :initial-favorite="region.isFavorite"
+                        :initial-pronunciation-hard="region.isPronunciationHard"
+                        :initial-idiom="region.isIdiom"
                         @delete="removeRegion"
                         @adjust-start="(delta) => handleAdjustTime(region.id, 'start', delta)"
                         @adjust-end="(delta) => handleAdjustTime(region.id, 'end', delta)"
-                        @toggle-favorite="(val) => handleToggleFavorite(region.id, val)"
+                        @update-markers="(markers) => handleUpdateMarkers(region.id, markers)"
                     />
                 </div>
                 <div v-else class="flex flex-col items-center justify-center h-full">
@@ -62,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, onMounted, nextTick } from 'vue';
+import { ref, watch, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import type { Region } from 'wavesurfer.js/dist/plugins/regions.js'
 import BaseWaveSurfer from './BaseWaveSurfer.vue';
 import SliceCard from './SliceCard.vue';
@@ -91,7 +92,7 @@ const props = defineProps<{
     initialSlices?: AudioSliceResponse[];
 }>()
 
-type audio_type = 'Link' | 'H-Del' | 'Th-Del' | 'Flap-T'
+// type audio_type = 'Link' | 'H-Del' | 'Th-Del' | 'Flap-T'
 
 interface RegionInfo {
     id: string;  // WaveSurfer region ID
@@ -99,10 +100,11 @@ interface RegionInfo {
     start: string;
     end: string;
     originalText: string;
-    tags: audio_type[];
-    note: string;
+    // tags: audio_type[];
+    // note: string;
     isTranscribing?: boolean;
-    isFavorite?: boolean;  // Mark as favorite
+    isPronunciationHard?: boolean;  // Mark as pronunciation hard
+    isIdiom?: boolean;  // Mark as idiom/new word
     // Link to saved slice data for restoring analysis/dictionary
     savedHighlights?: AudioSliceResponse['highlights'];
 }
@@ -155,6 +157,35 @@ const handleWaveSurferReady = () => {
     syncRegionsToWaveSurfer()
 }
 
+// Listen for global save-before-expiration event (from TokenExpirationWarning)
+const handleSaveBeforeExpiration = () => {
+    if (isDirty.value && regionsList.value.length > 0) {
+        console.log('Auto-saving before token expiration...')
+        saveRegions()
+    }
+}
+
+// Warn user before leaving page with unsaved changes
+const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+    if (isDirty.value && regionsList.value.length > 0) {
+        e.preventDefault()
+        e.returnValue = ''
+        return ''
+    }
+}
+
+onMounted(() => {
+    // Listen for save-before-expiration event
+    window.addEventListener('save-before-expiration', handleSaveBeforeExpiration)
+    // Warn before page unload
+    window.addEventListener('beforeunload', handleBeforeUnload)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('save-before-expiration', handleSaveBeforeExpiration)
+    window.removeEventListener('beforeunload', handleBeforeUnload)
+})
+
 // Initialize from saved slices when prop becomes available
 watch(() => props.initialSlices, (newSlices) => {
     if (newSlices?.length && regionsList.value.length === 0) {
@@ -165,10 +196,11 @@ watch(() => props.initialSlices, (newSlices) => {
             start: slice.start_time.toFixed(2),
             end: slice.end_time.toFixed(2),
             originalText: slice.original_text,
-            tags: [],
-            note: '',
+            // tags: [],
+            // note: '',
             isTranscribing: false,
-            isFavorite: slice.is_favorite,  // Load favorite state
+            isPronunciationHard: slice.is_pronunciation_hard,
+            isIdiom: slice.is_idiom,
             savedHighlights: slice.highlights
         }))
         
@@ -198,8 +230,8 @@ const handleRegionCreated = (newRegion: Region) => {
             start: newRegion.start.toFixed(2),
             end: newRegion.end.toFixed(2),
             originalText: '',
-            tags: [],
-            note: '',
+            // tags: [],
+            // note: '',
             isTranscribing: false,
         });
     }
@@ -289,11 +321,13 @@ const handleAdjustTime = (regionId: string, type: 'start' | 'end', delta: number
     }
 }
 
-// Handle favorite toggle from SliceCard
-const handleToggleFavorite = (regionId: string, isFavorite: boolean) => {
+// Handle marker updates from SliceCard
+const handleUpdateMarkers = (regionId: string, markers: { isPronunciationHard: boolean; isIdiom: boolean }) => {
     const regionInList = regionsList.value.find(r => r.id === regionId)
     if (regionInList) {
-        regionInList.isFavorite = isFavorite
+        regionInList.isPronunciationHard = markers.isPronunciationHard
+        regionInList.isIdiom = markers.isIdiom
+        // console.log(regionInList.isPronunciationHard, regionInList.isIdiom, regionsList.value[0])
     }
 }
 

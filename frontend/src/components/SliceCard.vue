@@ -2,78 +2,61 @@
     <el-card>
         <!-- Time Stamp with adjustment arrows inside -->
         <div class="w-full flex justify-between items-center text-xs">
-            <div class="group bg-sky-100 text-blue-400 px-1 py-1 rounded flex items-center justify-center w-[7.5rem] transition-all duration-200">
-                <!-- Backward arrow (adjust start earlier) -->
-                <i-tabler-chevron-left 
-                    class="text-blue-400 text-xs cursor-pointer hover:text-blue-600 w-0 opacity-0 group-hover:w-3 group-hover:opacity-100 transition-all duration-200 overflow-hidden flex-shrink-0" 
-                    @click.stop="emit('adjust-start', -0.2)"
-                    title="Start -0.2s"
-                />
-                <span class="tracking-widest group-hover:tracking-normal transition-all duration-200">{{ formatTime(props.start) }}~{{ formatTime(props.end) }}</span>
-                <!-- Forward arrow (adjust end later) -->
-                <i-tabler-chevron-right 
-                    class="text-blue-400 text-xs cursor-pointer hover:text-blue-600 w-0 opacity-0 group-hover:w-3 group-hover:opacity-100 transition-all duration-200 overflow-hidden flex-shrink-0" 
-                    @click.stop="emit('adjust-end', 0.2)"
-                    title="End +0.2s"
-                />
-                <!-- Favorite toggle -->
-                <i-tabler-star-filled 
-                    v-if="isFavorite"
-                    class="text-yellow-400 text-xs cursor-pointer ml-1" 
-                    @click.stop="toggleFavorite"
-                    title="取消收藏"
-                />
-                <i-tabler-star 
-                    v-else
-                    class="text-yellow-400 text-xs cursor-pointer hover:text-yellow-400 ml-1" 
-                    @click.stop="toggleFavorite"
-                    title="收藏"
-                />
+            <div class="flex-1 flex items-center">
+                <div
+                    class="group bg-sky-100 text-blue-400 px-1 py-1 rounded flex items-center justify-center w-[7rem] transition-all duration-200">
+                    <!-- Backward arrow (adjust start earlier) -->
+                    <i-tabler-chevron-left class="time-adjust-icon hover-reveal-icon"
+                        @click.stop="emit('adjust-start', -0.2)" title="Start -0.2s" />
+                    <span class="tracking-widest group-hover:tracking-normal transition-all duration-200">{{
+                        formatTime(props.start) }} - {{ formatTime(props.end) }}</span>
+                    <!-- Forward arrow (adjust end later) -->
+                    <i-tabler-chevron-right class="time-adjust-icon hover-reveal-icon"
+                        @click.stop="emit('adjust-end', 0.2)" title="End +0.2s" />
+                </div>
+                <!-- Toggle Icons: Pronunciation & Idiom -->
+                <div class="flex items-center gap-1 ml-2">
+                    <i-tabler-volume 
+                        :class="isPronunciationHard ? 'text-yellow-400' : 'text-gray-400 hover:text-yellow-300'"
+                        class="text-sm cursor-pointer transition-colors pt-0.1"
+                        @click.stop="togglePronunciation"
+                        title="发音难点" />
+                    <i-tabler-bulb 
+                        :class="isIdiom ? 'text-yellow-400' : 'text-gray-400 hover:text-yellow-300'"
+                        class="text-sm cursor-pointer transition-colors"
+                        @click.stop="toggleIdiom"
+                        title="习语/生词" />
+                </div>
             </div>
+            <!-- Button Group: Transcribe / Delete -->
             <div class="flex items-center gap-1">
                 <!-- View Mode Buttons (Default) -->
                 <template v-if="!activeHighlightId">
-                    <el-button 
-                        text 
-                        type="primary" 
-                        circle 
-                        :loading="isTranscribing"
-                        @click.stop="handleTranscribe"
-                        title="Speech to Text"
-                        :disabled="isEditingOriginal"
-                    >
+                    <el-button text type="primary" circle :loading="isTranscribing" @click.stop="handleTranscribe"
+                        title="Speech to Text" :disabled="isEditingOriginal">
                         <ArcticonsLiveTranscribe v-if="!isTranscribing" class="text-sky-500" />
                     </el-button>
-                    <el-button text type="danger" :icon="Delete" class="is-del" circle @click.stop="emit('delete', region.id)" :disabled="isEditingOriginal" />
+                    <el-button text type="danger" :icon="Delete" class="is-del" circle
+                        @click.stop="emit('delete', region.id)" :disabled="isEditingOriginal" />
                 </template>
-                
+
                 <!-- Edit Mode Buttons (Recording - when Highlight active) -->
                 <template v-else>
-                    <el-button 
-                        text 
-                        :type="isRecording ? 'danger' : 'primary'" 
-                        circle 
-                        @click.stop="handleRecordToggle"
-                        :title="isRecording ? 'Stop Recording' : 'Start Recording'"
-                    >
+                    <el-button text :type="isRecording ? 'danger' : 'primary'" circle @click.stop="handleRecordToggle"
+                        :title="isRecording ? 'Stop Recording' : 'Start Recording'">
                         <i-tabler-player-stop-filled v-if="isRecording" class="text-red-500 animate-pulse" />
                         <i-tabler-microphone v-else class="text-sky-500" />
                     </el-button>
-                    <el-button 
-                        text 
-                        type="primary" 
-                        circle 
-                        :disabled="!recordedAudioUrl || isRecording"
-                        @click.stop="handlePlayRecording"
-                        title="Play Recording"
-                    >
+                    <el-button text type="primary" circle :disabled="!recordedAudioUrl || isRecording"
+                        @click.stop="handlePlayRecording" title="Play Recording">
                         <i-tabler-player-play-filled class="text-sky-500" />
                     </el-button>
                 </template>
             </div>
         </div>
         <!-- Original Text 浏览/编辑区域 -->
-        <div class="font-semibold relative h-20 text-display-area" ref="textDisplayRef" @mouseup="handleTextSelection" :style="dynamicTextStyle">
+        <div class="font-semibold relative h-20 text-display-area" ref="textDisplayRef" @mouseup="handleTextSelection"
+            :style="dynamicTextStyle">
             <div class="original-text__wrapper rounded relative h-full" v-if="isEditingOriginal">
                 <el-input v-model="editingText" :auto-size="false" type="textarea" :rows="3" />
                 <div class="absolute right-2 bottom-2 input__icons">
@@ -85,11 +68,8 @@
                     </el-button>
                 </div>
             </div>
-            <InteractiveTextWithHilis v-else 
-                :highlights="currentSlice.highlights" 
-                :text="currentSlice.text"
-                :current-active-id="activeHighlightId" 
-                :analysis-results="analysisResults"
+            <InteractiveTextWithHilis v-else :highlights="currentSlice.highlights" :text="currentSlice.text"
+                :current-active-id="activeHighlightId" :analysis-results="analysisResults"
                 @click-highlight="handleHighlightClick" />
             <el-button v-if="!isEditingOriginal" text class="absolute bottom-2 right-2 is-edit" :icon="Edit"
                 size="small" circle @click="startEditing" :disabled="!!activeHighlightId" />
@@ -107,16 +87,14 @@
         <!-- Wave / Highlight Editor -->
         <div v-if="activeHighlightId && activeHighlight" ref="editorWrapperRef">
             <HighlightEditor :highlight="activeHighlight" :fullContext="currentSlice.text"
-                :savedAnalysis="savedAnalysisForActive"
-                :savedDictionary="savedDictionaryForActive"
-                @update:highlight="handleHighlightUpdate"
-                @cancel="handleHighlightCancel" @delete-highlight="handleHighlightDelete"
-                @ai-result="handleAiResult" @save-data="handleSaveData" />
+                :savedAnalysis="savedAnalysisForActive" :savedDictionary="savedDictionaryForActive"
+                @update:highlight="handleHighlightUpdate" @cancel="handleHighlightCancel"
+                @delete-highlight="handleHighlightDelete" @ai-result="handleAiResult" @save-data="handleSaveData" />
         </div>
         <div v-else class="bg-slate-900 flex flex-col h-[210px] p-2">
             <BaseWaveSurfer ref="wavesurferRef" :url="props.url" :height="170" :allow-selection="true"
                 :start="props.start" :end="props.end" @play="isPlaying = true" @pause="isPlaying = false"
-                @region-clicked="(region) => isLooping = region.loop" />
+                @region-out="handleRegionOut" />
             <div class="flex items-center justify-between px-2">
                 <div class="flex items-center gap-2">
                     <el-button size="small" @click="wavesurferRef?.playPause()" circle class="control-button is-dark">
@@ -129,7 +107,8 @@
                     </el-button>
                 </div>
                 <div>
-                    <PlaybackSpeedControl v-model="currentPlaybackRate" :options="speedOptions" @change="handleSpeedChange" />
+                    <PlaybackSpeedControl v-model="currentPlaybackRate" :options="speedOptions"
+                        @change="handleSpeedChange" />
                 </div>
             </div>
         </div>
@@ -142,27 +121,21 @@ import { ref, computed, reactive, onMounted, onUnmounted, watch } from 'vue'
 import { Delete, Edit } from '@element-plus/icons-vue'
 import { v4 as uuidv4 } from 'uuid';
 import { formatTime } from '@/utils/utils';
+import type { Region } from 'wavesurfer.js/dist/plugins/regions.js'
 import InteractiveTextWithHilis from './InteractiveTextWithHilis.vue';
 import BaseWaveSurfer from './BaseWaveSurfer.vue';
 import HighlightEditor from './HighlightEditor.vue';
-import { extractAudioSegment } from '@/utils/audioUtils';
-import { transcribeAudio, pollTaskUntilComplete } from '@/api/whisperApi';
 import ArcticonsLiveTranscribe from '~icons/arcticons/live-transcribe';
 import PlaybackSpeedControl from './PlaybackSpeedControl.vue';
+
+// Composables
+import { useRecording } from '@/composables/useRecording';
+import { useTranscription } from '@/composables/useTranscription';
 
 // Note: The AbbreviatedTag type is defined in HighlightEditor.vue
 // For SliceCard's internal logic, we can just use `string` for simplicity,
 // as it only passes the data around. For stricter typing, import from a shared types file.
-type AbbreviatedTag = string;
-
-interface Hili {
-    id: string;
-    start: number;
-    end: number;
-    content: string;
-    tags: AbbreviatedTag[];
-    note: string;
-}
+import type { Hili } from '@/types/highlight'
 
 import type { HighlightData } from '@/api/slicerApi';
 
@@ -171,27 +144,35 @@ const props = defineProps<{
     start: number;
     end: number;
     region: {
-    id: string;
-    start: string;
-    end: string;
-    originalText: string;
-    tags: string[];
-    note: string;
-  };
+        id: string;
+        start: string;
+        end: string;
+        originalText: string;
+        // tags: string[];
+        // note: string;
+    };
     initialHighlights?: HighlightData[];
-    initialFavorite?: boolean;
+    initialPronunciationHard?: boolean;
+    initialIdiom?: boolean;
 }>();
 
-const emit = defineEmits(['delete', 'adjust-start', 'adjust-end', 'toggle-favorite'])
+const emit = defineEmits(['delete', 'adjust-start', 'adjust-end', 'update-markers'])
 
-// Favorite state - initialize from prop
-const isFavorite = ref(props.initialFavorite ?? false)
-const toggleFavorite = () => {
-    isFavorite.value = !isFavorite.value
-    emit('toggle-favorite', isFavorite.value)
+// Marker states - two independent booleans
+const isPronunciationHard = ref(props.initialPronunciationHard ?? false)
+const isIdiom = ref(props.initialIdiom ?? false)
+
+const togglePronunciation = () => {
+    isPronunciationHard.value = !isPronunciationHard.value
+    emit('update-markers', { isPronunciationHard: isPronunciationHard.value, isIdiom: isIdiom.value })
 }
 
-const currentSlice = ref({text: "", highlights: [] as Hili[]});
+const toggleIdiom = () => {
+    isIdiom.value = !isIdiom.value
+    emit('update-markers', { isPronunciationHard: isPronunciationHard.value, isIdiom: isIdiom.value })
+}
+
+const currentSlice = ref({ text: "", highlights: [] as Hili[] });
 
 // 同步 props.region.originalText 到 currentSlice.text
 watch(
@@ -206,7 +187,7 @@ watch(
 const dynamicTextStyle = computed(() => {
     const textLength = currentSlice.value.text?.length || 0;
     let fontSize = '1.2rem';  // 默认 16px
-    
+
     if (textLength > 150) {
         fontSize = '0.65rem';   // 11.2px
     } else if (textLength > 90) {
@@ -216,7 +197,7 @@ const dynamicTextStyle = computed(() => {
     } else if (textLength > 40) {
         fontSize = '1.1rem'; // 14px
     }
-    
+
     return { fontSize };
 });
 const activeHighlightId = ref<string | null>(null);
@@ -231,32 +212,23 @@ const highlighterIconVisible = ref(false);
 const highlighterIconPosition = reactive({ top: '0px', left: '0px' });
 const isPlaying = ref(false);
 const isLooping = ref(false);
-const isTranscribing = ref(false);
+
+// Composables
+const recording = useRecording();
+const { isRecording, recordedAudioUrl, toggleRecording: handleRecordToggle, playRecording: handlePlayRecording, stopRecording, clearRecording } = recording;
+
+const transcription = useTranscription();
+const { isTranscribing } = transcription;
 
 // Whisper 转写功能
 const handleTranscribe = async () => {
-    if (isTranscribing.value) return;
-    
-    isTranscribing.value = true;
-    try {
-        const audioBlob = await extractAudioSegment(
-            props.url,
-            props.start,
-            props.end
-        );
-        const { task_id } = await transcribeAudio(audioBlob);
-        const result = await pollTaskUntilComplete(task_id, {
-            onStatusChange: (status) => {
-                console.log(`Transcription task ${task_id} status: ${status}`);
-            }
-        });
-        
-        // 更新文本
+    const result = await transcription.transcribe({
+        audioUrl: props.url,
+        startTime: props.start,
+        endTime: props.end
+    });
+    if (result) {
         currentSlice.value.text = result;
-    } catch (error) {
-        console.error('Transcription failed:', error);
-    } finally {
-        isTranscribing.value = false;
     }
 };
 
@@ -271,9 +243,7 @@ const handleSpeedChange = (rate: number) => {
 };
 
 const handleToggleLoop = () => {
-    if (wavesurferRef.value) {
-        isLooping.value = wavesurferRef.value.toggleLoop();
-    }
+    isLooping.value = !isLooping.value
 };
 
 // -----------------------------
@@ -321,21 +291,21 @@ const handleTextSelection = () => {
         // Use string search instead of DOM position to avoid ruby text interference
         const originalText = currentSlice.value.text;
         const startIndex = originalText.indexOf(selectedText);
-        
+
         if (startIndex === -1) {
             // Selected text not found in original (might include ruby text content)
             resetSelection();
             return;
         }
-        
+
         const rect = range.getBoundingClientRect();
         const parentRect = textDisplayRef.value.getBoundingClientRect();
 
-        selectedTextInfo.value = { 
-            text: selectedText, 
-            start: startIndex, 
-            end: startIndex + selectedText.length, 
-            rect 
+        selectedTextInfo.value = {
+            text: selectedText,
+            start: startIndex,
+            end: startIndex + selectedText.length,
+            rect
         };
 
         highlighterIconPosition.top = `${rect.top - parentRect.top - 30}px`;
@@ -399,79 +369,17 @@ const cancelEditing = () => {
 const saveEditing = () => {
     const newText = editingText.value;
     currentSlice.value.text = newText;
-    
+
     // Clear all highlights and analysis results since positions are invalidated
     currentSlice.value.highlights = [];
     analysisResults.value.clear();
-    
+
     isEditingOriginal.value = false;
     // Stop recording if active when saving
     if (isRecording.value) {
         stopRecording();
     }
 };
-
-// --- Recording Logic ---
-const isRecording = ref(false);
-const recordedAudioUrl = ref<string | null>(null);
-let mediaRecorder: MediaRecorder | null = null;
-let audioChunks: Blob[] = [];
-
-const handleRecordToggle = async () => {
-    if (isRecording.value) {
-        stopRecording();
-    } else {
-        await startRecording();
-    }
-};
-
-const startRecording = async () => {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        audioChunks = [];
-
-        mediaRecorder.ondataavailable = (event) => {
-            audioChunks.push(event.data);
-        };
-
-        mediaRecorder.onstop = () => {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-            if (recordedAudioUrl.value) {
-                URL.revokeObjectURL(recordedAudioUrl.value);
-            }
-            recordedAudioUrl.value = URL.createObjectURL(audioBlob);
-        };
-
-        mediaRecorder.start();
-        isRecording.value = true;
-    } catch (err) {
-        console.error('Error accessing microphone:', err);
-        // You might want to show a user-friendly error message here
-    }
-};
-
-const stopRecording = () => {
-    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-        mediaRecorder.stop();
-        mediaRecorder.stream.getTracks().forEach(track => track.stop());
-    }
-    isRecording.value = false;
-};
-
-const handlePlayRecording = () => {
-    if (recordedAudioUrl.value) {
-        const audio = new Audio(recordedAudioUrl.value);
-        audio.play();
-    }
-};
-
-// Clean up URL on unmount
-onUnmounted(() => {
-    if (recordedAudioUrl.value) {
-        URL.revokeObjectURL(recordedAudioUrl.value);
-    }
-});
 
 const handleHighlightClick = (highlightData: Hili) => {
     resetSelection();
@@ -528,6 +436,14 @@ onUnmounted(() => {
 });
 // -----------------------------------------
 
+const handleRegionOut = (region: Region) => {
+    if (isLooping.value) {
+        region.play()
+    } else if (wavesurferRef.value) {
+        wavesurferRef.value.pause()
+    }
+}
+
 const handleHighlightUpdate = (updatedHighlight: Hili) => {
     const index = currentSlice.value.highlights.findIndex(h => h.id === updatedHighlight.id);
     if (index !== -1) {
@@ -562,7 +478,7 @@ onMounted(() => {
             tags: [],
             note: ''
         }));
-        
+
         // Restore analysis and dictionary results into Maps
         props.initialHighlights.forEach(hl => {
             if (hl.analysis) {
@@ -601,7 +517,7 @@ const getSliceData = () => {
     const highlights: HighlightData[] = currentSlice.value.highlights.map((h: Hili) => {
         const analysis = analysisResults.value.get(h.id);
         const dictionary = dictionaryResults.value.get(h.id);
-        
+
         return {
             id: h.id,
             start: h.start,
@@ -617,7 +533,8 @@ const getSliceData = () => {
         end_time: props.end,
         original_text: currentSlice.value.text,
         highlights,
-        is_favorite: isFavorite.value
+        is_pronunciation_hard: isPronunciationHard.value,
+        is_idiom: isIdiom.value
     };
 };
 

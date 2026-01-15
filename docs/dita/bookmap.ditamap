@@ -93,6 +93,11 @@
   <!-- APPENDICES (at root level, not inside backmatter) -->
   <appendix href="topics/appendix/r_keyboard_shortcuts.dita"/>
   <appendix href="topics/appendix/r_tech_stack.dita"/>
+  
+  <!-- Developer Appendix (filtered by audience) -->
+  <appendix href="topics/developer/c_developer_guide.dita" audience="developer">
+    <topicref href="topics/developer/wavesurfer/c_basewavesurfer.dita"/>
+  </appendix>
 
   <!-- BACKMATTER -->
   <backmatter>

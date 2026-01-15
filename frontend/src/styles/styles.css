@@ -10,13 +10,14 @@
   --color-mint-600: oklch(0.61 0.11 178);
 }
 
-.audio__wrapper > div {
+.audio__wrapper>div {
   @apply shadow-sm bg-white
 }
 
 .el-header {
   height: 48px;
 }
+
 /*
   Global styles for dark poppers used by el-select and el-dropdown.
   To use, add `popper-class="dark-popper"` to the element.
@@ -38,7 +39,8 @@
 .dark-popper .el-dropdown-menu,
 .dark-popper .el-select-dropdown {
   background-color: #302849 !important;
-  border: none !important; /* Override default borders */
+  border: none !important;
+  /* Override default borders */
 }
 
 /* 4. Default state for all items inside */
@@ -46,7 +48,8 @@
 .dark-popper .el-select-dropdown__item {
   color: white;
   font-size: 12px;
-  background-color: transparent !important; /* Ensure they don't have their own background */
+  background-color: transparent !important;
+  /* Ensure they don't have their own background */
 }
 
 /* 5. Hover, focus, and selected states for all items */
@@ -63,16 +66,122 @@
 
 /* Button - Dark Theme */
 .is-dark.el-button {
-  background-color: #222b37; /* bg-slate-900 */
+  background-color: #222b37;
+  /* bg-slate-900 */
   color: white;
-  border-color: transparent; /* slate-700 */
+  border-color: transparent;
+  /* slate-700 */
 }
 
 /* Play Button */
 
 .is-dark.el-button:hover,
 .is-dark.el-button:focus {
-  background-color: #334155; /* bg-slate-700 */
+  background-color: #334155;
+  /* bg-slate-700 */
   color: white;
-  border-color:transparent; /* slate-600 */
+  border-color: transparent;
+  /* slate-600 */
+}
+
+/* Dark Background Controls - for buttons in dark containers like HighlightEditor */
+.dark-bg-controls.el-button {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  color: #94a3b8 !important;
+  /* slate-400 */
+}
+
+.dark-bg-controls.el-button:hover,
+.dark-bg-controls.el-button:focus {
+  background-color: #4E466E !important;
+  /* matches dark-popper theme */
+  border-color: transparent !important;
+  color: #e2e8f0 !important;
+  /* slate-200 */
+}
+
+.dark-bg-controls.el-button:active {
+  background-color: #3d3566 !important;
+}
+
+/* ===========================================
+   Dark Textarea/Input - for dark themed containers
+   Usage: Add class "dark-textarea" to parent container
+   =========================================== */
+.dark-textarea .el-input__wrapper,
+.dark-textarea .el-textarea__inner {
+  background-color: #302849 !important;
+  box-shadow: none !important;
+  color: white !important;
+  border: 1px solid #4E466E !important;
+}
+
+.dark-textarea .el-input__inner::placeholder,
+.dark-textarea .el-textarea__inner::placeholder {
+  color: #7d7a8c !important;
+}
+
+.dark-textarea .el-textarea__inner {
+  font-size: 11px;
+  resize: none;
+}
+
+/* ===========================================
+   Compact Card - reduced padding for el-card
+   Usage: Add class "compact-card" to el-card
+   =========================================== */
+.compact-card .el-card__body {
+  padding: 8px !important;
+}
+
+/* ===========================================
+   Dark Editor Base - common dark container styles
+   Usage: Add class "dark-editor-base" to container
+   =========================================== */
+.dark-editor-base {
+  background-color: #1C1338;
+  font-family: 'Consolas', 'Monaco', 'Menlo', monospace,
+    'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+  letter-spacing: -0.3px;
+}
+
+/* ===========================================
+   Spinning Animation - for loading icons
+   =========================================== */
+.spin-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.time-adjust-icon {
+  @apply text-blue-400 text-xs cursor-pointer hover:text-blue-500;
+}
+
+/* ===========================================
+   Hover Reveal Icon - hidden by default, revealed on group hover
+   Usage: Add "group" to parent, add "hover-reveal-icon" to child
+   =========================================== */
+.hover-reveal-icon {
+  width: 0;
+  opacity: 0;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.group:hover .hover-reveal-icon {
+  width: 0.75rem;
+  /* w-3 = 12px */
+  opacity: 1;
 }
