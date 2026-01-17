@@ -175,7 +175,7 @@ class AudioSliceViewSet(viewsets.ModelViewSet):
                     'end_time': item_data['end_time'],
                     'original_text': item_data.get('original_text', ''),
                     'highlights': item_data.get('highlights', []),
-                    'is_favorite': item_data.get('is_favorite', False),
+                    # 'is_favorite': item_data.get('is_favorite', False),
                     'is_pronunciation_hard': item_data.get('is_pronunciation_hard', False),
                     'is_idiom': item_data.get('is_idiom', False)
                 }
@@ -195,7 +195,7 @@ class AudioSliceViewSet(viewsets.ModelViewSet):
                         defaults={
                             'original_text': item_data.get('original_text', ''),
                             'highlights': item_data.get('highlights', []),
-                            'is_favorite': item_data.get('is_favorite', False),
+                            # 'is_favorite': item_data.get('is_favorite', False),
                             'is_pronunciation_hard': item_data.get('is_pronunciation_hard', False),
                             'is_idiom': item_data.get('is_idiom', False)
                         }

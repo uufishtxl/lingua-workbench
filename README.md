@@ -116,6 +116,14 @@ For developers contributing to the codebase, detailed component architecture doc
 | Component | Description | Docs |
 |-----------|-------------|------|
 | `BaseWaveSurfer` | Waveform visualization & region management | [Architecture](./docs/dita/topics/developer/wavesurfer/c_basewavesurfer.dita) |
+| `AudioSlicer` | Region selection workspace & slice persistence | [Architecture](./docs/dita/topics/developer/audioslicer/c_audioslicer.dita) |
+
+**Composables:**
+
+| Composable | Description | Docs |
+|------------|-------------|------|
+| `useRecording` | Microphone recording & playback | [Architecture](./docs/dita/topics/developer/composables/c_userecording.dita) |
+| `useTranscription` | Whisper API transcription | [Architecture](./docs/dita/topics/developer/composables/c_usetranscription.dita) |
 
 > The waveform is the foundation of all audio interactions. See [jottings/BaseWaveSurfer.md](./jottings/BaseWaveSurfer.md) for detailed API reference.
 

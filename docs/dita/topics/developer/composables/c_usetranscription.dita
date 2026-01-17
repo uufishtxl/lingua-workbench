@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="c_usetranscription" audience="developer">
+  <title>useTranscription Composable</title>
+  <shortdesc>Technical documentation for the useTranscription composable, which handles audio extraction and Whisper API transcription.</shortdesc>
+  <prolog>
+    <metadata>
+      <audience type="programmer" job="developer"/>
+    </metadata>
+  </prolog>
+  <conbody>
+    <section>
+      <title>Overview</title>
+      <p>The <codeph>useTranscription</codeph> composable provides audio-to-text transcription using the Whisper API. It handles extracting audio segments, submitting to the API, and polling for results.</p>
+    </section>
+    
+    <section>
+      <title>State</title>
+      <table>
+        <tgroup cols="3">
+          <colspec colname="c1" colwidth="1.5*"/>
+          <colspec colname="c2" colwidth="1*"/>
+          <colspec colname="c3" colwidth="2*"/>
+          <thead>
+            <row><entry>State</entry><entry>Type</entry><entry>Description</entry></row>
+          </thead>
+          <tbody>
+            <row><entry><codeph>isTranscribing</codeph></entry><entry><codeph>ref&lt;boolean&gt;</codeph></entry><entry>Whether transcription is in progress</entry></row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+
+    <section>
+      <title>Methods</title>
+      <dl>
+        <dlentry>
+          <dt><codeph>transcribe(options): Promise&lt;string | null&gt;</codeph></dt>
+          <dd>
+            <p>Transcribe an audio segment. Returns transcribed text or null if failed/cancelled.</p>
+            <p><b>Options:</b></p>
+            <ul>
+              <li><codeph>audioUrl</codeph> - Chunk audio URL</li>
+              <li><codeph>startTime</codeph> - Segment start time (seconds)</li>
+              <li><codeph>endTime</codeph> - Segment end time (seconds)</li>
+            </ul>
+          </dd>
+        </dlentry>
+      </dl>
+    </section>
+
+    <section>
+      <title>Transcription Flow</title>
+      <codeblock>transcribe(options)
+    ↓
+[Guard] if isTranscribing → return null (prevent duplicate calls)
+    ↓
+isTranscribing = true
+    ↓
+extractAudioSegment(url, start, end) → WAV Blob
+    ↓
+transcribeAudio(blob) → { task_id }
+    ↓
+pollTaskUntilComplete(task_id) → poll until complete
+    ↓
+return result (string) or catch → return null
+    ↓
+finally: isTranscribing = false</codeblock>
+    </section>
+
+    <section>
+      <title>Dependencies</title>
+      <ul>
+        <li><codeph>extractAudioSegment</codeph> - Utility to extract WAV Blob from time range</li>
+        <li><codeph>transcribeAudio</codeph> - Submits audio to Whisper API, returns task_id</li>
+        <li><codeph>pollTaskUntilComplete</codeph> - Polls task status until result is ready</li>
+      </ul>
+    </section>
+
+    <section>
+      <title>Error Handling</title>
+      <ul>
+        <li><b>Duplicate prevention</b>: Returns null immediately if already transcribing</li>
+        <li><b>API errors</b>: Caught and logged, returns null</li>
+        <li><b>Cleanup</b>: <codeph>isTranscribing</codeph> always reset in <codeph>finally</codeph> block</li>
+      </ul>
+    </section>
+
+    <section>
+      <title>Source Code</title>
+      <p>Location: <filepath>frontend/src/composables/useTranscription.ts</filepath></p>
+    </section>
+  </conbody>
+</concept>

@@ -77,13 +77,14 @@ const isPlaying = ref<boolean>(false)
 const isSaving = ref<boolean>(false)
 const isDirty = ref<boolean>(false)  // Track if changes were made
 const currentPlaybackRate = ref(1);
-const speedOptions = [0.5, 1];
+const speedOptions = [0.2, 0.5, 1];
 let activeRegion: Region | null = null;
 
-const handleSpeedChange = (rate: number) => {
-    currentPlaybackRate.value = rate;
-    baseWaveSurferRef.value?.setPlaybackRate(rate);
-};
+// ↓↓↓↓↓↓↓↓↓ Depreciated! Replaced by watch mechanism
+// const handleSpeedChange = (rate: number) => {
+//     currentPlaybackRate.value = rate;
+//     baseWaveSurferRef.value?.setPlaybackRate(rate);
+// };
 
 const props = defineProps<{ 
     url: string; 
@@ -184,6 +185,10 @@ onMounted(() => {
 onUnmounted(() => {
     window.removeEventListener('save-before-expiration', handleSaveBeforeExpiration)
     window.removeEventListener('beforeunload', handleBeforeUnload)
+})
+
+watch(currentPlaybackRate, (rate) => {
+    baseWaveSurferRef.value?.setPlaybackRate(rate)
 })
 
 // Initialize from saved slices when prop becomes available

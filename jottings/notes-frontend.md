@@ -24,6 +24,8 @@
 | **Tailwind group** | 父子联动：父元素加 `group`，子元素用 `group-hover:` 实现悬停时显示 |
 | **闭包 (Closure)** | 函数 + 它记住的外部变量；让函数能访问创建时的上下文 |
 | **Vue 事件闭包模式** | `@event="(val) => handler(id, val)"` — 闭包捕获 v-for 的 id，子组件只传值 |
+| **v-model 自定义组件** | 子组件 `emit('update:modelValue', val)` 更新父组件 `v-model` 绑定的变量 |
+| **DRF 分页响应** | 后端可能返回 `{ results: [] }` 或直接 `[]`，前端用联合类型 + `Array.isArray()` 兼容两种 |
 
 ---
 
@@ -596,3 +598,122 @@ regionsToRemove.forEach(r => r.remove())
 > 🎯 **高频事件 + 状态创建 = 必须考虑并发/竞态问题**
 > 
 > 即使你以为"每次只会有一个"，高频触发下可能产生多个。
+
+---
+
+## 20. Proxy（ES6）
+
+> **一句话**：Proxy 是 JavaScript 的"拦截器"，可以在访问/修改对象时插入自定义逻辑。Vue 3 用它实现响应式。
+
+### 基本语法
+
+```javascript
+const proxy = new Proxy(target, handler)
+//                      ↑ 原对象   ↑ 拦截规则
+```
+
+### 最常用的拦截器
+
+```javascript
+const obj = { name: 'Edith', age: 25 }
+
+const proxy = new Proxy(obj, {
+  get(target, key) {
+    console.log(`读取 ${key}`)
+    return target[key]
+  },
+  set(target, key, value) {
+    console.log(`写入 ${key} = ${value}`)
+    target[key] = value
+    return true  // 必须返回 true
+  }
+})
+
+proxy.name      // "读取 name" → "Edith"
+proxy.age = 30  // "写入 age = 30"
+```
+
+### Vue 3 响应式原理（简化）
+
+```javascript
+function reactive(obj) {
+  return new Proxy(obj, {
+    get(target, key) {
+      track(target, key)   // 收集依赖
+      return target[key]
+    },
+    set(target, key, value) {
+      target[key] = value
+      trigger(target, key) // 触发更新
+      return true
+    }
+  })
+}
+```
+
+### Proxy vs defineProperty（Vue 2）
+
+| 特性 | Proxy (Vue 3) | defineProperty (Vue 2) |
+|------|---------------|------------------------|
+| 新增属性 | ✅ 自动追踪 | ❌ 需要 `$set` |
+| 数组索引 | ✅ 自动追踪 | ❌ 需要特殊处理 |
+| 删除属性 | ✅ 可拦截 | ❌ 不可拦截 |
+
+### 常见 Handler
+
+| Handler | 触发时机 |
+|---------|---------|
+| `get` | 读取属性 |
+| `set` | 写入属性 |
+| `has` | `in` 操作符 |
+| `deleteProperty` | `delete` 操作符 |
+
+---
+
+## 21. ref vs let（何时用响应式）
+
+> **一句话**：只有需要触发 UI 更新的状态才用 `ref`；内部逻辑变量可以用普通 `let`。
+
+### 判断标准
+
+| 场景 | 用什么 | 示例 |
+|------|--------|------|
+| 模板中渲染 | `ref` | `isPlaying`、`regionsList` |
+| watch 侦听 | `ref` | `isDirty`、`currentPlaybackRate` |
+| 仅内部逻辑 | `let` | `activeRegion`、临时变量 |
+
+### 实际例子
+
+```typescript
+// ✅ 用 ref：需要触发 UI 更新
+const isPlaying = ref(false)
+const regionsList = ref<RegionInfo[]>([])
+
+// ✅ 用 let：不需要响应式，仅内部逻辑
+let activeRegion: Region | null = null  // 记录当前播放的 region
+```
+
+### 为什么 activeRegion 不用 ref？
+
+```typescript
+let activeRegion: Region | null = null
+```
+
+因为它：
+- ❌ 不参与模板渲染
+- ❌ 没有 watch 侦听它
+- ✅ 只用于 `handleRegionOut` 判断是否循环播放
+
+改变它**不需要触发 UI 更新**，所以用普通 `let` 更轻量。
+
+### 误区
+
+```typescript
+// ❌ 过度使用 ref
+const tempValue = ref(0)  // 如果只是计算用，不需要 ref
+
+// ✅ 该用 ref 的时候要用
+const count = ref(0)  // 如果模板显示 {{ count }}，必须用 ref
+```
+
+
