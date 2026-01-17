@@ -86,12 +86,13 @@
         </div>
         <!-- Wave / Highlight Editor -->
         <div v-if="activeHighlightId && activeHighlight" ref="editorWrapperRef">
-            <HighlightEditor :highlight="activeHighlight" :fullContext="currentSlice.text"
+            <HighlightEditor :highlight="activeHighlight" :fullContext="currentSlice.text" :isPlaying="isPlaying"
                 :savedAnalysis="savedAnalysisForActive" :savedDictionary="savedDictionaryForActive"
-                @update:highlight="handleHighlightUpdate" @cancel="handleHighlightCancel"
-                @delete-highlight="handleHighlightDelete" @ai-result="handleAiResult" @save-data="handleSaveData" />
+                @play-original="handlePlayOriginal" @update:highlight="handleHighlightUpdate"
+                @cancel="handleHighlightCancel" @delete-highlight="handleHighlightDelete"
+                @ai-result="handleAiResult" @save-data="handleSaveData" />
         </div>
-        <div v-else class="bg-slate-900 flex flex-col h-[210px] p-2">
+        <div v-show="!activeHighlightId" class="bg-slate-900 flex flex-col h-[210px] p-2">
             <BaseWaveSurfer ref="wavesurferRef" :url="props.url" :height="170" :allow-selection="true"
                 :start="props.start" :end="props.end" @play="isPlaying = true" @pause="isPlaying = false"
                 @region-out="handleRegionOut" />
@@ -107,8 +108,7 @@
                     </el-button>
                 </div>
                 <div>
-                    <PlaybackSpeedControl v-model="currentPlaybackRate" :options="speedOptions"
-                        @change="handleSpeedChange" />
+                    <PlaybackSpeedControl v-model="currentPlaybackRate" :options="speedOptions" />
                 </div>
             </div>
         </div>
@@ -211,7 +211,7 @@ const selectedTextInfo = ref<{ text: string; start: number; end: number; rect: D
 const highlighterIconVisible = ref(false);
 const highlighterIconPosition = reactive({ top: '0px', left: '0px' });
 const isPlaying = ref(false);
-const isLooping = ref(false);
+const isLooping = ref(true);
 
 // Composables
 const recording = useRecording();
@@ -237,11 +237,6 @@ const wavesurferRef = ref<any>(null); // Ref for the BaseWaveSurfer component
 const currentPlaybackRate = ref(1);
 const speedOptions = [0.5, 1];
 
-const handleSpeedChange = (rate: number) => {
-    currentPlaybackRate.value = rate;
-    wavesurferRef.value?.setPlaybackRate(rate);
-};
-
 const handleToggleLoop = () => {
     isLooping.value = !isLooping.value
 };
@@ -261,19 +256,6 @@ const savedAnalysisForActive = computed(() => {
 const savedDictionaryForActive = computed(() => {
     return activeHighlightId.value ? dictionaryResults.value.get(activeHighlightId.value) : undefined;
 });
-
-// Helper to get flat text offsets from DOM Range
-function getFlatTextOffsets(container: HTMLElement, range: Range): { start: number; end: number } | null {
-    const preSelectionRange = document.createRange();
-    preSelectionRange.selectNodeContents(container);
-    preSelectionRange.setEnd(range.startContainer, range.startOffset);
-    const start = preSelectionRange.toString().length;
-
-    return {
-        start: start,
-        end: start + range.toString().length
-    };
-}
 
 // Handle text selection
 const handleTextSelection = () => {
@@ -367,18 +349,8 @@ const cancelEditing = () => {
 };
 
 const saveEditing = () => {
-    const newText = editingText.value;
-    currentSlice.value.text = newText;
-
-    // Clear all highlights and analysis results since positions are invalidated
-    currentSlice.value.highlights = [];
-    analysisResults.value.clear();
-
+    currentSlice.value.text = editingText.value;
     isEditingOriginal.value = false;
-    // Stop recording if active when saving
-    if (isRecording.value) {
-        stopRecording();
-    }
 };
 
 const handleHighlightClick = (highlightData: Hili) => {
@@ -395,13 +367,28 @@ watch(activeHighlightId, (newId, oldId) => {
     if (isRecording.value) {
         stopRecording();
     }
-    // Optional: Clear recorded audio when switching highlights?
-    // User said "recording doesn't need to be saved", so maybe clear it to avoid confusion.
+    // Clear recorded audio when switching highlights to avoid confusion.
     if (recordedAudioUrl.value) {
         URL.revokeObjectURL(recordedAudioUrl.value);
         recordedAudioUrl.value = null;
     }
 });
+
+watch(currentPlaybackRate, (newRate) => {
+    // console.log("Current playback rate is ", newRate);
+    wavesurferRef.value?.setPlaybackRate(newRate);
+})
+
+watch(() => currentSlice.value.text, () => {
+    // Clear all highlights and analysis results since positions are invalidated
+    currentSlice.value.highlights = [];
+    analysisResults.value.clear();
+    dictionaryResults.value.clear();
+    // Stop recording if active when saving
+    if (isRecording.value) {
+        stopRecording();
+    }
+})
 
 // --- Click outside to cancel editor ---
 const editorWrapperRef = ref<HTMLElement | null>(null);
@@ -421,6 +408,7 @@ const handleWindowClickForEditor = (event: MouseEvent) => {
 
     // If the click is NOT inside the editor AND NOT inside the popper, then cancel.
     if (!isClickInsideEditor && !isClickInsidePopper) {
+        // 功能已禁用：点击外部自动关闭编辑器，体验不佳容易误触
         // handleHighlightCancel();
     }
 };
@@ -442,6 +430,12 @@ const handleRegionOut = (region: Region) => {
     } else if (wavesurferRef.value) {
         wavesurferRef.value.pause()
     }
+}
+
+const handlePlayOriginal = () => {
+    // console.log("on play original")
+    isPlaying.value = !isPlaying.value
+    wavesurferRef.value?.playPause()
 }
 
 const handleHighlightUpdate = (updatedHighlight: Hili) => {

@@ -20,6 +20,16 @@
       <p>Key Vue components and their architecture:</p>
       <ul>
         <li><xref href="wavesurfer/c_basewavesurfer.dita">BaseWaveSurfer</xref> - Audio waveform visualization and region management</li>
+        <li><xref href="audioslicer/c_audioslicer.dita">AudioSlicer</xref> - Region selection workspace and slice persistence</li>
+      </ul>
+    </section>
+    
+    <section>
+      <title>Composables</title>
+      <p>Reusable logic extracted from components:</p>
+      <ul>
+        <li><xref href="composables/c_userecording.dita">useRecording</xref> - Microphone recording and playback</li>
+        <li><xref href="composables/c_usetranscription.dita">useTranscription</xref> - Whisper API transcription</li>
       </ul>
     </section>
     

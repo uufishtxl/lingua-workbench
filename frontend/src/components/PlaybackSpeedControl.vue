@@ -47,7 +47,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
     (e: 'update:modelValue', value: number): void;
-    (e: 'change', value: number): void;
+    // (e: 'change', value: number): void;
 }>();
 
 const currentRate = ref(props.modelValue);
@@ -60,7 +60,7 @@ watch(() => props.modelValue, (newVal) => {
 const handleSpeedChange = (rate: number) => {
     currentRate.value = rate;
     emit('update:modelValue', rate);
-    emit('change', rate);
+    // emit('change', rate);
 };
 
 const handleToggleSpeed = () => {
@@ -68,7 +68,7 @@ const handleToggleSpeed = () => {
     // If current rate is not in options, default to first option
     const baseIndex = currentIndex === -1 ? 0 : currentIndex;
     const nextIndex = (baseIndex + 1) % speedOptions.value.length;
-    handleSpeedChange(speedOptions.value[nextIndex]);
+    handleSpeedChange(speedOptions.value[nextIndex] as number);
 };
 </script>
 

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="c_audioslicer" audience="developer">
+  <title>AudioSlicer Component Architecture</title>
+  <shortdesc>Technical documentation for the AudioSlicer Vue component, which manages audio region selection and slice persistence.</shortdesc>
+  <prolog>
+    <metadata>
+      <audience type="programmer" job="developer"/>
+    </metadata>
+  </prolog>
+  <conbody>
+    <section>
+      <title>Overview</title>
+      <p>The <codeph>AudioSlicer</codeph> component is the main workspace for creating and managing audio slices. It integrates <codeph>BaseWaveSurfer</codeph> for waveform visualization and renders multiple <codeph>SliceCard</codeph> instances for each selected region.</p>
+    </section>
+    
+    <section>
+      <title>Component Hierarchy</title>
+      <codeblock>AudioWorkbench (parent)
+    └── AudioSlicer
+        ├── BaseWaveSurfer (waveform)
+        └── SliceCard[] (region cards)</codeblock>
+    </section>
+
+    <section>
+      <title>Data Flow</title>
+      <p>The component manages a bidirectional data flow between the waveform and the region list:</p>
+      <ol>
+        <li><b>Initialization</b>: Parent passes <codeph>initialSlices</codeph> → component populates <codeph>regionsList</codeph> → syncs to WaveSurfer</li>
+        <li><b>User creates region</b>: WaveSurfer emits <codeph>region-created</codeph> → <codeph>handleRegionCreated</codeph> adds to <codeph>regionsList</codeph></li>
+        <li><b>User deletes region</b>: SliceCard emits <codeph>delete</codeph> → <codeph>removeRegion</codeph> calls <codeph>region.remove()</codeph> → WaveSurfer emits <codeph>region-removed</codeph> → <codeph>handleRegionRemoved</codeph> filters from <codeph>regionsList</codeph></li>
+        <li><b>Save</b>: <codeph>saveRegions</codeph> collects data from all SliceCard refs and sends batch API request</li>
+      </ol>
+    </section>
+
+    <section>
+      <title>Key State</title>
+      <table>
+        <tgroup cols="3">
+          <colspec colname="c1" colwidth="1*"/>
+          <colspec colname="c2" colwidth="1*"/>
+          <colspec colname="c3" colwidth="2*"/>
+          <thead>
+            <row><entry>State</entry><entry>Type</entry><entry>Purpose</entry></row>
+          </thead>
+          <tbody>
+            <row><entry><codeph>regionsList</codeph></entry><entry><codeph>ref&lt;RegionInfo[]&gt;</codeph></entry><entry>All regions with metadata (id, dbId, start, end, etc.)</entry></row>
+            <row><entry><codeph>sortedRegionsList</codeph></entry><entry><codeph>computed</codeph></entry><entry>Regions sorted by start time for display</entry></row>
+            <row><entry><codeph>sliceCardRefs</codeph></entry><entry><codeph>Map&lt;number, SliceCard&gt;</codeph></entry><entry>References to SliceCard instances by index</entry></row>
+            <row><entry><codeph>isDirty</codeph></entry><entry><codeph>ref&lt;boolean&gt;</codeph></entry><entry>Tracks unsaved changes</entry></row>
+            <row><entry><codeph>activeRegion</codeph></entry><entry><codeph>let</codeph></entry><entry>Currently playing region (non-reactive)</entry></row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+
+    <section>
+      <title>Delete Flow (Event Chain)</title>
+      <p>The delete operation demonstrates a two-step event chain:</p>
+      <codeblock>User clicks delete button on SliceCard
+    ↓
+SliceCard emits 'delete' event with region id
+    ↓
+removeRegion(id) called
+    ├── Sends DELETE request to backend (if dbId exists)
+    └── Calls region.remove() on WaveSurfer
+            ↓
+WaveSurfer emits 'region-removed' event
+    ↓
+handleRegionRemoved filters regionsList</codeblock>
+    </section>
+
+    <section>
+      <title>Auto-Save Features</title>
+      <ul>
+        <li><b>Token expiration</b>: Listens for <codeph>save-before-expiration</codeph> window event</li>
+        <li><b>Page unload</b>: Warns user via <codeph>beforeunload</codeph> event if there are unsaved changes</li>
+      </ul>
+    </section>
+
+    <section>
+      <title>Source Code</title>
+      <p>Component location: <filepath>frontend/src/components/AudioSlicer.vue</filepath></p>
+    </section>
+  </conbody>
+</concept>
