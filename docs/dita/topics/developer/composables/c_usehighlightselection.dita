@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="c_usehighlightselection" audience="developer">
+  <title>useHighlightSelection Composable</title>
+  <shortdesc>Handles text selection and highlight creation within SliceCard.</shortdesc>
+  <prolog>
+    <metadata>
+      <audience type="programmer" job="developer"/>
+    </metadata>
+  </prolog>
+  <conbody>
+    <section>
+      <title>Overview</title>
+      <p>The <codeph>useHighlightSelection</codeph> composable manages text selection, highlighter icon positioning, and highlight creation. Extracted from SliceCard.vue during refactoring.</p>
+    </section>
+
+    <section>
+      <title>Options</title>
+      <table>
+        <tgroup cols="3">
+          <colspec colname="c1" colwidth="1.5*"/>
+          <colspec colname="c2" colwidth="1*"/>
+          <colspec colname="c3" colwidth="2*"/>
+          <thead>
+            <row><entry>Option</entry><entry>Type</entry><entry>Description</entry></row>
+          </thead>
+          <tbody>
+            <row><entry><codeph>containerRef</codeph></entry><entry>Ref&lt;HTMLElement&gt;</entry><entry>Reference to text container element</entry></row>
+            <row><entry><codeph>currentText</codeph></entry><entry>() =&gt; string</entry><entry>Function returning current text content</entry></row>
+            <row><entry><codeph>isEditingMode</codeph></entry><entry>() =&gt; boolean</entry><entry>Function checking if in edit mode</entry></row>
+            <row><entry><codeph>onHighlightCreated</codeph></entry><entry>(Hili) =&gt; void</entry><entry>Callback when highlight is created</entry></row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+    
+    <section>
+      <title>Returns</title>
+      <dl>
+        <dlentry>
+          <dt><codeph>selectedTextInfo</codeph></dt>
+          <dd>Info about currently selected text (start, end, rect)</dd>
+        </dlentry>
+        <dlentry>
+          <dt><codeph>highlighterIconVisible</codeph></dt>
+          <dd>Whether highlighter icon is shown</dd>
+        </dlentry>
+        <dlentry>
+          <dt><codeph>highlighterIconPosition</codeph></dt>
+          <dd>Reactive object with top/left position</dd>
+        </dlentry>
+        <dlentry>
+          <dt><codeph>handleTextSelection()</codeph></dt>
+          <dd>Call on mouseup to process text selection</dd>
+        </dlentry>
+        <dlentry>
+          <dt><codeph>handleHighlighterClick()</codeph></dt>
+          <dd>Call when highlighter icon clicked</dd>
+        </dlentry>
+        <dlentry>
+          <dt><codeph>resetSelection()</codeph></dt>
+          <dd>Hide highlighter icon and clear selection</dd>
+        </dlentry>
+      </dl>
+    </section>
+
+    <section>
+      <title>Selection Flow</title>
+      <codeblock>User selects text (mouseup on container)
+    ↓
+handleTextSelection()
+    ↓
+[Guard] isEditingMode? → return
+    ↓
+window.getSelection() → validate selection
+    ↓
+indexOf(selectedText) in currentText → get position
+    ↓
+Calculate icon position relative to container
+    ↓
+highlighterIconVisible = true
+    ↓
+User clicks highlighter icon
+    ↓
+handleHighlighterClick() → create Hili object
+    ↓
+onHighlightCreated(highlight) → callback to parent
+    ↓
+resetSelection()</codeblock>
+    </section>
+
+    <section>
+      <title>Key Implementation Details</title>
+      <ul>
+        <li><b>Ruby text handling</b>: Uses string indexOf instead of DOM offset to avoid interference</li>
+        <li><b>100ms delay</b>: handleWindowMouseUp delays check to let highlighter click register first</li>
+        <li><b>Auto cleanup</b>: Registers/unregisters global mouseup listener via lifecycle hooks</li>
+      </ul>
+    </section>
+
+    <section>
+      <title>Source Code</title>
+      <p>Location: <filepath>frontend/src/composables/useHighlightSelection.ts</filepath></p>
+    </section>
+  </conbody>
+</concept>

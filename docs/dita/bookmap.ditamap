@@ -98,8 +98,10 @@
   <appendix href="topics/developer/c_developer_guide.dita" audience="developer">
     <topicref href="topics/developer/wavesurfer/c_basewavesurfer.dita"/>
     <topicref href="topics/developer/audioslicer/c_audioslicer.dita"/>
+    <topicref href="topics/developer/slicecard/c_slicecard.dita"/>
     <topicref href="topics/developer/composables/c_userecording.dita"/>
     <topicref href="topics/developer/composables/c_usetranscription.dita"/>
+    <topicref href="topics/developer/composables/c_usehighlightselection.dita"/>
   </appendix>
 
   <!-- BACKMATTER -->

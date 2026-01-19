@@ -21,6 +21,7 @@
       <ul>
         <li><xref href="wavesurfer/c_basewavesurfer.dita">BaseWaveSurfer</xref> - Audio waveform visualization and region management</li>
         <li><xref href="audioslicer/c_audioslicer.dita">AudioSlicer</xref> - Region selection workspace and slice persistence</li>
+        <li><xref href="slicecard/c_slicecard.dita">SliceCard</xref> - Audio slice editing with highlighting and AI analysis</li>
       </ul>
     </section>
     
@@ -30,6 +31,7 @@
       <ul>
         <li><xref href="composables/c_userecording.dita">useRecording</xref> - Microphone recording and playback</li>
         <li><xref href="composables/c_usetranscription.dita">useTranscription</xref> - Whisper API transcription</li>
+        <li><xref href="composables/c_usehighlightselection.dita">useHighlightSelection</xref> - Text selection and highlight creation</li>
       </ul>
     </section>
     
