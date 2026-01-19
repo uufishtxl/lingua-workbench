@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="c_slicecard" audience="developer">
+  <title>SliceCard Component</title>
+  <shortdesc>Technical documentation for SliceCard, the core audio slice editing component.</shortdesc>
+  <prolog>
+    <metadata>
+      <audience type="programmer" job="developer"/>
+    </metadata>
+  </prolog>
+  <conbody>
+    <section>
+      <title>Overview</title>
+      <p>SliceCard is a comprehensive component for editing individual audio slices. It provides text transcription, highlight annotation, AI-powered analysis, and audio playback within a single card UI.</p>
+    </section>
+
+    <section>
+      <title>Props</title>
+      <table>
+        <tgroup cols="3">
+          <colspec colname="c1" colwidth="1.5*"/>
+          <colspec colname="c2" colwidth="1*"/>
+          <colspec colname="c3" colwidth="2.5*"/>
+          <thead>
+            <row><entry>Prop</entry><entry>Type</entry><entry>Description</entry></row>
+          </thead>
+          <tbody>
+            <row><entry><codeph>url</codeph></entry><entry>string</entry><entry>Audio chunk URL</entry></row>
+            <row><entry><codeph>start / end</codeph></entry><entry>number</entry><entry>Slice time range (seconds)</entry></row>
+            <row><entry><codeph>region</codeph></entry><entry>object</entry><entry>Region info (id, start, end, originalText)</entry></row>
+            <row><entry><codeph>initialHighlights</codeph></entry><entry>HighlightData[]</entry><entry>Saved highlight data from backend</entry></row>
+            <row><entry><codeph>initialPronunciationHard</codeph></entry><entry>boolean</entry><entry>Pronunciation difficulty marker</entry></row>
+            <row><entry><codeph>initialIdiom</codeph></entry><entry>boolean</entry><entry>Idiom/vocabulary marker</entry></row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+
+    <section>
+      <title>Emits</title>
+      <ul>
+        <li><codeph>delete</codeph> - Delete this slice</li>
+        <li><codeph>adjust-start</codeph> - Adjust start time by offset</li>
+        <li><codeph>adjust-end</codeph> - Adjust end time by offset</li>
+        <li><codeph>update-markers</codeph> - Update pronunciation/idiom markers</li>
+      </ul>
+    </section>
+
+    <section>
+      <title>Composables Used</title>
+      <ul>
+        <li><xref href="../composables/c_userecording.dita">useRecording</xref> - Microphone recording</li>
+        <li><xref href="../composables/c_usetranscription.dita">useTranscription</xref> - Whisper transcription</li>
+        <li><xref href="../composables/c_usehighlightselection.dita">useHighlightSelection</xref> - Text selection &amp; highlighting</li>
+      </ul>
+    </section>
+
+    <section>
+      <title>Key Features</title>
+      <dl>
+        <dlentry>
+          <dt>Text Transcription</dt>
+          <dd>Uses Whisper API via <codeph>useTranscription</codeph> to convert audio to text</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Text Highlighting</dt>
+          <dd>Select text to create highlights, managed by <codeph>useHighlightSelection</codeph></dd>
+        </dlentry>
+        <dlentry>
+          <dt>AI Analysis</dt>
+          <dd>Sound script analysis and dictionary lookup via HighlightEditor</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Audio Playback</dt>
+          <dd>Embedded BaseWaveSurfer with loop and speed controls</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Recording</dt>
+          <dd>Record pronunciation practice via <codeph>useRecording</codeph></dd>
+        </dlentry>
+      </dl>
+    </section>
+
+    <section>
+      <title>Code Structure</title>
+      <p>The component follows Vue SFC best practices:</p>
+      <codeblock>imports
+props / emits
+refs (state)
+computed
+composables
+methods
+watch
+onMounted / onUnmounted
+defineExpose</codeblock>
+    </section>
+
+    <section>
+      <title>Exposed Methods</title>
+      <dl>
+        <dlentry>
+          <dt><codeph>getSliceData()</codeph></dt>
+          <dd>Returns server-ready data structure for saving. Called by parent AudioSlicer.</dd>
+        </dlentry>
+      </dl>
+    </section>
+
+    <section>
+      <title>Source Code</title>
+      <p>Location: <filepath>frontend/src/components/SliceCard.vue</filepath></p>
+    </section>
+  </conbody>
+</concept>

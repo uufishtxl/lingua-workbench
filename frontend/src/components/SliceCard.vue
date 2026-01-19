@@ -117,51 +117,146 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive, onMounted, onUnmounted, watch } from 'vue'
+// ============================================================================
+// IMPORTS
+// ============================================================================
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { Delete, Edit } from '@element-plus/icons-vue'
-import { v4 as uuidv4 } from 'uuid';
-import { formatTime } from '@/utils/utils';
+import { formatTime } from '@/utils/utils'
 import type { Region } from 'wavesurfer.js/dist/plugins/regions.js'
-import InteractiveTextWithHilis from './InteractiveTextWithHilis.vue';
-import BaseWaveSurfer from './BaseWaveSurfer.vue';
-import HighlightEditor from './HighlightEditor.vue';
-import ArcticonsLiveTranscribe from '~icons/arcticons/live-transcribe';
-import PlaybackSpeedControl from './PlaybackSpeedControl.vue';
+
+// Components
+import InteractiveTextWithHilis from './InteractiveTextWithHilis.vue'
+import BaseWaveSurfer from './BaseWaveSurfer.vue'
+import HighlightEditor from './HighlightEditor.vue'
+import PlaybackSpeedControl from './PlaybackSpeedControl.vue'
+import ArcticonsLiveTranscribe from '~icons/arcticons/live-transcribe'
 
 // Composables
-import { useRecording } from '@/composables/useRecording';
-import { useTranscription } from '@/composables/useTranscription';
+import { useRecording } from '@/composables/useRecording'
+import { useTranscription } from '@/composables/useTranscription'
+import { useHighlightSelection } from '@/composables/useHighlightSelection'
 
-// Note: The AbbreviatedTag type is defined in HighlightEditor.vue
-// For SliceCard's internal logic, we can just use `string` for simplicity,
-// as it only passes the data around. For stricter typing, import from a shared types file.
+// Types
 import type { Hili } from '@/types/highlight'
+import type { HighlightData } from '@/api/slicerApi'
+import type { SoundScriptResponse, DictionaryResponse } from '@/api/aiAnalysisApi'
 
-import type { HighlightData } from '@/api/slicerApi';
-
+// ============================================================================
+// PROPS & EMITS
+// ============================================================================
 const props = defineProps<{
-    url: string;
-    start: number;
-    end: number;
+    url: string
+    start: number
+    end: number
     region: {
-        id: string;
-        start: string;
-        end: string;
-        originalText: string;
-        // tags: string[];
-        // note: string;
-    };
-    initialHighlights?: HighlightData[];
-    initialPronunciationHard?: boolean;
-    initialIdiom?: boolean;
-}>();
+        id: string
+        start: string
+        end: string
+        originalText: string
+    }
+    initialHighlights?: HighlightData[]
+    initialPronunciationHard?: boolean
+    initialIdiom?: boolean
+}>()
 
 const emit = defineEmits(['delete', 'adjust-start', 'adjust-end', 'update-markers'])
 
-// Marker states - two independent booleans
+// ============================================================================
+// REFS (State)
+// ============================================================================
+// Core slice data
+const currentSlice = ref({ text: '', highlights: [] as Hili[] })
+const activeHighlightId = ref<string | null>(null)
+
+// Marker states
 const isPronunciationHard = ref(props.initialPronunciationHard ?? false)
 const isIdiom = ref(props.initialIdiom ?? false)
 
+// Editing state
+const isEditingOriginal = ref(false)
+const editingText = ref('')
+
+// Playback state
+const isPlaying = ref(false)
+const isLooping = ref(true)
+const currentPlaybackRate = ref(1)
+const speedOptions = [0.5, 1]
+
+// Template refs
+const textDisplayRef = ref<HTMLElement | null>(null)
+const wavesurferRef = ref<InstanceType<typeof BaseWaveSurfer> | null>(null)
+const editorWrapperRef = ref<HTMLElement | null>(null)
+
+// AI results storage
+const analysisResults = ref<Map<string, SoundScriptResponse>>(new Map())
+const dictionaryResults = ref<Map<string, DictionaryResponse>>(new Map())
+
+// ============================================================================
+// COMPUTED
+// ============================================================================
+const dynamicTextStyle = computed(() => {
+    const textLength = currentSlice.value.text?.length || 0
+    let fontSize = '1.2rem'
+
+    if (textLength > 150) fontSize = '0.65rem'
+    else if (textLength > 90) fontSize = '0.75rem'
+    else if (textLength > 60) fontSize = '0.85rem'
+    else if (textLength > 40) fontSize = '1.1rem'
+
+    return { fontSize }
+})
+
+const activeHighlight = computed<Hili | undefined>(() => {
+    return currentSlice.value.highlights.find(h => h.id === activeHighlightId.value)
+})
+
+const savedAnalysisForActive = computed(() => {
+    return activeHighlightId.value ? analysisResults.value.get(activeHighlightId.value) : undefined
+})
+
+const savedDictionaryForActive = computed(() => {
+    return activeHighlightId.value ? dictionaryResults.value.get(activeHighlightId.value) : undefined
+})
+
+// ============================================================================
+// COMPOSABLES
+// ============================================================================
+const recording = useRecording()
+const { 
+    isRecording, 
+    recordedAudioUrl, 
+    toggleRecording: handleRecordToggle, 
+    playRecording: handlePlayRecording, 
+    stopRecording 
+} = recording
+
+const transcription = useTranscription()
+const { isTranscribing } = transcription
+
+const highlightSelection = useHighlightSelection({
+    containerRef: textDisplayRef,
+    currentText: () => currentSlice.value.text,
+    isEditingMode: () => isEditingOriginal.value,
+    onHighlightCreated: (highlight: Hili) => {
+        currentSlice.value.highlights.push(highlight)
+        activeHighlightId.value = highlight.id
+    }
+})
+
+const { 
+    highlighterIconVisible, 
+    highlighterIconPosition, 
+    handleTextSelection, 
+    handleHighlighterClick, 
+    resetSelection 
+} = highlightSelection
+
+// ============================================================================
+// METHODS
+// ============================================================================
+
+// --- Marker Toggle ---
 const togglePronunciation = () => {
     isPronunciationHard.value = !isPronunciationHard.value
     emit('update-markers', { isPronunciationHard: isPronunciationHard.value, isIdiom: isIdiom.value })
@@ -172,257 +267,66 @@ const toggleIdiom = () => {
     emit('update-markers', { isPronunciationHard: isPronunciationHard.value, isIdiom: isIdiom.value })
 }
 
-const currentSlice = ref({ text: "", highlights: [] as Hili[] });
-
-// 同步 props.region.originalText 到 currentSlice.text
-watch(
-    () => props.region.originalText,
-    (newText) => {
-        currentSlice.value.text = newText;
-    },
-    { immediate: true } // 初始化时立即执行，而不是等更新后才执行
-);
-
-// 根据文本长度动态计算字体大小
-const dynamicTextStyle = computed(() => {
-    const textLength = currentSlice.value.text?.length || 0;
-    let fontSize = '1.2rem';  // 默认 16px
-
-    if (textLength > 150) {
-        fontSize = '0.65rem';   // 11.2px
-    } else if (textLength > 90) {
-        fontSize = '0.75rem';  // 12px
-    } else if (textLength > 60) {
-        fontSize = '0.85rem';   // 12.8px
-    } else if (textLength > 40) {
-        fontSize = '1.1rem'; // 14px
-    }
-
-    return { fontSize };
-});
-const activeHighlightId = ref<string | null>(null);
-
-const isEditingOriginal = ref(false)
-const editingText = ref('')
-
-// State for text selection and highlighter icon
-const textDisplayRef = ref<HTMLElement | null>(null);
-const selectedTextInfo = ref<{ text: string; start: number; end: number; rect: DOMRect | null } | null>(null);
-const highlighterIconVisible = ref(false);
-const highlighterIconPosition = reactive({ top: '0px', left: '0px' });
-const isPlaying = ref(false);
-const isLooping = ref(true);
-
-// Composables
-const recording = useRecording();
-const { isRecording, recordedAudioUrl, toggleRecording: handleRecordToggle, playRecording: handlePlayRecording, stopRecording, clearRecording } = recording;
-
-const transcription = useTranscription();
-const { isTranscribing } = transcription;
-
-// Whisper 转写功能
+// --- Transcription ---
 const handleTranscribe = async () => {
     const result = await transcription.transcribe({
         audioUrl: props.url,
         startTime: props.start,
         endTime: props.end
-    });
+    })
     if (result) {
-        currentSlice.value.text = result;
+        currentSlice.value.text = result
     }
-};
+}
 
-// --- Playback Speed Control ---
-const wavesurferRef = ref<any>(null); // Ref for the BaseWaveSurfer component
-const currentPlaybackRate = ref(1);
-const speedOptions = [0.5, 1];
-
-const handleToggleLoop = () => {
-    isLooping.value = !isLooping.value
-};
-
-// -----------------------------
-
-// Computed property for the active highlight
-const activeHighlight = computed<Hili | undefined>(() => {
-    return currentSlice.value.highlights.find(h => h.id === activeHighlightId.value);
-});
-
-// Computed properties for saved data (needed for Vue reactivity with Map)
-const savedAnalysisForActive = computed(() => {
-    return activeHighlightId.value ? analysisResults.value.get(activeHighlightId.value) : undefined;
-});
-
-const savedDictionaryForActive = computed(() => {
-    return activeHighlightId.value ? dictionaryResults.value.get(activeHighlightId.value) : undefined;
-});
-
-// Handle text selection
-const handleTextSelection = () => {
-    if (isEditingOriginal.value) return; // Don't show highlighter in edit mode
-    const selection = window.getSelection();
-
-    if (!selection || selection.rangeCount === 0 || selection.isCollapsed || !textDisplayRef.value) {
-        return;
-    }
-
-    const range = selection.getRangeAt(0);
-    const selectedText = selection.toString(); // Don't trim
-
-    if (selectedText && textDisplayRef.value.contains(range.commonAncestorContainer)) {
-        // Use string search instead of DOM position to avoid ruby text interference
-        const originalText = currentSlice.value.text;
-        const startIndex = originalText.indexOf(selectedText);
-
-        if (startIndex === -1) {
-            // Selected text not found in original (might include ruby text content)
-            resetSelection();
-            return;
-        }
-
-        const rect = range.getBoundingClientRect();
-        const parentRect = textDisplayRef.value.getBoundingClientRect();
-
-        selectedTextInfo.value = {
-            text: selectedText,
-            start: startIndex,
-            end: startIndex + selectedText.length,
-            rect
-        };
-
-        highlighterIconPosition.top = `${rect.top - parentRect.top - 30}px`;
-        highlighterIconPosition.left = `${rect.left - parentRect.left + rect.width / 2}px`;
-        highlighterIconVisible.value = true;
-    } else {
-        resetSelection();
-    }
-};
-
-// Reset selection state and hide highlighter icon
-const resetSelection = () => {
-    highlighterIconVisible.value = false;
-};
-
-// Handle click on highlighter icon
-const handleHighlighterClick = () => {
-    if (!selectedTextInfo.value) return;
-
-    const newHighlight: Hili = {
-        id: uuidv4(),
-        start: selectedTextInfo.value.start,
-        end: selectedTextInfo.value.end,
-        content: selectedTextInfo.value.text,
-        tags: [],
-        note: '',
-    };
-    currentSlice.value.highlights.push(newHighlight);
-    activeHighlightId.value = newHighlight.id; // Open editor for the new highlight
-    window.getSelection()?.removeAllRanges();
-    resetSelection();
-};
-
-// Global mouseup listener to clear selection
-const handleWindowMouseUp = (event: MouseEvent) => {
-    // A brief timeout allows the highlighter click to register before the selection is cleared.
-    setTimeout(() => {
-        const selection = window.getSelection();
-        if (!selection || selection.isCollapsed) {
-            resetSelection();
-        }
-    }, 100);
-};
-
+// --- Editing ---
 const startEditing = () => {
-    editingText.value = currentSlice.value.text;
-    isEditingOriginal.value = true;
-    activeHighlightId.value = null;
-    resetSelection();
-};
+    editingText.value = currentSlice.value.text
+    isEditingOriginal.value = true
+    activeHighlightId.value = null
+    resetSelection()
+}
 
 const cancelEditing = () => {
-    isEditingOriginal.value = false;
-    editingText.value = '';
-    // Stop recording if active when canceling
+    isEditingOriginal.value = false
+    editingText.value = ''
     if (isRecording.value) {
-        stopRecording();
+        stopRecording()
     }
-};
+}
 
 const saveEditing = () => {
-    currentSlice.value.text = editingText.value;
-    isEditingOriginal.value = false;
-};
+    currentSlice.value.text = editingText.value
+    isEditingOriginal.value = false
+}
 
+// --- Highlight Interaction ---
 const handleHighlightClick = (highlightData: Hili) => {
-    resetSelection();
-    if (activeHighlightId.value === highlightData.id) {
-        activeHighlightId.value = null;
-    } else {
-        activeHighlightId.value = highlightData.id;
+    resetSelection()
+    activeHighlightId.value = activeHighlightId.value === highlightData.id ? null : highlightData.id
+}
+
+const handleHighlightUpdate = (updatedHighlight: Hili) => {
+    const index = currentSlice.value.highlights.findIndex(h => h.id === updatedHighlight.id)
+    if (index !== -1) {
+        currentSlice.value.highlights.splice(index, 1, updatedHighlight)
     }
-};
+    activeHighlightId.value = null
+}
 
-// Stop recording when active highlight changes or is closed
-watch(activeHighlightId, (newId, oldId) => {
-    if (isRecording.value) {
-        stopRecording();
-    }
-    // Clear recorded audio when switching highlights to avoid confusion.
-    if (recordedAudioUrl.value) {
-        URL.revokeObjectURL(recordedAudioUrl.value);
-        recordedAudioUrl.value = null;
-    }
-});
+const handleHighlightCancel = () => {
+    activeHighlightId.value = null
+}
 
-watch(currentPlaybackRate, (newRate) => {
-    // console.log("Current playback rate is ", newRate);
-    wavesurferRef.value?.setPlaybackRate(newRate);
-})
+const handleHighlightDelete = (highlightId: string) => {
+    currentSlice.value.highlights = currentSlice.value.highlights.filter(h => h.id !== highlightId)
+    activeHighlightId.value = null
+}
 
-watch(() => currentSlice.value.text, () => {
-    // Clear all highlights and analysis results since positions are invalidated
-    currentSlice.value.highlights = [];
-    analysisResults.value.clear();
-    dictionaryResults.value.clear();
-    // Stop recording if active when saving
-    if (isRecording.value) {
-        stopRecording();
-    }
-})
-
-// --- Click outside to cancel editor ---
-const editorWrapperRef = ref<HTMLElement | null>(null);
-
-const handleWindowClickForEditor = (event: MouseEvent) => {
-    // If editor is not open, do nothing
-    if (!activeHighlightId.value) return;
-
-    const target = event.target as Node;
-
-    // Check if the click is inside the main editor wrapper
-    const isClickInsideEditor = editorWrapperRef.value && editorWrapperRef.value.contains(target);
-
-    // Check if the click is inside the select's dropdown popper
-    const popperEl = document.querySelector('.dark-popper');
-    const isClickInsidePopper = popperEl && popperEl.contains(target);
-
-    // If the click is NOT inside the editor AND NOT inside the popper, then cancel.
-    if (!isClickInsideEditor && !isClickInsidePopper) {
-        // 功能已禁用：点击外部自动关闭编辑器，体验不佳容易误触
-        // handleHighlightCancel();
-    }
-};
-
-onMounted(() => {
-    document.addEventListener('mouseup', handleWindowMouseUp);
-    document.addEventListener('mousedown', handleWindowClickForEditor);
-});
-
-onUnmounted(() => {
-    document.removeEventListener('mouseup', handleWindowMouseUp);
-    document.removeEventListener('mousedown', handleWindowClickForEditor);
-});
-// -----------------------------------------
+// --- Playback ---
+const handleToggleLoop = () => {
+    isLooping.value = !isLooping.value
+}
 
 const handleRegionOut = (region: Region) => {
     if (isLooping.value) {
@@ -433,94 +337,34 @@ const handleRegionOut = (region: Region) => {
 }
 
 const handlePlayOriginal = () => {
-    // console.log("on play original")
     isPlaying.value = !isPlaying.value
     wavesurferRef.value?.playPause()
 }
 
-const handleHighlightUpdate = (updatedHighlight: Hili) => {
-    const index = currentSlice.value.highlights.findIndex(h => h.id === updatedHighlight.id);
-    if (index !== -1) {
-        currentSlice.value.highlights.splice(index, 1, updatedHighlight);
-    }
-    activeHighlightId.value = null;
-};
-
-const handleHighlightCancel = () => {
-    activeHighlightId.value = null;
-};
-
-const handleHighlightDelete = (highlightId: string) => {
-    currentSlice.value.highlights = currentSlice.value.highlights.filter(h => h.id !== highlightId);
-    activeHighlightId.value = null; // Close editor after deletion
-};
-
-// Store AI analysis results per highlight
-import type { SoundScriptResponse, DictionaryResponse } from '@/api/aiAnalysisApi';
-const analysisResults = ref<Map<string, SoundScriptResponse>>(new Map());
-const dictionaryResults = ref<Map<string, DictionaryResponse>>(new Map());
-
-// Initialize from saved highlights (must be after analysisResults/dictionaryResults declared)
-onMounted(() => {
-    if (props.initialHighlights?.length) {
-        // Restore highlights
-        currentSlice.value.highlights = props.initialHighlights.map(hl => ({
-            id: hl.id,
-            start: hl.start,
-            end: hl.end,
-            content: hl.focus_segment,
-            tags: [],
-            note: ''
-        }));
-
-        // Restore analysis and dictionary results into Maps
-        props.initialHighlights.forEach(hl => {
-            if (hl.analysis) {
-                analysisResults.value.set(hl.id, hl.analysis);
-            }
-            if (hl.dictionary) {
-                dictionaryResults.value.set(hl.id, hl.dictionary);
-            }
-        });
-    }
-});
-
+// --- AI Results ---
 const handleAiResult = (result: SoundScriptResponse) => {
     if (activeHighlightId.value) {
-        analysisResults.value.set(activeHighlightId.value, result);
-        console.log('AI Result stored for highlight:', activeHighlightId.value, result);
+        analysisResults.value.set(activeHighlightId.value, result)
     }
-};
+}
 
 const handleSaveData = (data: { analysis: SoundScriptResponse | null; dictionary: DictionaryResponse | null }) => {
     if (activeHighlightId.value) {
-        if (data.analysis) {
-            analysisResults.value.set(activeHighlightId.value, data.analysis);
-        }
-        if (data.dictionary) {
-            dictionaryResults.value.set(activeHighlightId.value, data.dictionary);
-        }
+        if (data.analysis) analysisResults.value.set(activeHighlightId.value, data.analysis)
+        if (data.dictionary) dictionaryResults.value.set(activeHighlightId.value, data.dictionary)
     }
-};
+}
 
-// Expose method for parent to collect data for saving
-// HighlightData imported at top of script
-
+// --- Data Collection (for parent) ---
 const getSliceData = () => {
-    // Store raw API responses directly - no conversion needed
-    const highlights: HighlightData[] = currentSlice.value.highlights.map((h: Hili) => {
-        const analysis = analysisResults.value.get(h.id);
-        const dictionary = dictionaryResults.value.get(h.id);
-
-        return {
-            id: h.id,
-            start: h.start,
-            end: h.end,
-            focus_segment: h.content,
-            analysis: analysis || null,
-            dictionary: dictionary || null
-        };
-    });
+    const highlights: HighlightData[] = currentSlice.value.highlights.map((h: Hili) => ({
+        id: h.id,
+        start: h.start,
+        end: h.end,
+        focus_segment: h.content,
+        analysis: analysisResults.value.get(h.id) || null,
+        dictionary: dictionaryResults.value.get(h.id) || null
+    }))
 
     return {
         start_time: props.start,
@@ -529,16 +373,85 @@ const getSliceData = () => {
         highlights,
         is_pronunciation_hard: isPronunciationHard.value,
         is_idiom: isIdiom.value
-    };
-};
+    }
+}
 
-defineExpose({ getSliceData });
+// --- Click Outside (disabled feature, kept for reference) ---
+const handleWindowClickForEditor = (event: MouseEvent) => {
+    if (!activeHighlightId.value) return
+    const target = event.target as Node
+    const isClickInsideEditor = editorWrapperRef.value?.contains(target)
+    const popperEl = document.querySelector('.dark-popper')
+    const isClickInsidePopper = popperEl?.contains(target)
+    if (!isClickInsideEditor && !isClickInsidePopper) {
+        // 功能已禁用：点击外部自动关闭编辑器，体验不佳容易误触
+        // handleHighlightCancel()
+    }
+}
+
+// ============================================================================
+// WATCH
+// ============================================================================
+watch(() => props.region.originalText, (newText) => {
+    currentSlice.value.text = newText
+}, { immediate: true })
+
+watch(activeHighlightId, () => {
+    if (isRecording.value) stopRecording()
+    if (recordedAudioUrl.value) {
+        URL.revokeObjectURL(recordedAudioUrl.value)
+        recordedAudioUrl.value = null
+    }
+})
+
+watch(currentPlaybackRate, (newRate) => {
+    wavesurferRef.value?.setPlaybackRate(newRate)
+})
+
+watch(() => currentSlice.value.text, () => {
+    currentSlice.value.highlights = []
+    analysisResults.value.clear()
+    dictionaryResults.value.clear()
+    if (isRecording.value) stopRecording()
+})
+
+// ============================================================================
+// LIFECYCLE
+// ============================================================================
+onMounted(() => {
+    document.addEventListener('mousedown', handleWindowClickForEditor)
+    
+    // Initialize from saved highlights
+    if (props.initialHighlights?.length) {
+        currentSlice.value.highlights = props.initialHighlights.map(hl => ({
+            id: hl.id,
+            start: hl.start,
+            end: hl.end,
+            content: hl.focus_segment,
+            tags: [],
+            note: ''
+        }))
+
+        props.initialHighlights.forEach(hl => {
+            if (hl.analysis) analysisResults.value.set(hl.id, hl.analysis)
+            if (hl.dictionary) dictionaryResults.value.set(hl.id, hl.dictionary)
+        })
+    }
+})
+
+onUnmounted(() => {
+    document.removeEventListener('mousedown', handleWindowClickForEditor)
+})
+
+// ============================================================================
+// EXPOSE
+// ============================================================================
+defineExpose({ getSliceData })
 </script>
 
 <style scoped>
 .text-display-area {
     white-space: pre-wrap;
-    /* This is the critical fix */
 }
 
 :deep(.el-card__body) {

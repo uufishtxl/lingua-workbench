@@ -12,11 +12,11 @@
 - [ ] `setSliceCardRef` 的 `el` 参数使用 `any`，改为明确类型
 - [ ] 检查其他 `:ref` 回调的类型
 
-### 🟢 SliceCard 重构
-SliceCard.vue 超过 600 行，代码结构混乱，需要整理：
-- [ ] 按照标准顺序重排代码：imports → props/emits → refs → computed → composables → methods → watch → lifecycle
-- [ ] 提取 `useHighlightSelection` composable - 文本选择 + 高亮图标逻辑
-- [ ] 提取 `useSliceData` composable - 数据收集 + expose 方法
+### ✅ SliceCard 重构
+SliceCard.vue 已重构完成：
+- [x] 按照标准顺序重排代码：imports → props/emits → refs → computed → composables → methods → watch → lifecycle
+- [x] 提取 `useHighlightSelection` composable - 文本选择 + 高亮图标逻辑
+- [ ] 提取 `useSliceData` composable - 数据收集 + expose 方法 (暂不实施)
 
 ---
 
