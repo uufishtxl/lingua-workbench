@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import SourceAudio, AudioChunk, AudioSlice, Drama
+from .models import SourceAudio, AudioChunk, AudioSlice, Drama, ReviewCard
 
 class SourceAudioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,3 +28,16 @@ class DramaSerializer(serializers.ModelSerializer):
         model = Drama
         fields = '__all__'
         read_only_fields = ['user']
+
+class ReviewCardSerializer(serializers.ModelSerializer):
+    slice_text = serializers.CharField(source='audio_slice.original_text', read_only=True)
+    slice_translation = serializers.CharField(source='audio_slice.translation', read_only=True)
+    audio_url = serializers.FileField(source='audio_slice.audio_chunk.file', read_only=True)
+    start_time = serializers.FloatField(source='audio_slice.start_time', read_only=True)
+    end_time = serializers.FloatField(source='audio_slice.end_time', read_only=True)
+
+    class Meta:
+        model = ReviewCard
+        fields = ['id', 'box_level', 'next_review_date', 'last_reviewed_at', 'review_type', 
+                  'slice_text', 'slice_translation', 'audio_url', 'start_time', 'end_time', 'audio_slice']
+        read_only_fields = ['box_level', 'next_review_date', 'last_reviewed_at', 'review_type', 'audio_slice']

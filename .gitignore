@@ -213,3 +213,6 @@ __marimo__/
 /frontend/.DS_Store
 /backend/media/
 /frontend/media/
+privacy/
+.obsidian/plugins/obsidian-local-rest-api/data.json
+

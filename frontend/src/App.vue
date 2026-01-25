@@ -5,6 +5,8 @@ import { computed } from 'vue'
 // (我们顺便导入我们的“保安室”)
 import { useAuthStore } from '@/stores/authStore'
 import { layouts, type LayoutKey } from '@/utils/layouts'
+// Documentation Assistant ChatBot
+import ChatWidget from '@/components/ChatWidget.vue'
 
 const authStore = useAuthStore()
 
@@ -31,6 +33,8 @@ const handleLogout = () => {
   <component :is="layoutComponent">
     <RouterView />
   </component>
+  <!-- Documentation Assistant ChatBot (global) -->
+  <ChatWidget v-if="authStore.isAuthenticated" />
 </template>
 
 <style scoped>

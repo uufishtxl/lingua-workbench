@@ -80,18 +80,42 @@ class AudioSlice(models.Model):
     original_text = models.TextField(blank=True, help_text="Full text content of the audio slice")
     highlights = models.JSONField(default=list, blank=True, help_text="Highlighted segments with phonetic analysis")
 
+    translation = models.TextField(blank=True, null=True, help_text="Chinese translation for SRS review")
+    
     is_pronunciation_hard = models.BooleanField(default=False, help_text="Mark slice as hard for pronunciation")
-    is_idiom = models.BooleanField(default=False, help_text="Mark slice as containing idioms")
+    is_idiom = models.BooleanField(default=False, help_text="Mark slice as containing idioms (Auto-triggers ReviewCard creation)")
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    ########### ↓↓↓↓↓ D E P R E C I A T E D ↓↓↓↓↓ ###########
-    # is_favorite = models.BooleanField(default=False, help_text="Mark slice as favorite for review")
-    # favorite_category = models.CharField(max_length=50, blank=True, null=True, help_text="Category of favorite:'pronunciation', 'idiom'")
 
     class Meta:
         unique_together = ('audio_chunk', 'start_time', 'end_time')
 
     def __str__(self):
         return f"Slice from {self.audio_chunk} ({self.start_time:.2f}s - {self.end_time:.2f}s)"
+
+
+class ReviewCard(models.Model):
+    """
+    Spaced Repetition System (SRS) Card for an AudioSlice.
+    Tracks the user's progress in translating or listening to this slice.
+    """
+    REVIEW_TYPES = (
+        ('translation', 'Translation (CN -> EN)'), # Default: Show CN, type EN
+        ('listening', 'Listening (Audio -> EN)'),  # Fallback: Play Audio, type EN
+    )
+
+    audio_slice = models.OneToOneField(AudioSlice, on_delete=models.CASCADE, related_name='review_card')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    
+    box_level = models.PositiveIntegerField(default=1, help_text="Leitner box level (1-5)")
+    next_review_date = models.DateField(help_text="When this card is due for review")
+    last_reviewed_at = models.DateTimeField(null=True, blank=True)
+    
+    review_type = models.CharField(max_length=20, choices=REVIEW_TYPES, default='translation')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Review ({self.review_type}) for {self.audio_slice} - Level {self.box_level}"

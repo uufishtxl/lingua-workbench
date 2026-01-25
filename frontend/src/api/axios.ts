@@ -3,7 +3,7 @@ import { useAuthStore } from '@/stores/authStore';
 
 const apiClient = axios.create({
   baseURL: '/api',
-  timeout: 5000,
+  timeout: 60000, // 60 seconds for AI requests
   withCredentials: true, // Crucial for sending cookies (refresh token)
 });
 
@@ -31,7 +31,8 @@ apiClient.interceptors.response.use(
     const authStore = useAuthStore();
 
     // Check if the error is 401 and it's not a retry request
-    if (error.response.status === 401 && !originalRequest._retry) {
+    // Note: error.response may be undefined for network errors
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       // Prevent multiple refresh calls

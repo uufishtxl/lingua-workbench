@@ -6,9 +6,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .models import SourceAudio, AudioChunk, AudioSlice, Drama
-from .serializers import SourceAudioSerializer, AudioSliceSerializer, DramaSerializer, AudioChunkSerializer
+from datetime import timedelta
+from django.utils import timezone
+from .models import SourceAudio, AudioChunk, AudioSlice, Drama, ReviewCard
+from .serializers import SourceAudioSerializer, AudioSliceSerializer, DramaSerializer, AudioChunkSerializer, ReviewCardSerializer
 from .services import slice_source_to_chunks
+from ai_analysis.services import batch_translate_idioms
 
 class SourceAudioViewSet(viewsets.ModelViewSet):
     """
@@ -219,6 +222,72 @@ class AudioSliceViewSet(viewsets.ModelViewSet):
         
         return Response(AudioSliceSerializer(created_slices, many=True).data, status=status.HTTP_201_CREATED)
 
+    @action(detail=False, methods=['get'])
+    def missing_translations(self, request):
+        """
+        Get all AudioSlices that are idoms (is_idiom=True) but missing translation.
+        """
+        # Filter for user's slices, marked as idiom, where translation is null or empty
+        from django.db.models import Q
+        queryset = AudioSlice.objects.filter(
+            audio_chunk__source_audio__user=request.user,
+            is_idiom=True
+        ).filter(
+            Q(translation__isnull=True) | Q(translation__exact='')
+        )
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['post'])
+    def batch_translate(self, request):
+        """
+        Batch translate a list of AudioSlice IDs.
+        Body: { "ids": [1, 2, 3] }
+        """
+        ids = request.data.get('ids', [])
+        if not ids:
+            return Response({"error": "No IDs provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get slices
+        queryset = AudioSlice.objects.filter(
+            id__in=ids,
+            audio_chunk__source_audio__user=request.user
+        )
+        
+        if not queryset.exists():
+            return Response({"error": "No matching slices found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Prepare for LLM
+        slices_data = []
+        for s in queryset:
+            slices_data.append({
+                "id": s.id,
+                "text": s.original_text
+            })
+
+        # Call DeepSeek Service
+        try:
+            translations = batch_translate_idioms(slices_data) 
+            # translations is list of {id, translation}
+            
+            updated_count = 0
+            for item in translations:
+                slice_id = item.get('id')
+                translation = item.get('translation')
+                
+                if slice_id and translation:
+                    # Update DB
+                    AudioSlice.objects.filter(id=slice_id).update(translation=translation)
+                    updated_count += 1
+            
+            return Response({
+                "message": f"Successfully translated {updated_count} items",
+                "translations": translations
+            })
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 class DramaViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint for listing dramas for the authenticated user.
@@ -256,6 +325,65 @@ class AudioChunkViewSet(viewsets.ReadOnlyModelViewSet):
         for the currently authenticated user.
         """
         return AudioChunk.objects.filter(source_audio__user=self.request.user)
+
+
+
+
+class ReviewCardViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint for SRS review cards.
+    """
+    serializer_class = ReviewCardSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return ReviewCard.objects.filter(user=self.request.user)
+
+    @action(detail=False, methods=['get'])
+    def due(self, request):
+        """
+        Get all cards due for review (next_review_date <= today).
+        """
+        today = timezone.now().date()
+        due_cards = self.get_queryset().filter(next_review_date__lte=today).order_by('next_review_date')
+        serializer = self.get_serializer(due_cards, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['post'])
+    def submit(self, request, pk=None):
+        """
+        Submit a review result.
+        Body: { "success": true/false }
+        """
+        card = self.get_object()
+        success = request.data.get('success', False)
+
+        # SRS Logic (Simple Leitner System)
+        # Box 1: 1 day
+        # Box 2: 3 days
+        # Box 3: 7 days
+        # Box 4: 15 days
+        # Box 5: 30 days
+        intervals = {1: 1, 2: 3, 3: 7, 4: 15, 5: 30}
+
+        if success:
+            # Upgrade box, cap at 5
+            card.box_level = min(card.box_level + 1, 5)
+        else:
+            # Failed? Back to Box 1
+            card.box_level = 1
+
+        # Calculate next review date
+        days_to_add = intervals.get(card.box_level, 1)
+        card.next_review_date = timezone.now().date() + timedelta(days=days_to_add)
+        card.last_reviewed_at = timezone.now()
+        card.save()
+
+        return Response({
+            "status": "updated",
+            "new_level": card.box_level,
+            "next_review": card.next_review_date
+        })
 
 
 

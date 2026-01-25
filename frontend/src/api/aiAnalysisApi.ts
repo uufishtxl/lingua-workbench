@@ -38,7 +38,7 @@ export async function analyzeSoundScript(
     const response = await apiClient.post<SoundScriptResponse>(
         '/ai/sound-script/',
         request,
-        { timeout: 30000 } // 30 second timeout for AI requests
+        { timeout: 90000 } // 90 second timeout for AI requests
     )
     return response.data
 }
@@ -73,7 +73,7 @@ export async function lookupDictionary(
     const response = await apiClient.post<DictionaryResponse>(
         '/ai/dictionary/',
         request,
-        { timeout: 30000 }
+        { timeout: 90000 }
     )
     return response.data
 }
@@ -100,7 +100,7 @@ export async function refreshExample(
     const response = await apiClient.post<RefreshExampleResponse>(
         '/ai/refresh-example/',
         request,
-        { timeout: 30000 }
+        { timeout: 90000 }
     )
     return response.data
 }

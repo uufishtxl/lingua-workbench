@@ -81,6 +81,24 @@ const router = createRouter({
         requiresAuth: true
       }
     },
+    {
+      path: '/review',
+      name: 'review',
+      component: () => import('@/views/ReviewBoard.vue'),
+      meta: {
+        layout: 'AppLayout',
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/translations',
+      name: 'translations',
+      component: () => import('@/views/TranslationManager.vue'),
+      meta: {
+        layout: 'AppLayout',
+        requiresAuth: true
+      }
+    },
     // Dev routes (开发专用)
     {
       path: '/dev/highlight-editor',
