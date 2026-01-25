@@ -216,3 +216,10 @@ __marimo__/
 privacy/
 .obsidian/plugins/obsidian-local-rest-api/data.json
 
+
+# Generated builds
+frontend/.vite/
+docs/dita/output
+playwright-screenshots/node_modules
+whisper/.venv
+whisper/upload
