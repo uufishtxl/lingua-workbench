@@ -5,17 +5,31 @@ from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableLambda
 from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 from .types import LookupRequestData, LookupResponseItem, LLMResponse
 
 load_dotenv()
 
-llm = ChatOpenAI(
-    api_key=os.getenv("DEEPSEEK_API_KEY"),
-    base_url="https://api.deepseek.com",
-    model="deepseek-chat",
-    temperature=0
-)
+is_using_deepseek = os.getenv("MODEL_NAME") == "deepseek-chat"
+
+llm = None
+
+if is_using_deepseek:
+    llm = ChatOpenAI(
+        model=os.getenv("MODEL_NAME"),
+        base_url=os.getenv("BASE_URL"),
+        api_key=os.getenv("DEEPSEEK_API_KEY"),
+        temperature=0
+    )
+else:
+    llm = ChatGoogleGenerativeAI(
+        model=os.getenv("MODEL_NAME"), 
+        google_api_key=os.getenv("GOOGLE_API_KEY"), 
+        temperature=0,
+        # 如果遇到输出被截断或报错，可以尝试调整 safety_settings
+        # safety_settings={...} 
+    )
 
 llm_as_structured = llm.with_structured_output(LLMResponse, method="function_calling")
 

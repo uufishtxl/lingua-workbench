@@ -49,7 +49,8 @@
                     </el-button>
                     <el-button text type="primary" circle :disabled="!recordedAudioUrl || isRecording"
                         @click.stop="handlePlayRecording" title="Play Recording">
-                        <i-tabler-player-play-filled class="text-sky-500" />
+                        <i-tabler-player-play-filled v-if="!isPlayingRecordedAudio" class="text-sky-500" />
+                        <i-tabler-player-pause-filled v-else class="text-sky-500" />
                     </el-button>
                 </template>
             </div>
@@ -226,6 +227,7 @@ const recording = useRecording()
 const { 
     isRecording, 
     recordedAudioUrl, 
+    isPlayingRecordedAudio,
     toggleRecording: handleRecordToggle, 
     playRecording: handlePlayRecording, 
     stopRecording 
