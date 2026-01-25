@@ -1,4 +1,5 @@
 from langchain_openai import ChatOpenAI
+# from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from pydantic import BaseModel, Field
@@ -12,12 +13,25 @@ class UICommand(BaseModel):
 
 def process_voice_command(text: str, api_key: str):
     # 初始化 DeepSeek 模型 (兼容 OpenAI 协议)
+    is_using_deepseek = os.getenv("MODEL_NAME") == "deepseek-chat"
+
+    # llm = None
+
+    # if is_using_deepseek:
     llm = ChatOpenAI(
-        model="deepseek-chat",
-        api_key=api_key,
-        base_url="https://api.deepseek.com",
-        temperature=0
-    )
+    model=os.getenv("MODEL_NAME"),
+    base_url=os.getenv("BASE_URL"),
+    api_key=os.getenv("DEEPSEEK_API_KEY"),
+    temperature=0
+)
+    # else:
+    #     llm = ChatGoogleGenerativeAI(
+    #     model=os.getenv("MODEL_NAME"), 
+    #     google_api_key=os.getenv("GOOGLE_API_KEY"), 
+    #     temperature=0,
+    #     # 如果遇到输出被截断或报错，可以尝试调整 safety_settings
+    #     # safety_settings={...} 
+    # )
     
     # 使用 JsonOutputParser
     parser = JsonOutputParser(pydantic_object=UICommand)

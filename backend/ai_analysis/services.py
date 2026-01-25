@@ -4,6 +4,7 @@ Contains the LCEL chains for different analysis types.
 """
 import os
 from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 
 from .schemas import SoundScriptResponse
@@ -19,13 +20,23 @@ _sound_script_chain = None
 def get_llm():
     """Get the singleton LLM instance (lazy initialization)."""
     global _llm_instance
+    is_using_deepseek = os.getenv("MODEL_NAME") == "deepseek-chat"
     if _llm_instance is None:
-        _llm_instance = ChatOpenAI(
-            model="deepseek-chat",
-            base_url="https://api.deepseek.com",
-            api_key=os.getenv("DEEPSEEK_API_KEY"),
-            temperature=0
-        )
+        if is_using_deepseek:
+            _llm_instance = ChatOpenAI(
+                model=os.getenv("MODEL_NAME"),
+                base_url=os.getenv("BASE_URL"),
+                api_key=os.getenv("DEEPSEEK_API_KEY"),
+                temperature=0
+            )
+        else:
+            _llm_instance = ChatGoogleGenerativeAI(
+                model=os.getenv("MODEL_NAME"), 
+                google_api_key=os.getenv("GOOGLE_API_KEY"), 
+                temperature=0,
+                # 如果遇到输出被截断或报错，可以尝试调整 safety_settings
+                # safety_settings={...} 
+            )
     return _llm_instance
 
 

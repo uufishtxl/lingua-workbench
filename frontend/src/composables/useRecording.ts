@@ -7,6 +7,7 @@ import { ref, onUnmounted } from 'vue'
 export function useRecording() {
     // State
     const isRecording = ref(false)
+    const isPlayingRecordedAudio = ref(false)
     const recordedAudioUrl = ref<string | null>(null)
 
     // Internal variables (not exposed)
@@ -70,7 +71,11 @@ export function useRecording() {
     const playRecording = () => {
         if (recordedAudioUrl.value) {
             const audio = new Audio(recordedAudioUrl.value)
+            isPlayingRecordedAudio.value = true
             audio.play()
+            audio.onended = () => {
+                isPlayingRecordedAudio.value = false
+            }
         }
     }
 
@@ -93,6 +98,7 @@ export function useRecording() {
         // State
         isRecording,
         recordedAudioUrl,
+        isPlayingRecordedAudio,
         // Actions
         startRecording,
         stopRecording,
