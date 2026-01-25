@@ -16,3 +16,6 @@ langchain-openai
 python-dotenv
 pydantic
 langchain-google-genai
+# --- DITA RAG Chatbot ---
+chromadb
+lxml
