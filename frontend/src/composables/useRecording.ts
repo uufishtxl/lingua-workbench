@@ -68,21 +68,39 @@ export function useRecording() {
     /**
      * Play the recorded audio
      */
+    let currentPlaybackAudio: HTMLAudioElement | null = null
+
     const playRecording = () => {
         if (recordedAudioUrl.value) {
-            const audio = new Audio(recordedAudioUrl.value)
+            // Stop any previous playback
+            stopPlayback()
+
+            currentPlaybackAudio = new Audio(recordedAudioUrl.value)
             isPlayingRecordedAudio.value = true
-            audio.play()
-            audio.onended = () => {
+            currentPlaybackAudio.play()
+            currentPlaybackAudio.onended = () => {
                 isPlayingRecordedAudio.value = false
+                currentPlaybackAudio = null
             }
         }
+    }
+
+    /**
+     * Stop playback of recorded audio
+     */
+    const stopPlayback = () => {
+        if (currentPlaybackAudio) {
+            currentPlaybackAudio.pause()
+            currentPlaybackAudio = null
+        }
+        isPlayingRecordedAudio.value = false
     }
 
     /**
      * Clear recorded audio and reset state
      */
     const clearRecording = () => {
+        stopPlayback()
         if (recordedAudioUrl.value) {
             URL.revokeObjectURL(recordedAudioUrl.value)
             recordedAudioUrl.value = null
@@ -104,6 +122,7 @@ export function useRecording() {
         stopRecording,
         toggleRecording,
         playRecording,
+        stopPlayback,
         clearRecording
     }
 }

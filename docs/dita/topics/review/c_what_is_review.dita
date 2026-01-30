@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE concept PUBLIC "-//OASIS//DTD DITA Concept//EN" "concept.dtd">
+<concept id="c_what_is_review">
+  <title>What is Daily Review?</title>
+  <shortdesc>Understanding the spaced repetition review system for long-term retention.</shortdesc>
+  <conbody>
+    <section>
+      <title>Overview</title>
+      <p><term>Daily Review</term> is a flashcard-style practice system that helps you retain the audio slices you've created. It uses spaced repetition to schedule reviews at optimal intervals.</p>
+    </section>
+    
+    <section>
+      <title>How It Works</title>
+      <p>The system is based on the Leitner box method:</p>
+      <ul>
+        <li><b>Box 1</b> - New or forgotten cards, reviewed daily</li>
+        <li><b>Box 2-5</b> - Cards move up when answered correctly, reviewed less frequently</li>
+        <li><b>Forgot</b> - Cards drop back to Box 1 for more practice</li>
+      </ul>
+    </section>
+    
+    <section>
+      <title>Review Card Components</title>
+      <p>Each review card contains:</p>
+      <ul>
+        <li><b>Audio playback</b> - Listen to the original slice audio</li>
+        <li><b>Translation</b> - Your Chinese translation (editable)</li>
+        <li><b>Answer</b> - The original English text, revealed on demand</li>
+      </ul>
+    </section>
+    
+    <section>
+      <title>When to Review</title>
+      <p>Cards become "due" based on their box level and last review date. The Review Board shows all due cards for today, allowing you to complete your daily practice in one session.</p>
+    </section>
+  </conbody>
+</concept>

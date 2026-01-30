@@ -39,7 +39,7 @@
     </prodinfo></topicmeta></topicref></frontmatter>
 
   
-  <part is-chapter="true" is-part="true" class="- map/topicref bookmap/part " navtitle="Getting Started"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d288e129">Getting Started</navtitle></topicmeta><chapter is-chapter="true" class="- map/topicref bookmap/chapter " href="#unique_4" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_product_overview"><resourceid appid="c_product_overview" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_4" class="- topic/navtitle ">Product Overview</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Lingua Workbench is a personal language learning platform for studying spoken English.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+  <part is-chapter="true" is-part="true" class="- map/topicref bookmap/part " navtitle="Getting Started"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d304e129">Getting Started</navtitle></topicmeta><chapter is-chapter="true" class="- map/topicref bookmap/chapter " href="#unique_4" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_product_overview"><resourceid appid="c_product_overview" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_4" class="- topic/navtitle ">Product Overview</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Lingua Workbench is a personal language learning platform for studying spoken English.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
@@ -60,7 +60,7 @@
     </prodinfo></topicmeta></chapter></part>
 
   
-  <part is-chapter="true" is-part="true" class="- map/topicref bookmap/part " navtitle="User Guide"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d288e212">User Guide</navtitle></topicmeta><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Audio Management"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d288e213">Audio Management</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_7" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_audio_workflow"><resourceid appid="c_audio_workflow" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_7" class="- topic/navtitle ">Audio Workflow Overview</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Understanding how audio is organized and processed in Lingua Workbench.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+  <part is-chapter="true" is-part="true" class="- map/topicref bookmap/part " navtitle="User Guide"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d304e212">User Guide</navtitle></topicmeta><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Audio Management"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d304e213">Audio Management</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_7" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_audio_workflow"><resourceid appid="c_audio_workflow" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_7" class="- topic/navtitle ">Audio Workflow Overview</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Understanding how audio is organized and processed in Lingua Workbench.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
@@ -78,7 +78,7 @@
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta></topicref></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Creating Slices"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d288e295">Creating Slices</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_10" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_what_is_slice"><resourceid appid="c_what_is_slice" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_10" class="- topic/navtitle ">What is an Audio Slice?</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Understanding audio slices and their role in language learning.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+    </prodinfo></topicmeta></topicref></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Creating Slices"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d304e295">Creating Slices</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_10" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_what_is_slice"><resourceid appid="c_what_is_slice" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_10" class="- topic/navtitle ">What is an Audio Slice?</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Understanding audio slices and their role in language learning.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
@@ -108,7 +108,7 @@
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta></topicref></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Phonetic Analysis"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d288e431">Phonetic Analysis</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_15" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_sound_script"><resourceid appid="c_sound_script" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_15" class="- topic/navtitle ">Sound Script Analysis</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Understanding AI-generated phonetic analysis.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+    </prodinfo></topicmeta></topicref></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Phonetic Analysis"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d304e431">Phonetic Analysis</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_15" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_sound_script"><resourceid appid="c_sound_script" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_15" class="- topic/navtitle ">Sound Script Analysis</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Understanding AI-generated phonetic analysis.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
@@ -132,7 +132,7 @@
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta></topicref></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Dictionary"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d288e540">Dictionary</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_19" type="task"><topicmeta class="- map/topicmeta " data-topic-id="t_lookup_phrase"><resourceid appid="t_lookup_phrase" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_19" class="- topic/navtitle ">Looking Up a Phrase</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Get dictionary definitions for a highlighted phrase.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+    </prodinfo></topicmeta></topicref></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Dictionary"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d304e540">Dictionary</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_19" type="task"><topicmeta class="- map/topicmeta " data-topic-id="t_lookup_phrase"><resourceid appid="t_lookup_phrase" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_19" class="- topic/navtitle ">Looking Up a Phrase</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Get dictionary definitions for a highlighted phrase.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
@@ -144,34 +144,25 @@
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta></topicref></chapter></part>
-
-  
-  <part is-chapter="true" is-part="true" class="- map/topicref bookmap/part " navtitle="Reference"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d288e597">Reference</navtitle></topicmeta><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="UI Reference"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d288e598">UI Reference</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_21" type="reference"><topicmeta class="- map/topicmeta " data-topic-id="r_slicecard_controls"><resourceid appid="r_slicecard_controls" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_21" class="- topic/navtitle ">SliceCard Controls Reference</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Reference for all controls available on a SliceCard.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+    </prodinfo></topicmeta></topicref></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Daily Review"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d304e595">Daily Review</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_21" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_what_is_review"><resourceid appid="c_what_is_review" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_21" class="- topic/navtitle ">What is Daily Review?</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Understanding the spaced repetition review system for long-term retention.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta></topicref><topicref class="- map/topicref " href="#unique_22" type="reference"><topicmeta class="- map/topicmeta " data-topic-id="r_playback_controls"><resourceid appid="r_playback_controls" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_22" class="- topic/navtitle ">Playback Controls Reference</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Reference for audio playback controls.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+    </prodinfo></topicmeta></topicref><topicref class="- map/topicref " href="#unique_22" type="task"><topicmeta class="- map/topicmeta " data-topic-id="t_daily_review"><resourceid appid="t_daily_review" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_22" class="- topic/navtitle ">Completing a Daily Review Session</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Practice your audio slices using the flashcard review interface.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta></topicref><topicref class="- map/topicref " href="#unique_23" type="reference"><topicmeta class="- map/topicmeta " data-topic-id="r_editor_modes"><resourceid appid="r_editor_modes" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_23" class="- topic/navtitle ">Editor Modes Reference</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Reference for Highlight Editor modes.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+    </prodinfo></topicmeta></topicref></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Translation Manager"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d304e650">Translation Manager</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_23" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_translation_manager"><resourceid appid="c_translation_manager" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_23" class="- topic/navtitle ">Translation Manager Overview</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Batch translate audio slice idioms using AI.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta></topicref></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Phonetic Notation"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d288e680">Phonetic Notation</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_24" type="reference"><topicmeta class="- map/topicmeta " data-topic-id="r_phonetic_tags"><resourceid appid="r_phonetic_tags" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_24" class="- topic/navtitle ">Phonetic Tags Reference</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Reference for phonetic tag types used in analysis.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
-      <created class="- topic/created " date="2026-01-08"/>
-      <revised class="- topic/revised " modified="2026-01-08"/>
-    </critdates><prodinfo class="- topic/prodinfo ">
-      <prodname class="- topic/prodname ">Lingua Workbench</prodname>
-      <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta></topicref><topicref class="- map/topicref " href="#unique_25" type="reference"><topicmeta class="- map/topicmeta " data-topic-id="r_ghost_sounds"><resourceid appid="r_ghost_sounds" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_25" class="- topic/navtitle ">Ghost Sounds Notation</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Understanding the notation for silent or omitted sounds.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+    </prodinfo></topicmeta></topicref><topicref class="- map/topicref " href="#unique_24" type="task"><topicmeta class="- map/topicmeta " data-topic-id="t_batch_translate"><resourceid appid="t_batch_translate" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_24" class="- topic/navtitle ">Batch Translating Slices</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Translate multiple audio slices at once using AI.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
@@ -180,13 +171,46 @@
     </prodinfo></topicmeta></topicref></chapter></part>
 
   
-  <part is-chapter="true" is-part="true" class="- map/topicref bookmap/part " navtitle="Troubleshooting"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d288e736">Troubleshooting</navtitle></topicmeta><chapter is-chapter="true" class="- map/topicref bookmap/chapter " href="#unique_26" type="task"><topicmeta class="- map/topicmeta " data-topic-id="ts_transcription_fails"><resourceid appid="ts_transcription_fails" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_26" class="- topic/navtitle ">Transcription Fails or Returns Empty</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Resolve issues with Whisper transcription.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+  <part is-chapter="true" is-part="true" class="- map/topicref bookmap/part " navtitle="Reference"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d304e707">Reference</navtitle></topicmeta><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="UI Reference"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d304e708">UI Reference</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_25" type="reference"><topicmeta class="- map/topicmeta " data-topic-id="r_slicecard_controls"><resourceid appid="r_slicecard_controls" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_25" class="- topic/navtitle ">SliceCard Controls Reference</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Reference for all controls available on a SliceCard.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " href="#unique_27" type="task"><topicmeta class="- map/topicmeta " data-topic-id="ts_analysis_errors"><resourceid appid="ts_analysis_errors" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_27" class="- topic/navtitle ">AI Analysis Errors</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Resolve issues with phonetic analysis.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+    </prodinfo></topicmeta></topicref><topicref class="- map/topicref " href="#unique_26" type="reference"><topicmeta class="- map/topicmeta " data-topic-id="r_playback_controls"><resourceid appid="r_playback_controls" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_26" class="- topic/navtitle ">Playback Controls Reference</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Reference for audio playback controls.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+      <created class="- topic/created " date="2026-01-08"/>
+      <revised class="- topic/revised " modified="2026-01-08"/>
+    </critdates><prodinfo class="- topic/prodinfo ">
+      <prodname class="- topic/prodname ">Lingua Workbench</prodname>
+      <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
+    </prodinfo></topicmeta></topicref><topicref class="- map/topicref " href="#unique_27" type="reference"><topicmeta class="- map/topicmeta " data-topic-id="r_editor_modes"><resourceid appid="r_editor_modes" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_27" class="- topic/navtitle ">Editor Modes Reference</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Reference for Highlight Editor modes.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+      <created class="- topic/created " date="2026-01-08"/>
+      <revised class="- topic/revised " modified="2026-01-08"/>
+    </critdates><prodinfo class="- topic/prodinfo ">
+      <prodname class="- topic/prodname ">Lingua Workbench</prodname>
+      <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
+    </prodinfo></topicmeta></topicref></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " navtitle="Phonetic Notation"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d304e790">Phonetic Notation</navtitle></topicmeta><topicref class="- map/topicref " href="#unique_28" type="reference"><topicmeta class="- map/topicmeta " data-topic-id="r_phonetic_tags"><resourceid appid="r_phonetic_tags" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_28" class="- topic/navtitle ">Phonetic Tags Reference</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Reference for phonetic tag types used in analysis.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+      <created class="- topic/created " date="2026-01-08"/>
+      <revised class="- topic/revised " modified="2026-01-08"/>
+    </critdates><prodinfo class="- topic/prodinfo ">
+      <prodname class="- topic/prodname ">Lingua Workbench</prodname>
+      <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
+    </prodinfo></topicmeta></topicref><topicref class="- map/topicref " href="#unique_29" type="reference"><topicmeta class="- map/topicmeta " data-topic-id="r_ghost_sounds"><resourceid appid="r_ghost_sounds" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_29" class="- topic/navtitle ">Ghost Sounds Notation</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Understanding the notation for silent or omitted sounds.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+      <created class="- topic/created " date="2026-01-08"/>
+      <revised class="- topic/revised " modified="2026-01-08"/>
+    </critdates><prodinfo class="- topic/prodinfo ">
+      <prodname class="- topic/prodname ">Lingua Workbench</prodname>
+      <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
+    </prodinfo></topicmeta></topicref></chapter></part>
+
+  
+  <part is-chapter="true" is-part="true" class="- map/topicref bookmap/part " navtitle="Troubleshooting"><topicmeta class="- map/topicmeta "><navtitle class="- topic/navtitle " href="#d304e846">Troubleshooting</navtitle></topicmeta><chapter is-chapter="true" class="- map/topicref bookmap/chapter " href="#unique_30" type="task"><topicmeta class="- map/topicmeta " data-topic-id="ts_transcription_fails"><resourceid appid="ts_transcription_fails" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_30" class="- topic/navtitle ">Transcription Fails or Returns Empty</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Resolve issues with Whisper transcription.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+      <created class="- topic/created " date="2026-01-08"/>
+      <revised class="- topic/revised " modified="2026-01-08"/>
+    </critdates><prodinfo class="- topic/prodinfo ">
+      <prodname class="- topic/prodname ">Lingua Workbench</prodname>
+      <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
+    </prodinfo></topicmeta></chapter><chapter is-chapter="true" class="- map/topicref bookmap/chapter " href="#unique_31" type="task"><topicmeta class="- map/topicmeta " data-topic-id="ts_analysis_errors"><resourceid appid="ts_analysis_errors" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_31" class="- topic/navtitle ">AI Analysis Errors</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Resolve issues with phonetic analysis.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
@@ -195,14 +219,14 @@
     </prodinfo></topicmeta></chapter></part>
 
   
-  <appendix is-chapter="true" is-part="true" class="- map/topicref bookmap/appendix " href="#unique_28" type="reference"><topicmeta class="- map/topicmeta " data-topic-id="r_keyboard_shortcuts"><resourceid appid="r_keyboard_shortcuts" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_28" class="- topic/navtitle ">Keyboard Shortcuts</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Quick reference for keyboard shortcuts.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+  <appendix is-chapter="true" is-part="true" class="- map/topicref bookmap/appendix " href="#unique_32" type="reference"><topicmeta class="- map/topicmeta " data-topic-id="r_keyboard_shortcuts"><resourceid appid="r_keyboard_shortcuts" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_32" class="- topic/navtitle ">Keyboard Shortcuts</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Quick reference for keyboard shortcuts.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
     </prodinfo></topicmeta></appendix>
-  <appendix is-chapter="true" is-part="true" class="- map/topicref bookmap/appendix " href="#unique_29" type="reference"><topicmeta class="- map/topicmeta " data-topic-id="r_tech_stack"><resourceid appid="r_tech_stack" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_29" class="- topic/navtitle ">Technology Stack</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Technical details about the technologies used.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+  <appendix is-chapter="true" is-part="true" class="- map/topicref bookmap/appendix " href="#unique_33" type="reference"><topicmeta class="- map/topicmeta " data-topic-id="r_tech_stack"><resourceid appid="r_tech_stack" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_33" class="- topic/navtitle ">Technology Stack</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Technical details about the technologies used.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
@@ -211,43 +235,43 @@
     </prodinfo></topicmeta></appendix>
   
   
-  <appendix audience="developer" is-chapter="true" is-part="true" class="- map/topicref bookmap/appendix " href="#unique_30" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_developer_guide"><resourceid appid="c_developer_guide" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_30" class="- topic/navtitle ">Developer Guide</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Technical documentation for developers contributing to or extending Lingua Workbench.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+  <appendix audience="developer" is-chapter="true" is-part="true" class="- map/topicref bookmap/appendix " href="#unique_34" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_developer_guide"><resourceid appid="c_developer_guide" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_34" class="- topic/navtitle ">Developer Guide</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Technical documentation for developers contributing to or extending Lingua Workbench.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta><topicref audience="developer" class="- map/topicref " href="#unique_31" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_basewavesurfer"><resourceid appid="c_basewavesurfer" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_31" class="- topic/navtitle ">BaseWaveSurfer Component Architecture</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Technical documentation for the BaseWaveSurfer Vue component, which provides waveform visualization and region management.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+    </prodinfo></topicmeta><topicref audience="developer" class="- map/topicref " href="#unique_35" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_basewavesurfer"><resourceid appid="c_basewavesurfer" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_35" class="- topic/navtitle ">BaseWaveSurfer Component Architecture</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Technical documentation for the BaseWaveSurfer Vue component, which provides waveform visualization and region management.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta></topicref><topicref audience="developer" class="- map/topicref " href="#unique_32" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_audioslicer"><resourceid appid="c_audioslicer" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_32" class="- topic/navtitle ">AudioSlicer Component Architecture</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Technical documentation for the AudioSlicer Vue component, which manages audio region selection and slice persistence.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+    </prodinfo></topicmeta></topicref><topicref audience="developer" class="- map/topicref " href="#unique_36" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_audioslicer"><resourceid appid="c_audioslicer" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_36" class="- topic/navtitle ">AudioSlicer Component Architecture</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Technical documentation for the AudioSlicer Vue component, which manages audio region selection and slice persistence.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta></topicref><topicref audience="developer" class="- map/topicref " href="#unique_33" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_slicecard"><resourceid appid="c_slicecard" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_33" class="- topic/navtitle ">SliceCard Component</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Technical documentation for SliceCard, the core audio slice editing component.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+    </prodinfo></topicmeta></topicref><topicref audience="developer" class="- map/topicref " href="#unique_37" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_slicecard"><resourceid appid="c_slicecard" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_37" class="- topic/navtitle ">SliceCard Component</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Technical documentation for SliceCard, the core audio slice editing component.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta></topicref><topicref audience="developer" class="- map/topicref " href="#unique_34" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_userecording"><resourceid appid="c_userecording" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_34" class="- topic/navtitle ">useRecording Composable</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Technical documentation for the useRecording composable, which handles microphone access, audio recording, and playback.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+    </prodinfo></topicmeta></topicref><topicref audience="developer" class="- map/topicref " href="#unique_38" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_userecording"><resourceid appid="c_userecording" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_38" class="- topic/navtitle ">useRecording Composable</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Technical documentation for the useRecording composable, which handles microphone access, audio recording, and playback.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta></topicref><topicref audience="developer" class="- map/topicref " href="#unique_35" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_usetranscription"><resourceid appid="c_usetranscription" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_35" class="- topic/navtitle ">useTranscription Composable</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Technical documentation for the useTranscription composable, which handles audio extraction and Whisper API transcription.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+    </prodinfo></topicmeta></topicref><topicref audience="developer" class="- map/topicref " href="#unique_39" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_usetranscription"><resourceid appid="c_usetranscription" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_39" class="- topic/navtitle ">useTranscription Composable</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Technical documentation for the useTranscription composable, which handles audio extraction and Whisper API transcription.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
       <prodname class="- topic/prodname ">Lingua Workbench</prodname>
       <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
-    </prodinfo></topicmeta></topicref><topicref audience="developer" class="- map/topicref " href="#unique_36" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_usehighlightselection"><resourceid appid="c_usehighlightselection" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_36" class="- topic/navtitle ">useHighlightSelection Composable</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Handles text selection and highlight creation within SliceCard.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+    </prodinfo></topicmeta></topicref><topicref audience="developer" class="- map/topicref " href="#unique_40" type="concept"><topicmeta class="- map/topicmeta " data-topic-id="c_usehighlightselection"><resourceid appid="c_usehighlightselection" class="- topic/resourceid " oxy-source="topic"/><navtitle href="#unique_40" class="- topic/navtitle ">useHighlightSelection Composable</navtitle><?ditaot gentext?><?ditaot genshortdesc?><shortdesc class="- map/shortdesc ">Handles text selection and highlight creation within SliceCard.</shortdesc><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
       <revised class="- topic/revised " modified="2026-01-08"/>
     </critdates><prodinfo class="- topic/prodinfo ">
@@ -256,7 +280,7 @@
     </prodinfo></topicmeta></topicref></appendix>
 
   
-  <backmatter class="- map/topicref bookmap/backmatter "><booklists class="- map/topicref bookmap/booklists "><glossarylist class="- map/topicref bookmap/glossarylist " href="#d288e1040"><topicmeta class="- map/topicmeta "><navtitle href="#d288e1040" class="- topic/navtitle ">Glossary</navtitle></topicmeta></glossarylist></booklists></backmatter>
+  <backmatter class="- map/topicref bookmap/backmatter "><booklists class="- map/topicref bookmap/booklists "><glossarylist class="- map/topicref bookmap/glossarylist " href="#d304e1150"><topicmeta class="- map/topicmeta "><navtitle href="#d304e1150" class="- topic/navtitle ">Glossary</navtitle></topicmeta></glossarylist></booklists></backmatter>
 </opentopic:map><topic class="- topic/topic " id="unique_1" is-frontmatter="true" topicrefclass="- map/topicref bookmap/preface " nd:nd-id="preface" oid="preface" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Preface</ph></title><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -350,7 +374,7 @@
       </tgroup>
     </table>
   </body>
-</topic><topic xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" break-before="true" is-chapter="true" is-part="true" class="+ topic/topic pdf2-d/placeholder " id="d288e129" topicrefclass="- map/topicref bookmap/part "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Getting Started</ph></title><concept break-before="true" is-chapter="true" class="- topic/topic concept/concept " id="unique_4" topicrefclass="- map/topicref bookmap/chapter " nd:nd-id="c_product_overview" oid="c_product_overview" specializations="@props/deliveryTarget">
+</topic><topic xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" break-before="true" is-chapter="true" is-part="true" class="+ topic/topic pdf2-d/placeholder " id="d304e129" topicrefclass="- map/topicref bookmap/part "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Getting Started</ph></title><concept break-before="true" is-chapter="true" class="- topic/topic concept/concept " id="unique_4" topicrefclass="- map/topicref bookmap/chapter " nd:nd-id="c_product_overview" oid="c_product_overview" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Product Overview</ph></title>
   <shortdesc class="- topic/shortdesc ">Lingua Workbench is a personal language learning platform for studying spoken English.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -463,7 +487,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
       <p class="- topic/p ">You should see the Lingua Workbench home page. Register an account to get started, then you can start uploading audio and creating slices.</p>
     </result>
   </taskbody>
-</task></topic><topic xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" break-before="true" is-chapter="true" is-part="true" class="+ topic/topic pdf2-d/placeholder " id="d288e212" topicrefclass="- map/topicref bookmap/part "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">User Guide</ph></title><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d288e213" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Audio Management</ph></title><concept class="- topic/topic concept/concept " id="unique_7" topicrefclass="- map/topicref " nd:nd-id="c_audio_workflow" oid="c_audio_workflow" specializations="@props/deliveryTarget">
+</task></topic><topic xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" break-before="true" is-chapter="true" is-part="true" class="+ topic/topic pdf2-d/placeholder " id="d304e212" topicrefclass="- map/topicref bookmap/part "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">User Guide</ph></title><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d304e213" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Audio Management</ph></title><concept class="- topic/topic concept/concept " id="unique_7" topicrefclass="- map/topicref " nd:nd-id="c_audio_workflow" oid="c_audio_workflow" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Audio Workflow Overview</ph></title>
   <shortdesc class="- topic/shortdesc ">Understanding how audio is organized and processed in Lingua Workbench.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -547,7 +571,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
       <p class="- topic/p ">The waveform is displayed and you can begin creating slices.</p>
     </result>
   </taskbody>
-</task></topic><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d288e295" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Creating Slices</ph></title><concept class="- topic/topic concept/concept " id="unique_10" topicrefclass="- map/topicref " nd:nd-id="c_what_is_slice" oid="c_what_is_slice" specializations="@props/deliveryTarget">
+</task></topic><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d304e295" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Creating Slices</ph></title><concept class="- topic/topic concept/concept " id="unique_10" topicrefclass="- map/topicref " nd:nd-id="c_what_is_slice" oid="c_what_is_slice" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">What is an Audio Slice?</ph></title>
   <shortdesc class="- topic/shortdesc ">Understanding audio slices and their role in language learning.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -685,7 +709,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
       <p class="- topic/p ">For saved slices, the deletion is immediate. For unsaved slices, only the local region is removed.</p>
     </result>
   </taskbody>
-</task></topic><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d288e431" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Phonetic Analysis</ph></title><concept class="- topic/topic concept/concept " id="unique_15" topicrefclass="- map/topicref " nd:nd-id="c_sound_script" oid="c_sound_script" specializations="@props/deliveryTarget">
+</task></topic><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d304e431" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Phonetic Analysis</ph></title><concept class="- topic/topic concept/concept " id="unique_15" topicrefclass="- map/topicref " nd:nd-id="c_sound_script" oid="c_sound_script" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Sound Script Analysis</ph></title>
   <shortdesc class="- topic/shortdesc ">Understanding AI-generated phonetic analysis.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -809,7 +833,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
       </p>
     </result>
   </taskbody>
-</task></topic><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d288e540" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Dictionary</ph></title><task class="- topic/topic task/task " id="unique_19" topicrefclass="- map/topicref " nd:nd-id="t_lookup_phrase" oid="t_lookup_phrase" specializations="@props/deliveryTarget">
+</task></topic><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d304e540" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Dictionary</ph></title><task class="- topic/topic task/task " id="unique_19" topicrefclass="- map/topicref " nd:nd-id="t_lookup_phrase" oid="t_lookup_phrase" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Looking Up a Phrase</ph></title>
   <shortdesc class="- topic/shortdesc ">Get dictionary definitions for a highlighted phrase.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -848,7 +872,160 @@ uv run huey_consumer tasks.huey</codeblock></info>
       <p class="- topic/p ">The AI generates new contextual examples in both English and Chinese.</p>
     </result>
   </taskbody>
-</task></topic></topic><topic xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" break-before="true" is-chapter="true" is-part="true" class="+ topic/topic pdf2-d/placeholder " id="d288e597" topicrefclass="- map/topicref bookmap/part "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Reference</ph></title><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d288e598" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">UI Reference</ph></title><reference class="- topic/topic       reference/reference " id="unique_21" topicrefclass="- map/topicref " nd:nd-id="r_slicecard_controls" oid="r_slicecard_controls" specializations="@props/deliveryTarget">
+</task></topic><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d304e595" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Daily Review</ph></title><concept class="- topic/topic concept/concept " id="unique_21" topicrefclass="- map/topicref " nd:nd-id="c_what_is_review" oid="c_what_is_review" specializations="@props/deliveryTarget">
+  <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">What is Daily Review?</ph></title>
+  <shortdesc class="- topic/shortdesc ">Understanding the spaced repetition review system for long-term retention.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+      <created class="- topic/created " date="2026-01-08"/>
+      <revised class="- topic/revised " modified="2026-01-08"/>
+    </critdates><metadata class="- topic/metadata "><prodinfo class="- topic/prodinfo ">
+      <prodname class="- topic/prodname ">Lingua Workbench</prodname>
+      <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
+    </prodinfo></metadata></prolog>
+  <conbody class="- topic/body  concept/conbody ">
+    <section class="- topic/section ">
+      <title class="- topic/title ">Overview</title>
+      <p class="- topic/p "><term class="- topic/term ">Daily Review</term> is a flashcard-style practice system that helps you retain the audio slices you've created. It uses spaced repetition to schedule reviews at optimal intervals.</p>
+    </section>
+    
+    <section class="- topic/section ">
+      <title class="- topic/title ">How It Works</title>
+      <p class="- topic/p ">The system is based on the Leitner box method:</p>
+      <ul class="- topic/ul "><li class="- topic/li "><b class="+ topic/ph hi-d/b ">Box 1</b> - New or forgotten cards, reviewed daily</li><li class="- topic/li "><b class="+ topic/ph hi-d/b ">Box 2-5</b> - Cards move up when answered correctly, reviewed less frequently</li><li class="- topic/li "><b class="+ topic/ph hi-d/b ">Forgot</b> - Cards drop back to Box 1 for more practice</li></ul>
+    </section>
+    
+    <section class="- topic/section ">
+      <title class="- topic/title ">Review Card Components</title>
+      <p class="- topic/p ">Each review card contains:</p>
+      <ul class="- topic/ul "><li class="- topic/li "><b class="+ topic/ph hi-d/b ">Audio playback</b> - Listen to the original slice audio</li><li class="- topic/li "><b class="+ topic/ph hi-d/b ">Translation</b> - Your Chinese translation (editable)</li><li class="- topic/li "><b class="+ topic/ph hi-d/b ">Answer</b> - The original English text, revealed on demand</li></ul>
+    </section>
+    
+    <section class="- topic/section ">
+      <title class="- topic/title ">When to Review</title>
+      <p class="- topic/p ">Cards become "due" based on their box level and last review date. The Review Board shows all due cards for today, allowing you to complete your daily practice in one session.</p>
+    </section>
+  </conbody>
+</concept><task class="- topic/topic task/task " id="unique_22" topicrefclass="- map/topicref " nd:nd-id="t_daily_review" oid="t_daily_review" specializations="@props/deliveryTarget">
+  <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Completing a Daily Review Session</ph></title>
+  <shortdesc class="- topic/shortdesc ">Practice your audio slices using the flashcard review interface.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+      <created class="- topic/created " date="2026-01-08"/>
+      <revised class="- topic/revised " modified="2026-01-08"/>
+    </critdates><metadata class="- topic/metadata "><prodinfo class="- topic/prodinfo ">
+      <prodname class="- topic/prodname ">Lingua Workbench</prodname>
+      <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
+    </prodinfo></metadata></prolog>
+  <taskbody class="- topic/body task/taskbody ">
+    <prereq class="- topic/section task/prereq ">
+      <p class="- topic/p ">You must have audio slices with translations to review. Slices become available for review based on their scheduling.</p>
+    </prereq>
+    
+    <steps class="- topic/ol task/steps "><step class="- topic/li task/step ">
+        <cmd class="- topic/ph task/cmd ">Navigate to the <uicontrol class="+ topic/ph ui-d/uicontrol ">Daily Review</uicontrol> page from the main menu.</cmd>
+        <stepresult class="- topic/itemgroup task/stepresult ">The Review Board displays your due cards in a carousel layout.</stepresult>
+      </step><step class="- topic/li task/step ">
+        <cmd class="- topic/ph task/cmd ">Press <uicontrol class="+ topic/ph ui-d/uicontrol ">Space</uicontrol> or click the play button to listen to the audio.</cmd>
+        <info class="- topic/itemgroup task/info ">Listen carefully to the pronunciation and try to understand the content.</info>
+      </step><step class="- topic/li task/step ">
+        <cmd class="- topic/ph task/cmd ">Read the translation displayed on the card.</cmd>
+        <info class="- topic/itemgroup task/info ">If the translation is missing or incorrect, click on it to edit directly.</info>
+      </step><step class="- topic/li task/step ">
+        <cmd class="- topic/ph task/cmd ">Press <uicontrol class="+ topic/ph ui-d/uicontrol ">Enter</uicontrol> or click <uicontrol class="+ topic/ph ui-d/uicontrol ">Show Answer</uicontrol> to reveal the original English text.</cmd>
+      </step><step class="- topic/li task/step ">
+        <cmd class="- topic/ph task/cmd ">Rate your recall:</cmd>
+        <choices class="- topic/ul task/choices "><choice class="- topic/li task/choice ">Click <uicontrol class="+ topic/ph ui-d/uicontrol ">Forgot</uicontrol> (or press <uicontrol class="+ topic/ph ui-d/uicontrol ">1</uicontrol>) if you couldn't recall it</choice><choice class="- topic/li task/choice ">Click <uicontrol class="+ topic/ph ui-d/uicontrol ">Good</uicontrol> (or press <uicontrol class="+ topic/ph ui-d/uicontrol ">2</uicontrol>) if you remembered correctly</choice></choices>
+        <stepresult class="- topic/itemgroup task/stepresult ">The card advances and the next due card appears.</stepresult>
+      </step><step class="- topic/li task/step ">
+        <cmd class="- topic/ph task/cmd ">Continue until all due cards are completed.</cmd>
+        <stepresult class="- topic/itemgroup task/stepresult ">A celebration screen appears when you finish all reviews.</stepresult>
+      </step></steps>
+    
+    <result class="- topic/section task/result ">
+      <p class="- topic/p ">Your review progress is saved automatically. Cards marked "Good" advance to higher boxes and will be scheduled for later review. Cards marked "Forgot" return to Box 1 for more frequent practice.</p>
+    </result>
+    
+    <postreq class="- topic/section task/postreq ">
+      <simpletable class="- topic/simpletable ">
+        <sthead class="- topic/sthead ">
+          <stentry class="- topic/stentry " dita-ot:x="1" dita-ot:y="1">Key</stentry>
+          <stentry class="- topic/stentry " dita-ot:x="2" dita-ot:y="1">Action</stentry>
+        </sthead>
+        <strow class="- topic/strow "><stentry class="- topic/stentry " dita-ot:x="1" dita-ot:y="2"><uicontrol class="+ topic/ph ui-d/uicontrol ">Space</uicontrol></stentry><stentry class="- topic/stentry " dita-ot:x="2" dita-ot:y="2">Play/pause audio</stentry></strow>
+        <strow class="- topic/strow "><stentry class="- topic/stentry " dita-ot:x="1" dita-ot:y="3"><uicontrol class="+ topic/ph ui-d/uicontrol ">Enter</uicontrol></stentry><stentry class="- topic/stentry " dita-ot:x="2" dita-ot:y="3">Reveal answer / Mark as Good</stentry></strow>
+        <strow class="- topic/strow "><stentry class="- topic/stentry " dita-ot:x="1" dita-ot:y="4"><uicontrol class="+ topic/ph ui-d/uicontrol ">1</uicontrol> or <uicontrol class="+ topic/ph ui-d/uicontrol ">←</uicontrol></stentry><stentry class="- topic/stentry " dita-ot:x="2" dita-ot:y="4">Mark as Forgot</stentry></strow>
+        <strow class="- topic/strow "><stentry class="- topic/stentry " dita-ot:x="1" dita-ot:y="5"><uicontrol class="+ topic/ph ui-d/uicontrol ">2</uicontrol> or <uicontrol class="+ topic/ph ui-d/uicontrol ">→</uicontrol></stentry><stentry class="- topic/stentry " dita-ot:x="2" dita-ot:y="5">Mark as Good</stentry></strow>
+      </simpletable>
+    </postreq>
+  </taskbody>
+</task></topic><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d304e650" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Translation Manager</ph></title><concept class="- topic/topic concept/concept " id="unique_23" topicrefclass="- map/topicref " nd:nd-id="c_translation_manager" oid="c_translation_manager" specializations="@props/deliveryTarget">
+  <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Translation Manager Overview</ph></title>
+  <shortdesc class="- topic/shortdesc ">Batch translate audio slice idioms using AI.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+      <created class="- topic/created " date="2026-01-08"/>
+      <revised class="- topic/revised " modified="2026-01-08"/>
+    </critdates><metadata class="- topic/metadata "><prodinfo class="- topic/prodinfo ">
+      <prodname class="- topic/prodname ">Lingua Workbench</prodname>
+      <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
+    </prodinfo></metadata></prolog>
+  <conbody class="- topic/body  concept/conbody ">
+    <section class="- topic/section ">
+      <title class="- topic/title ">What is Translation Manager?</title>
+      <p class="- topic/p ">The <term class="- topic/term ">Translation Manager</term> is a utility page for managing translations across all your audio slices. It identifies slices that are missing Chinese translations and allows you to translate them in bulk using AI.</p>
+    </section>
+    
+    <section class="- topic/section ">
+      <title class="- topic/title ">Missing Translations</title>
+      <p class="- topic/p ">A slice is considered "missing translation" when:</p>
+      <ul class="- topic/ul "><li class="- topic/li ">It has been transcribed (has English text)</li><li class="- topic/li ">No Chinese translation has been added yet</li></ul>
+      <p class="- topic/p ">These slices cannot be effectively reviewed until they have translations.</p>
+    </section>
+    
+    <section class="- topic/section ">
+      <title class="- topic/title ">AI Translation</title>
+      <p class="- topic/p ">Translation Manager uses DeepSeek AI to generate contextual Chinese translations. The AI considers:</p>
+      <ul class="- topic/ul "><li class="- topic/li ">The original English text</li><li class="- topic/li ">Common idioms and colloquial expressions</li><li class="- topic/li ">Natural Chinese phrasing</li></ul>
+    </section>
+    
+    <section class="- topic/section ">
+      <title class="- topic/title ">When to Use</title>
+      <p class="- topic/p ">Use Translation Manager when you have accumulated multiple slices without translations and want to process them efficiently in one batch, rather than translating each slice individually.</p>
+    </section>
+  </conbody>
+</concept><task class="- topic/topic task/task " id="unique_24" topicrefclass="- map/topicref " nd:nd-id="t_batch_translate" oid="t_batch_translate" specializations="@props/deliveryTarget">
+  <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Batch Translating Slices</ph></title>
+  <shortdesc class="- topic/shortdesc ">Translate multiple audio slices at once using AI.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
+      <created class="- topic/created " date="2026-01-08"/>
+      <revised class="- topic/revised " modified="2026-01-08"/>
+    </critdates><metadata class="- topic/metadata "><prodinfo class="- topic/prodinfo ">
+      <prodname class="- topic/prodname ">Lingua Workbench</prodname>
+      <vrmlist class="- topic/vrmlist "><vrm class="- topic/vrm " modification="0" release="0" version="1"/></vrmlist>
+    </prodinfo></metadata></prolog>
+  <taskbody class="- topic/body task/taskbody ">
+    <prereq class="- topic/section task/prereq ">
+      <p class="- topic/p ">You must have audio slices with transcriptions but missing translations.</p>
+    </prereq>
+    
+    <steps class="- topic/ol task/steps "><step class="- topic/li task/step ">
+        <cmd class="- topic/ph task/cmd ">Navigate to the <uicontrol class="+ topic/ph ui-d/uicontrol ">Translation Manager</uicontrol> page.</cmd>
+        <stepresult class="- topic/itemgroup task/stepresult ">The page displays a count of slices missing translations and a table listing them.</stepresult>
+      </step><step class="- topic/li task/step ">
+        <cmd class="- topic/ph task/cmd ">Review the list of pending items to confirm they are ready for translation.</cmd>
+        <info class="- topic/itemgroup task/info ">Each row shows the original English text and a "Pending" status badge.</info>
+      </step><step class="- topic/li task/step ">
+        <cmd class="- topic/ph task/cmd ">Click the <uicontrol class="+ topic/ph ui-d/uicontrol ">Translate All</uicontrol> button.</cmd>
+        <stepresult class="- topic/itemgroup task/stepresult ">The button shows a loading spinner while the AI processes the translations.</stepresult>
+      </step><step class="- topic/li task/step ">
+        <cmd class="- topic/ph task/cmd ">Wait for the batch translation to complete.</cmd>
+        <info class="- topic/itemgroup task/info ">Processing time depends on the number of items. Each slice is translated individually by the AI.</info>
+        <stepresult class="- topic/itemgroup task/stepresult ">Successfully translated items are removed from the list. A success message appears in the console.</stepresult>
+      </step></steps>
+    
+    <result class="- topic/section task/result ">
+      <p class="- topic/p ">All processed slices now have Chinese translations and are ready for review in the Daily Review system. If all items were translated successfully, the page shows an empty state with a checkmark.</p>
+    </result>
+    
+    <postreq class="- topic/section task/postreq ">
+      <p class="- topic/p ">After batch translation, you may want to review individual translations for accuracy by editing them in the Audio Slicer or during Daily Review sessions.</p>
+    </postreq>
+  </taskbody>
+</task></topic></topic><topic xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" break-before="true" is-chapter="true" is-part="true" class="+ topic/topic pdf2-d/placeholder " id="d304e707" topicrefclass="- map/topicref bookmap/part "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Reference</ph></title><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d304e708" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">UI Reference</ph></title><reference class="- topic/topic       reference/reference " id="unique_25" topicrefclass="- map/topicref " nd:nd-id="r_slicecard_controls" oid="r_slicecard_controls" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">SliceCard Controls Reference</ph></title>
   <shortdesc class="- topic/shortdesc ">Reference for all controls available on a SliceCard.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -899,7 +1076,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
       </table>
     </section>
   </refbody>
-</reference><reference class="- topic/topic       reference/reference " id="unique_22" topicrefclass="- map/topicref " nd:nd-id="r_playback_controls" oid="r_playback_controls" specializations="@props/deliveryTarget">
+</reference><reference class="- topic/topic       reference/reference " id="unique_26" topicrefclass="- map/topicref " nd:nd-id="r_playback_controls" oid="r_playback_controls" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Playback Controls Reference</ph></title>
   <shortdesc class="- topic/shortdesc ">Reference for audio playback controls.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -924,7 +1101,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
       <p class="- topic/p ">Click on a Sliced Region to play that region only.</p>
     </section>
   </refbody>
-</reference><reference class="- topic/topic       reference/reference " id="unique_23" topicrefclass="- map/topicref " nd:nd-id="r_editor_modes" oid="r_editor_modes" specializations="@props/deliveryTarget">
+</reference><reference class="- topic/topic       reference/reference " id="unique_27" topicrefclass="- map/topicref " nd:nd-id="r_editor_modes" oid="r_editor_modes" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Editor Modes Reference</ph></title>
   <shortdesc class="- topic/shortdesc ">Reference for Highlight Editor modes.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -949,7 +1126,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
       <p class="- topic/p ">Click <uicontrol class="+ topic/ph ui-d/uicontrol "><image alt="AI Notes" class="- topic/image " dita-ot:image-width="512" dita-ot:image-height="512" href="file:/C:/projects/lingua-workbench/docs/icons/gg--notes.png" placement="inline" scale="4"/></uicontrol> / <uicontrol class="+ topic/ph ui-d/uicontrol "><image alt="Sound Display" class="- topic/image " dita-ot:image-width="512" dita-ot:image-height="512" href="file:/C:/projects/lingua-workbench/docs/icons/tabler--abc.png" placement="inline" scale="4"/></uicontrol> to switch between the two modes.</p>
     </section>
   </refbody>
-</reference></topic><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d288e680" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Phonetic Notation</ph></title><reference class="- topic/topic       reference/reference " id="unique_24" topicrefclass="- map/topicref " nd:nd-id="r_phonetic_tags" oid="r_phonetic_tags" specializations="@props/deliveryTarget">
+</reference></topic><topic break-before="true" is-chapter="true" class="+ topic/topic pdf2-d/placeholder " id="d304e790" topicrefclass="- map/topicref bookmap/chapter "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Phonetic Notation</ph></title><reference class="- topic/topic       reference/reference " id="unique_28" topicrefclass="- map/topicref " nd:nd-id="r_phonetic_tags" oid="r_phonetic_tags" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Phonetic Tags Reference</ph></title>
   <shortdesc class="- topic/shortdesc ">Reference for phonetic tag types used in analysis.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -979,7 +1156,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
       </tgroup>
     </table>
   </refbody>
-</reference><reference class="- topic/topic       reference/reference " id="unique_25" topicrefclass="- map/topicref " nd:nd-id="r_ghost_sounds" oid="r_ghost_sounds" specializations="@props/deliveryTarget">
+</reference><reference class="- topic/topic       reference/reference " id="unique_29" topicrefclass="- map/topicref " nd:nd-id="r_ghost_sounds" oid="r_ghost_sounds" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Ghost Sounds Notation</ph></title>
   <shortdesc class="- topic/shortdesc ">Understanding the notation for silent or omitted sounds.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -1017,7 +1194,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
       </table>
     </section>
   </refbody>
-</reference></topic></topic><topic xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" break-before="true" is-chapter="true" is-part="true" class="+ topic/topic pdf2-d/placeholder " id="d288e736" topicrefclass="- map/topicref bookmap/part "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Troubleshooting</ph></title><task break-before="true" is-chapter="true" class="- topic/topic task/task " id="unique_26" topicrefclass="- map/topicref bookmap/chapter " nd:nd-id="ts_transcription_fails" oid="ts_transcription_fails" outputclass="troubleshooting" specializations="@props/deliveryTarget">
+</reference></topic></topic><topic xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" break-before="true" is-chapter="true" is-part="true" class="+ topic/topic pdf2-d/placeholder " id="d304e846" topicrefclass="- map/topicref bookmap/part "><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Troubleshooting</ph></title><task break-before="true" is-chapter="true" class="- topic/topic task/task " id="unique_30" topicrefclass="- map/topicref bookmap/chapter " nd:nd-id="ts_transcription_fails" oid="ts_transcription_fails" outputclass="troubleshooting" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Transcription Fails or Returns Empty</ph></title>
   <shortdesc class="- topic/shortdesc ">Resolve issues with Whisper transcription.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -1044,7 +1221,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
         <cmd class="- topic/ph task/cmd ">Ensure the audio format is supported (MP3, WAV).</cmd>
       </step></steps>
   </taskbody>
-</task><task break-before="true" is-chapter="true" class="- topic/topic task/task " id="unique_27" topicrefclass="- map/topicref bookmap/chapter " nd:nd-id="ts_analysis_errors" oid="ts_analysis_errors" outputclass="troubleshooting" specializations="@props/deliveryTarget">
+</task><task break-before="true" is-chapter="true" class="- topic/topic task/task " id="unique_31" topicrefclass="- map/topicref bookmap/chapter " nd:nd-id="ts_analysis_errors" oid="ts_analysis_errors" outputclass="troubleshooting" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">AI Analysis Errors</ph></title>
   <shortdesc class="- topic/shortdesc ">Resolve issues with phonetic analysis.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -1068,7 +1245,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
         <cmd class="- topic/ph task/cmd ">Check the Django server logs for API errors.</cmd>
       </step></steps>
   </taskbody>
-</task></topic><reference break-before="true" is-chapter="true" is-part="true" class="- topic/topic       reference/reference " id="unique_28" topicrefclass="- map/topicref bookmap/appendix " nd:nd-id="r_keyboard_shortcuts" oid="r_keyboard_shortcuts" specializations="@props/deliveryTarget">
+</task></topic><reference break-before="true" is-chapter="true" is-part="true" class="- topic/topic       reference/reference " id="unique_32" topicrefclass="- map/topicref bookmap/appendix " nd:nd-id="r_keyboard_shortcuts" oid="r_keyboard_shortcuts" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Keyboard Shortcuts</ph></title>
   <shortdesc class="- topic/shortdesc ">Quick reference for keyboard shortcuts.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -1096,7 +1273,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
       <note class="- topic/note ">More shortcuts may be added in future versions.</note>
     </section>
   </refbody>
-</reference><reference break-before="true" is-chapter="true" is-part="true" class="- topic/topic       reference/reference " id="unique_29" topicrefclass="- map/topicref bookmap/appendix " nd:nd-id="r_tech_stack" oid="r_tech_stack" specializations="@props/deliveryTarget">
+</reference><reference break-before="true" is-chapter="true" is-part="true" class="- topic/topic       reference/reference " id="unique_33" topicrefclass="- map/topicref bookmap/appendix " nd:nd-id="r_tech_stack" oid="r_tech_stack" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Technology Stack</ph></title>
   <shortdesc class="- topic/shortdesc ">Technical details about the technologies used.</shortdesc><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -1160,7 +1337,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
       </table>
     </section>
   </refbody>
-</reference><concept audience="developer developer" topicrefclass="- map/topicref bookmap/appendix " break-before="true" is-chapter="true" is-part="true" class="- topic/topic concept/concept " id="unique_30" nd:nd-id="c_developer_guide" oid="c_developer_guide" specializations="@props/deliveryTarget">
+</reference><concept audience="developer developer" topicrefclass="- map/topicref bookmap/appendix " break-before="true" is-chapter="true" is-part="true" class="- topic/topic concept/concept " id="unique_34" nd:nd-id="c_developer_guide" oid="c_developer_guide" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">Developer Guide</ph></title>
   <shortdesc class="- topic/shortdesc ">Technical documentation for developers contributing to or extending Lingua Workbench.</shortdesc>
   <prolog class="- topic/prolog ">
@@ -1184,21 +1361,21 @@ uv run huey_consumer tasks.huey</codeblock></info>
     <section class="- topic/section ">
       <title class="- topic/title ">Frontend Components</title>
       <p class="- topic/p ">Key Vue components and their architecture:</p>
-      <ul class="- topic/ul "><li class="- topic/li "><xref class="- topic/xref " href="#unique_31" type="concept"><?ditaot usertext?>BaseWaveSurfer<?ditaot genshortdesc?><desc class="- topic/desc ">Technical documentation for the BaseWaveSurfer Vue component, which provides waveform visualization and region management.</desc></xref> - Audio waveform visualization and region management</li><li class="- topic/li "><xref class="- topic/xref " href="#unique_32" type="concept"><?ditaot usertext?>AudioSlicer<?ditaot genshortdesc?><desc class="- topic/desc ">Technical documentation for the AudioSlicer Vue component, which manages audio region selection and slice persistence.</desc></xref> - Region selection workspace and slice persistence</li><li class="- topic/li "><xref class="- topic/xref " href="#unique_33" type="concept"><?ditaot usertext?>SliceCard<?ditaot genshortdesc?><desc class="- topic/desc ">Technical documentation for SliceCard, the core audio slice editing component.</desc></xref> - Audio slice editing with highlighting and AI analysis</li></ul>
+      <ul class="- topic/ul "><li class="- topic/li "><xref class="- topic/xref " href="#unique_35" type="concept"><?ditaot usertext?>BaseWaveSurfer<?ditaot genshortdesc?><desc class="- topic/desc ">Technical documentation for the BaseWaveSurfer Vue component, which provides waveform visualization and region management.</desc></xref> - Audio waveform visualization and region management</li><li class="- topic/li "><xref class="- topic/xref " href="#unique_36" type="concept"><?ditaot usertext?>AudioSlicer<?ditaot genshortdesc?><desc class="- topic/desc ">Technical documentation for the AudioSlicer Vue component, which manages audio region selection and slice persistence.</desc></xref> - Region selection workspace and slice persistence</li><li class="- topic/li "><xref class="- topic/xref " href="#unique_37" type="concept"><?ditaot usertext?>SliceCard<?ditaot genshortdesc?><desc class="- topic/desc ">Technical documentation for SliceCard, the core audio slice editing component.</desc></xref> - Audio slice editing with highlighting and AI analysis</li></ul>
     </section>
     
     <section class="- topic/section ">
       <title class="- topic/title ">Composables</title>
       <p class="- topic/p ">Reusable logic extracted from components:</p>
-      <ul class="- topic/ul "><li class="- topic/li "><xref class="- topic/xref " href="#unique_34" type="concept"><?ditaot usertext?>useRecording<?ditaot genshortdesc?><desc class="- topic/desc ">Technical documentation for the useRecording composable, which handles microphone access, audio recording, and playback.</desc></xref> - Microphone recording and playback</li><li class="- topic/li "><xref class="- topic/xref " href="#unique_35" type="concept"><?ditaot usertext?>useTranscription<?ditaot genshortdesc?><desc class="- topic/desc ">Technical documentation for the useTranscription composable, which handles audio extraction and Whisper API transcription.</desc></xref> - Whisper API transcription</li><li class="- topic/li "><xref class="- topic/xref " href="#unique_36" type="concept"><?ditaot usertext?>useHighlightSelection<?ditaot genshortdesc?><desc class="- topic/desc ">Handles text selection and highlight creation within SliceCard.</desc></xref> - Text selection and highlight creation</li></ul>
+      <ul class="- topic/ul "><li class="- topic/li "><xref class="- topic/xref " href="#unique_38" type="concept"><?ditaot usertext?>useRecording<?ditaot genshortdesc?><desc class="- topic/desc ">Technical documentation for the useRecording composable, which handles microphone access, audio recording, and playback.</desc></xref> - Microphone recording and playback</li><li class="- topic/li "><xref class="- topic/xref " href="#unique_39" type="concept"><?ditaot usertext?>useTranscription<?ditaot genshortdesc?><desc class="- topic/desc ">Technical documentation for the useTranscription composable, which handles audio extraction and Whisper API transcription.</desc></xref> - Whisper API transcription</li><li class="- topic/li "><xref class="- topic/xref " href="#unique_40" type="concept"><?ditaot usertext?>useHighlightSelection<?ditaot genshortdesc?><desc class="- topic/desc ">Handles text selection and highlight creation within SliceCard.</desc></xref> - Text selection and highlight creation</li></ul>
     </section>
     
     <section class="- topic/section ">
       <title class="- topic/title ">Additional Resources</title>
-      <ul class="- topic/ul "><li class="- topic/li ">Internal jottings: <filepath class="+ topic/ph sw-d/filepath ">jottings/</filepath> directory</li><li class="- topic/li ">Tech stack reference: <xref class="- topic/xref " href="#unique_29" type="reference"><?ditaot usertext?>Technology Stack<?ditaot genshortdesc?><desc class="- topic/desc ">Technical details about the technologies used.</desc></xref></li></ul>
+      <ul class="- topic/ul "><li class="- topic/li ">Internal jottings: <filepath class="+ topic/ph sw-d/filepath ">jottings/</filepath> directory</li><li class="- topic/li ">Tech stack reference: <xref class="- topic/xref " href="#unique_33" type="reference"><?ditaot usertext?>Technology Stack<?ditaot genshortdesc?><desc class="- topic/desc ">Technical details about the technologies used.</desc></xref></li></ul>
     </section>
   </conbody>
-<concept audience="developer developer" topicrefclass="- map/topicref " class="- topic/topic concept/concept " id="unique_31" nd:nd-id="c_basewavesurfer" oid="c_basewavesurfer" specializations="@props/deliveryTarget">
+<concept audience="developer developer" topicrefclass="- map/topicref " class="- topic/topic concept/concept " id="unique_35" nd:nd-id="c_basewavesurfer" oid="c_basewavesurfer" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">BaseWaveSurfer Component Architecture</ph></title>
   <shortdesc class="- topic/shortdesc ">Technical documentation for the BaseWaveSurfer Vue component, which provides waveform visualization and region management.</shortdesc>
   <prolog class="- topic/prolog ">
@@ -1241,7 +1418,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
     <section class="- topic/section ">
       <title class="- topic/title ">Data Flow: AudioSlicer</title>
       <p class="- topic/p ">In the AudioSlicer context, users interact with the waveform to create regions:</p>
-      <fig class="- topic/fig " id="d325e4222"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">AudioSlicer ↔ BaseWaveSurfer Data Flow</ph></title><image class="- topic/image " dita-ot:image-width="784" dita-ot:image-height="312" href="file:/C:/projects/lingua-workbench/docs/dita/topics/developer/wavesurfer/images/dataflow_audioslicer.png" placement="break">
+      <fig class="- topic/fig " id="d341e4818"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">AudioSlicer ↔ BaseWaveSurfer Data Flow</ph></title><image class="- topic/image " dita-ot:image-width="784" dita-ot:image-height="312" href="file:/C:/projects/lingua-workbench/docs/dita/topics/developer/wavesurfer/images/dataflow_audioslicer.png" placement="break">
           <alt class="- topic/alt ">Data flow diagram showing AudioSlicer passing url prop to BaseWaveSurfer, receiving region events and using exposed methods</alt>
         </image></fig>
       <ul class="- topic/ul "><li class="- topic/li "><b class="+ topic/ph hi-d/b ">Props</b>: <codeph class="+ topic/ph pr-d/codeph ">url</codeph>, <codeph class="+ topic/ph pr-d/codeph ">allowSelection=true</codeph></li><li class="- topic/li "><b class="+ topic/ph hi-d/b ">Events</b>: <codeph class="+ topic/ph pr-d/codeph ">region-created</codeph>, <codeph class="+ topic/ph pr-d/codeph ">region-updated</codeph>, <codeph class="+ topic/ph pr-d/codeph ">region-clicked</codeph>, <codeph class="+ topic/ph pr-d/codeph ">play</codeph>, <codeph class="+ topic/ph pr-d/codeph ">pause</codeph>, <codeph class="+ topic/ph pr-d/codeph ">ready</codeph></li><li class="- topic/li "><b class="+ topic/ph hi-d/b ">Exposed Methods</b>: <codeph class="+ topic/ph pr-d/codeph ">playPause()</codeph>, <codeph class="+ topic/ph pr-d/codeph ">addRegion()</codeph></li></ul>
@@ -1250,7 +1427,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
     <section class="- topic/section ">
       <title class="- topic/title ">Data Flow: SliceCard</title>
       <p class="- topic/p ">In the SliceCard context, a fixed region is displayed with loop playback:</p>
-      <fig class="- topic/fig " id="d325e4289"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">SliceCard ↔ BaseWaveSurfer Data Flow</ph></title><image class="- topic/image " dita-ot:image-width="784" dita-ot:image-height="290" href="file:/C:/projects/lingua-workbench/docs/dita/topics/developer/wavesurfer/images/dataflow_slicecard.png" placement="break">
+      <fig class="- topic/fig " id="d341e4885"><title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">SliceCard ↔ BaseWaveSurfer Data Flow</ph></title><image class="- topic/image " dita-ot:image-width="784" dita-ot:image-height="290" href="file:/C:/projects/lingua-workbench/docs/dita/topics/developer/wavesurfer/images/dataflow_slicecard.png" placement="break">
           <alt class="- topic/alt ">Data flow diagram showing SliceCard passing url, start, end props to BaseWaveSurfer</alt>
         </image></fig>
       <ul class="- topic/ul "><li class="- topic/li "><b class="+ topic/ph hi-d/b ">Props</b>: <codeph class="+ topic/ph pr-d/codeph ">url</codeph>, <codeph class="+ topic/ph pr-d/codeph ">start</codeph>, <codeph class="+ topic/ph pr-d/codeph ">end</codeph>, <codeph class="+ topic/ph pr-d/codeph ">allowSelection=false</codeph></li><li class="- topic/li "><b class="+ topic/ph hi-d/b ">Events</b>: <codeph class="+ topic/ph pr-d/codeph ">play</codeph>, <codeph class="+ topic/ph pr-d/codeph ">pause</codeph></li><li class="- topic/li "><b class="+ topic/ph hi-d/b ">Exposed Methods</b>: <codeph class="+ topic/ph pr-d/codeph ">playPause()</codeph>, <codeph class="+ topic/ph pr-d/codeph ">setPlaybackRate()</codeph></li></ul>
@@ -1280,7 +1457,7 @@ uv run huey_consumer tasks.huey</codeblock></info>
       <p class="- topic/p ">For detailed API documentation, see the component's internal jottings at <filepath class="+ topic/ph sw-d/filepath ">jottings/BaseWaveSurfer.md</filepath>.</p>
     </section>
   </conbody>
-</concept><concept audience="developer developer" topicrefclass="- map/topicref " class="- topic/topic concept/concept " id="unique_32" nd:nd-id="c_audioslicer" oid="c_audioslicer" specializations="@props/deliveryTarget">
+</concept><concept audience="developer developer" topicrefclass="- map/topicref " class="- topic/topic concept/concept " id="unique_36" nd:nd-id="c_audioslicer" oid="c_audioslicer" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">AudioSlicer Component Architecture</ph></title>
   <shortdesc class="- topic/shortdesc ">Technical documentation for the AudioSlicer Vue component, which manages audio region selection and slice persistence.</shortdesc>
   <prolog class="- topic/prolog ">
@@ -1361,7 +1538,7 @@ handleRegionRemoved filters regionsList</codeblock>
       <p class="- topic/p ">Component location: <filepath class="+ topic/ph sw-d/filepath ">frontend/src/components/AudioSlicer.vue</filepath></p>
     </section>
   </conbody>
-</concept><concept audience="developer developer" topicrefclass="- map/topicref " class="- topic/topic concept/concept " id="unique_33" nd:nd-id="c_slicecard" oid="c_slicecard" specializations="@props/deliveryTarget">
+</concept><concept audience="developer developer" topicrefclass="- map/topicref " class="- topic/topic concept/concept " id="unique_37" nd:nd-id="c_slicecard" oid="c_slicecard" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">SliceCard Component</ph></title>
   <shortdesc class="- topic/shortdesc ">Technical documentation for SliceCard, the core audio slice editing component.</shortdesc>
   <prolog class="- topic/prolog ">
@@ -1410,7 +1587,7 @@ handleRegionRemoved filters regionsList</codeblock>
 
     <section class="- topic/section ">
       <title class="- topic/title ">Composables Used</title>
-      <ul class="- topic/ul "><li class="- topic/li "><xref class="- topic/xref " href="#unique_34" type="concept"><?ditaot usertext?>useRecording<?ditaot genshortdesc?><desc class="- topic/desc ">Technical documentation for the useRecording composable, which handles microphone access, audio recording, and playback.</desc></xref> - Microphone recording</li><li class="- topic/li "><xref class="- topic/xref " href="#unique_35" type="concept"><?ditaot usertext?>useTranscription<?ditaot genshortdesc?><desc class="- topic/desc ">Technical documentation for the useTranscription composable, which handles audio extraction and Whisper API transcription.</desc></xref> - Whisper transcription</li><li class="- topic/li "><xref class="- topic/xref " href="#unique_36" type="concept"><?ditaot usertext?>useHighlightSelection<?ditaot genshortdesc?><desc class="- topic/desc ">Handles text selection and highlight creation within SliceCard.</desc></xref> - Text selection &amp; highlighting</li></ul>
+      <ul class="- topic/ul "><li class="- topic/li "><xref class="- topic/xref " href="#unique_38" type="concept"><?ditaot usertext?>useRecording<?ditaot genshortdesc?><desc class="- topic/desc ">Technical documentation for the useRecording composable, which handles microphone access, audio recording, and playback.</desc></xref> - Microphone recording</li><li class="- topic/li "><xref class="- topic/xref " href="#unique_39" type="concept"><?ditaot usertext?>useTranscription<?ditaot genshortdesc?><desc class="- topic/desc ">Technical documentation for the useTranscription composable, which handles audio extraction and Whisper API transcription.</desc></xref> - Whisper transcription</li><li class="- topic/li "><xref class="- topic/xref " href="#unique_40" type="concept"><?ditaot usertext?>useHighlightSelection<?ditaot genshortdesc?><desc class="- topic/desc ">Handles text selection and highlight creation within SliceCard.</desc></xref> - Text selection &amp; highlighting</li></ul>
     </section>
 
     <section class="- topic/section ">
@@ -1468,7 +1645,7 @@ defineExpose</codeblock>
       <p class="- topic/p ">Location: <filepath class="+ topic/ph sw-d/filepath ">frontend/src/components/SliceCard.vue</filepath></p>
     </section>
   </conbody>
-</concept><concept audience="developer developer" topicrefclass="- map/topicref " class="- topic/topic concept/concept " id="unique_34" nd:nd-id="c_userecording" oid="c_userecording" specializations="@props/deliveryTarget">
+</concept><concept audience="developer developer" topicrefclass="- map/topicref " class="- topic/topic concept/concept " id="unique_38" nd:nd-id="c_userecording" oid="c_userecording" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">useRecording Composable</ph></title>
   <shortdesc class="- topic/shortdesc ">Technical documentation for the useRecording composable, which handles microphone access, audio recording, and playback.</shortdesc>
   <prolog class="- topic/prolog ">
@@ -1576,7 +1753,7 @@ isRecording = true</codeblock>
       <p class="- topic/p ">Location: <filepath class="+ topic/ph sw-d/filepath ">frontend/src/composables/useRecording.ts</filepath></p>
     </section>
   </conbody>
-</concept><concept audience="developer developer" topicrefclass="- map/topicref " class="- topic/topic concept/concept " id="unique_35" nd:nd-id="c_usetranscription" oid="c_usetranscription" specializations="@props/deliveryTarget">
+</concept><concept audience="developer developer" topicrefclass="- map/topicref " class="- topic/topic concept/concept " id="unique_39" nd:nd-id="c_usetranscription" oid="c_usetranscription" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">useTranscription Composable</ph></title>
   <shortdesc class="- topic/shortdesc ">Technical documentation for the useTranscription composable, which handles audio extraction and Whisper API transcription.</shortdesc>
   <prolog class="- topic/prolog ">
@@ -1661,7 +1838,7 @@ finally: isTranscribing = false</codeblock>
       <p class="- topic/p ">Location: <filepath class="+ topic/ph sw-d/filepath ">frontend/src/composables/useTranscription.ts</filepath></p>
     </section>
   </conbody>
-</concept><concept audience="developer developer" topicrefclass="- map/topicref " class="- topic/topic concept/concept " id="unique_36" nd:nd-id="c_usehighlightselection" oid="c_usehighlightselection" specializations="@props/deliveryTarget">
+</concept><concept audience="developer developer" topicrefclass="- map/topicref " class="- topic/topic concept/concept " id="unique_40" nd:nd-id="c_usehighlightselection" oid="c_usehighlightselection" specializations="@props/deliveryTarget">
   <title class="- topic/title "><ph class="- topic/ph topic/title-wrapper ">useHighlightSelection Composable</ph></title>
   <shortdesc class="- topic/shortdesc ">Handles text selection and highlight creation within SliceCard.</shortdesc>
   <prolog class="- topic/prolog ">
@@ -1766,7 +1943,7 @@ resetSelection()</codeblock>
       <p class="- topic/p ">Location: <filepath class="+ topic/ph sw-d/filepath ">frontend/src/composables/useHighlightSelection.ts</filepath></p>
     </section>
   </conbody>
-</concept></concept><topic id="d288e1040" class="- topic/topic bookmap/glossarylist "><title class="- topic/title ">Glossary</title><glossentry xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" class="- topic/topic concept/concept glossentry/glossentry " id="unique_37" is-backmatter="true" topicrefclass="- map/topicref " nd:nd-id="g_chunk" oid="g_chunk" specializations="@props/deliveryTarget">
+</concept></concept><topic id="d304e1150" class="- topic/topic bookmap/glossarylist "><title class="- topic/title ">Glossary</title><glossentry xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" class="- topic/topic concept/concept glossentry/glossentry " id="unique_41" is-backmatter="true" topicrefclass="- map/topicref " nd:nd-id="g_chunk" oid="g_chunk" specializations="@props/deliveryTarget">
   <glossterm class="- topic/title concept/title glossentry/glossterm "><ph class="- topic/ph topic/title-wrapper ">Chunk</ph></glossterm>
   <glossdef class="- topic/abstract concept/abstract glossentry/glossdef ">A fixed-duration segment (e.g., 30 seconds) automatically generated when source audio is uploaded.</glossdef><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -1778,7 +1955,7 @@ resetSelection()</codeblock>
   <glossBody class="- topic/body concept/conbody glossentry/glossBody ">
     <glossUsage class="- topic/note concept/note glossentry/glossUsage ">Chunks serve as browsable units from which users can create slices.</glossUsage>
   </glossBody>
-</glossentry><glossentry xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" class="- topic/topic concept/concept glossentry/glossentry " id="unique_38" is-backmatter="true" topicrefclass="- map/topicref " nd:nd-id="g_drama" oid="g_drama" specializations="@props/deliveryTarget">
+</glossentry><glossentry xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" class="- topic/topic concept/concept glossentry/glossentry " id="unique_42" is-backmatter="true" topicrefclass="- map/topicref " nd:nd-id="g_drama" oid="g_drama" specializations="@props/deliveryTarget">
   <glossterm class="- topic/title concept/title glossentry/glossterm "><ph class="- topic/ph topic/title-wrapper ">Drama</ph></glossterm>
   <glossdef class="- topic/abstract concept/abstract glossentry/glossdef ">A TV show, movie, or podcast series that serves as the source of audio materials.</glossdef><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -1791,7 +1968,7 @@ resetSelection()</codeblock>
     <glossSurfaceForm class="- topic/p concept/p glossentry/glossSurfaceForm ">Dramas</glossSurfaceForm>
     <glossUsage class="- topic/note concept/note glossentry/glossUsage ">Each drama contains multiple episodes organized by season.</glossUsage>
   </glossBody>
-</glossentry><glossentry xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" class="- topic/topic concept/concept glossentry/glossentry " id="unique_39" is-backmatter="true" topicrefclass="- map/topicref " nd:nd-id="g_slice" oid="g_slice" specializations="@props/deliveryTarget">
+</glossentry><glossentry xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" class="- topic/topic concept/concept glossentry/glossentry " id="unique_43" is-backmatter="true" topicrefclass="- map/topicref " nd:nd-id="g_slice" oid="g_slice" specializations="@props/deliveryTarget">
   <glossterm class="- topic/title concept/title glossentry/glossterm "><ph class="- topic/ph topic/title-wrapper ">Slice</ph></glossterm>
   <glossdef class="- topic/abstract concept/abstract glossentry/glossdef ">A short audio segment extracted from a source file, used as a study unit for listening practice.</glossdef><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -1804,7 +1981,7 @@ resetSelection()</codeblock>
     <glossSurfaceForm class="- topic/p concept/p glossentry/glossSurfaceForm ">Slices</glossSurfaceForm>
     <glossUsage class="- topic/note concept/note glossentry/glossUsage ">Each slice contains a transcription and can be analyzed for phonetic features.</glossUsage>
   </glossBody>
-</glossentry><glossentry xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" class="- topic/topic concept/concept glossentry/glossentry " id="unique_40" is-backmatter="true" topicrefclass="- map/topicref " nd:nd-id="g_sound_script" oid="g_sound_script" specializations="@props/deliveryTarget">
+</glossentry><glossentry xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" class="- topic/topic concept/concept glossentry/glossentry " id="unique_44" is-backmatter="true" topicrefclass="- map/topicref " nd:nd-id="g_sound_script" oid="g_sound_script" specializations="@props/deliveryTarget">
   <glossterm class="- topic/title concept/title glossentry/glossterm "><ph class="- topic/ph topic/title-wrapper ">Sound Script</ph></glossterm>
   <glossdef class="- topic/abstract concept/abstract glossentry/glossdef ">An AI-generated phonetic analysis that shows how words are actually pronounced in connected speech.</glossdef><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>
@@ -1816,7 +1993,7 @@ resetSelection()</codeblock>
   <glossBody class="- topic/body concept/conbody glossentry/glossBody ">
     <glossUsage class="- topic/note concept/note glossentry/glossUsage ">Sound scripts highlight features like liaisons, reductions, and assimilations.</glossUsage>
   </glossBody>
-</glossentry><glossentry xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" class="- topic/topic concept/concept glossentry/glossentry " id="unique_41" is-backmatter="true" topicrefclass="- map/topicref " nd:nd-id="g_transcription" oid="g_transcription" specializations="@props/deliveryTarget">
+</glossentry><glossentry xmlns:ot-placeholder="http://suite-sol.com/namespaces/ot-placeholder" class="- topic/topic concept/concept glossentry/glossentry " id="unique_45" is-backmatter="true" topicrefclass="- map/topicref " nd:nd-id="g_transcription" oid="g_transcription" specializations="@props/deliveryTarget">
   <glossterm class="- topic/title concept/title glossentry/glossterm "><ph class="- topic/ph topic/title-wrapper ">Transcription</ph></glossterm>
   <glossdef class="- topic/abstract concept/abstract glossentry/glossdef ">The text representation of spoken audio, generated by AI (Whisper) or entered manually.</glossdef><prolog class="- topic/prolog "><author class="- topic/author " keyref="author_name">Edith</author><critdates class="- topic/critdates ">
       <created class="- topic/created " date="2026-01-08"/>

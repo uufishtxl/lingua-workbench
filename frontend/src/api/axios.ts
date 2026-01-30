@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { useAuthStore } from '@/stores/authStore';
+import { ElMessageBox } from 'element-plus';
+import router from '@/router';
 
 const apiClient = axios.create({
   baseURL: '/api',
@@ -26,7 +28,7 @@ apiClient.interceptors.response.use(
   (response) => {
     return response;
   },
-  async (error) => {
+  async (error: any) => {
     const originalRequest = error.config;
     const authStore = useAuthStore();
 
@@ -45,7 +47,30 @@ apiClient.interceptors.response.use(
             originalRequest.headers.Authorization = `Bearer ${authStore.accessToken}`;
             // Retry the original request
             return apiClient(originalRequest);
+          } else {
+            // Refresh failed (or was rejected by server)
+            throw new Error("Refresh failed");
           }
+        } catch (refreshError) {
+          // Handle refresh failure: Session expired
+          authStore.logout(); // Clear local state
+
+          // Show blocking alert
+          try {
+            await ElMessageBox.alert('登录已失效，请重新登录', '会话过期', {
+              confirmButtonText: '确定',
+              type: 'warning',
+              showClose: false, // Force user to click OK
+              closeOnClickModal: false,
+              closeOnPressEscape: false,
+            });
+          } catch {
+            // Ignore cancel errors if any, though we disabled ways to cancel
+          }
+
+          // Redirect to login
+          router.push({ name: 'login' });
+          return Promise.reject(error);
         } finally {
           authStore.isRefreshing = false;
         }

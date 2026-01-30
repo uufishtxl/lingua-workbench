@@ -13,7 +13,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/",
+      path: "/phrase-seeker",
       name: "phrase-seeker",
       component: PhraseSeeker,
       meta: {
@@ -82,8 +82,8 @@ const router = createRouter({
       }
     },
     {
-      path: '/review',
-      name: 'review',
+      path: '/',
+      name: 'home',
       component: () => import('@/views/ReviewBoard.vue'),
       meta: {
         layout: 'AppLayout',
@@ -125,7 +125,7 @@ router.beforeEach((to, from, next) => {
   // --- 逻辑 1 (你问的)：如果“已登录”，还想去“登录/注册页” ---
   if (isAuthPage && isAuthenticated) {
     // 阻止他，并把他“踢”回主页
-    next({ name: 'phrase-seeker' })
+    next({ name: 'home' })
   }
 
   // --- 逻辑 2 (保护)：如果“未登录”，还想去“受保护的页面” ---

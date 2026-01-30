@@ -126,7 +126,7 @@ REST_FRAMEWORK = {
     ),
     # --- 新增分页配置 ---
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10, # 每页显示 10 条记�?
+    'PAGE_SIZE': 15, # 每页显示 10 条记�?
 }
 
 # simple-jwt 的专门设�?
