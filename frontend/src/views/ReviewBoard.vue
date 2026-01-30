@@ -1,174 +1,206 @@
 <template>
-  <!-- Main Container: Fill available space, no scroll. -->
-  <div class="h-full w-full flex flex-col justify-center items-center p-4">
-    
-    <!-- Wrapper to constrain width and height visually -->
-    <div class="w-full max-w-2xl flex flex-col h-full max-h-[800px]">
+  <!-- Main Container -->
+  <div class="h-full w-full flex flex-col p-4 bg-slate-50">
+
+    <!-- Empty State -->
+    <div v-if="!loading && dueCards.length === 0" class="flex-1 flex flex-col items-center justify-center text-center bg-white rounded-3xl shadow-lg p-8">
+      <div class="text-5xl mb-6">🎉</div>
+      <h2 class="text-xl font-bold text-zinc-800 mb-2">All caught up!</h2>
+      <p class="text-zinc-500 mb-8 max-w-xs text-sm">Great job keeping up with your daily reviews.</p>
+      <!-- @pending 这里跳转的链接需要确认 -->
+      <button 
+        @click="$router.push('/phrase-seeker')"
+        class="px-6 py-2.5 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-colors shadow-lg"
+      >
+        Go to Library
+      </button>
+    </div>
+
+    <!-- Carousel Container -->
+    <div v-else-if="currentCard" class="flex-1 flex items-center justify-center gap-6 min-h-0 px-4">
+      
+      <!-- Left Arrow + Preview Card -->
+      <div class="hidden lg:flex items-center gap-3 flex-1 max-w-[200px]">
+        <!-- Previous Card Preview (3D Skew) -->
+        <div 
+          v-if="prevCard"
+          class="flex-1 h-[60vh] max-h-[500px] min-h-[350px] bg-white/60 rounded-2xl shadow-md flex items-center justify-center p-4 cursor-pointer hover:bg-white/80 transition-all"
+          style="transform: perspective(800px) rotateY(-15deg);"
+          @click="goToPrev"
+        >
+          <p class="text-zinc-400 text-sm text-center line-clamp-3">{{ prevCard.slice_translation || '...' }}</p>
+        </div>
         
-        <!-- Header -->
-        <header class="flex justify-between items-center mb-6 shrink-0">
-        <div>
-            <h1 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-                <i class="i-mdi-cards-playing-outline text-blue-400"></i> Daily Review
-            </h1>
-            <p class="text-zinc-500 text-xs mt-1 font-medium">
-            <span v-if="loading">Loading...</span>
-            <span v-else>{{ currentIndex + 1 }} / {{ dueCards.length }} Due</span>
-            </p>
-        </div>
-        <button @click="$router.push('/')" class="text-zinc-500 hover:text-white transition-colors p-2 rounded-full hover:bg-zinc-800">
-            <i class="i-mdi-close text-xl"></i>
+        <!-- Left Arrow -->
+        <button 
+          v-if="currentIndex > 0"
+          @click="goToPrev"
+          class="arrow-btn w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center text-blue-500 hover:scale-125 hover:shadow-lg transition-all shrink-0 cursor-pointer"
+        >
+          <i-tabler-chevron-left class="text-2xl" />
         </button>
-        </header>
+      </div>
 
-        <!-- Empty State -->
-        <div v-if="!loading && dueCards.length === 0" class="flex-1 flex flex-col items-center justify-center text-center bg-zinc-900/30 rounded-3xl border border-zinc-800/50 backdrop-blur-sm p-8">
-            <div class="text-5xl mb-6 filter drop-shadow-lg">🎉</div>
-            <h2 class="text-xl font-bold text-white mb-2">All caught up!</h2>
-            <p class="text-zinc-400 mb-8 max-w-xs text-sm">Great job keeping up with your daily reviews.</p>
+      <!-- Current Card (Main) -->
+      <div class="flex-[2] max-w-3xl h-[70vh] max-h-[500px] min-h-[350px] flex flex-col">
+        <Transition :name="slideDirection" mode="out-in">
+        <div :key="currentIndex" class="flex-1 bg-white rounded-3xl shadow-xl flex flex-col items-center p-6 gap-4 overflow-hidden">
+          
+          <!-- Tag -->
+          <span class="px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-blue-500 text-white shrink-0">
+            LISTEN TO THE AUDIO
+          </span>
+
+          <!-- Audio Controls Row -->
+          <div class="flex items-center gap-6">
+            <!-- Recording Button (Left) -->
             <button 
-                @click="$router.push('/')"
-                class="px-6 py-2.5 bg-white text-zinc-900 font-semibold rounded-full hover:bg-zinc-200 transition-colors shadow-lg active:scale-95 text-sm"
+              @click="toggleRecording"
+              class="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+              :class="isRecording ? 'bg-red-500 text-white animate-pulse' : 'bg-transparent text-red-400 hover:text-red-500'"
+              :title="isRecording ? 'Stop Recording' : 'Start Recording'"
             >
-                Back to Dashboard
+              <i-tabler-microphone v-if="!isRecording" class="text-xl" />
+              <i-tabler-player-stop-filled v-else class="text-lg" />
             </button>
-        </div>
 
-        <!-- Active Card -->
-        <div v-else-if="currentCard" class="flex-1 flex flex-col min-h-0 relative group">
-            
-            <!-- Card Surface -->
-            <div 
-                class="flex-1 flex flex-col bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-3xl border border-zinc-700/50 shadow-2xl relative overflow-hidden transition-all duration-500"
-                :class="{'ring-1 ring-blue-500/20 shadow-blue-500/5': !showResult, 'ring-1 ring-zinc-600/50': showResult}"
+            <!-- Play Audio Button (Center) -->
+            <button 
+              @click="playAudio"
+              :disabled="isAudioLoading"
+              class="w-14 h-14 rounded-full bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center shadow-lg transition-all hover:scale-110 active:scale-95 shrink-0 disabled:opacity-50 disabled:cursor-wait"
             >
-                <!-- Background decoration -->
-                <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+              <i-tabler-loader-2 v-if="isAudioLoading" class="text-xl animate-spin" />
+              <i-tabler-player-pause-filled v-else-if="isPlaying" class="text-xl" />
+              <i-tabler-player-play-filled v-else class="text-xl" />
+            </button>
 
-                <!-- Tag -->
-                <div class="absolute top-6 left-6 z-10">
-                    <span 
-                        class="px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border shadow-sm"
-                        :class="currentCard.review_type === 'translation' 
-                            ? 'bg-blue-500/10 text-blue-300 border-blue-500/20' 
-                            : 'bg-purple-500/10 text-purple-300 border-purple-500/20'"
-                    >
-                        {{ currentCard.review_type }}
-                    </span>
-                </div>
+            <!-- Play Recording Button (Right) -->
+            <button 
+              @click="playRecording"
+              :disabled="!recordedAudioUrl"
+              class="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+              :class="recordedAudioUrl ? (isPlayingRecordedAudio ? 'text-green-600' : 'text-green-500 hover:text-green-600') : 'text-zinc-300 cursor-not-allowed'"
+              title="Play Recording"
+            >
+              <!-- IconoirEmojiSingLeftNote i-tabler-headphones --> 
+              <IconoirEmojiSingLeftNote v-if="!isPlayingRecordedAudio" class="text-xl" :class="recordedAudioUrl ? 'text-green-500' : 'text-zinc-300'" />
+              <i-tabler-loader-2 v-else class="text-xl animate-spin" />
+            </button>
+          </div>
 
-                <!-- Main Content (Middle Aligned) -->
-                <div class="flex-1 flex flex-col justify-center items-center px-8 relative z-0">
-                    
-                    <!-- Question (Always Visible) -->
-                    <div class="flex-shrink-0 mb-6 w-full px-4">
-                        <!-- Translation Section -->
-                        <div class="min-h-[60px] relative group/edit flex flex-col justify-center items-center">
-                            
-                            <!-- Display Mode -->
-                            <div v-if="!isEditing" class="relative">
-                                <h3 class="text-2xl md:text-3xl font-serif text-zinc-200 leading-relaxed tracking-wide text-center cursor-pointer hover:text-white transition-colors" @click="startEdit">
-                                    {{ currentCard.slice_translation || "..." }}
-                                </h3>
-                                <!-- Edit Button (Visible on hover) -->
-                                <button 
-                                    @click.stop="startEdit"
-                                    class="absolute -right-10 top-1/2 -translate-y-1/2 text-zinc-600 hover:text-blue-400 opacity-0 group-hover/edit:opacity-100 transition-all p-2"
-                                    title="Edit Translation"
-                                >
-                                    <i class="i-mdi-pencil text-lg"></i>
-                                </button>
-                            </div>
+          <!-- Translation Text (Fixed Height, Editable) -->
+          <div class="h-28 flex items-center justify-center w-full px-4 overflow-hidden">
+            <!-- Display Mode -->
+            <p 
+              v-if="!isEditing"
+              @click="startEdit"
+              class="text-xl md:text-2xl font-serif text-[#1F2937] text-center leading-relaxed line-clamp-3 cursor-pointer hover:text-blue-700 transition-colors"
+              title="Click to edit"
+            >
+              {{ currentCard.slice_translation || '点击添加翻译...' }}
+            </p>
 
-                            <!-- Edit Mode -->
-                            <div v-else class="w-full max-w-lg flex flex-col gap-3 animate-fade-in">
-                                <textarea
-                                    v-model="editingText"
-                                    ref="editInputRef"
-                                    rows="3"
-                                    class="w-full bg-zinc-800 border-2 border-zinc-700 rounded-xl p-4 text-white text-xl text-center focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none resize-none font-serif shadow-xl"
-                                    @keydown.ctrl.enter="saveEdit"
-                                    @keydown.esc="cancelEdit"
-                                    placeholder="Enter translation..."
-                                ></textarea>
-                                <div class="flex justify-center gap-3">
-                                    <button 
-                                        @click="cancelEdit"
-                                        class="px-4 py-1.5 text-xs font-bold rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-300 transition-colors uppercase tracking-wider"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button 
-                                        @click="saveEdit"
-                                        class="px-4 py-1.5 text-xs font-bold rounded-lg bg-blue-600 hover:bg-blue-500 text-white transition-colors shadow-lg uppercase tracking-wider"
-                                    >
-                                        Save
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Audio Player -->
-                        <div 
-                             v-if="!isEditing && (currentCard.review_type === 'listening' || showResult)"
-                             class="flex justify-center h-16 transition-opacity duration-300 animate-fade-in mt-8"
-                        >
-                            <button 
-                                @click.stop="playAudio"
-                                class="w-16 h-16 rounded-full bg-zinc-700 hover:bg-zinc-600 text-white flex items-center justify-center transition-all hover:scale-110 active:scale-95 shadow-xl shadow-black/20 group border border-white/5"
-                                title="Play Audio (Space)"
-                            >
-                                <i class="i-mdi-volume-high text-2xl group-hover:text-white transition-colors"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Revealed Answer (Absolute positioned or Flow?) Flow is safer for varying text length -->
-                    <transition name="slide-fade">
-                        <div v-if="showResult" class="w-full mt-8 pt-8 border-t border-white/5 text-center bg-black/5 -mx-8 px-8 pb-4 rounded-b-lg">
-                            <p class="text-xl md:text-2xl font-serif text-blue-200 leading-relaxed mb-1 selection:bg-blue-500/30">
-                                {{ currentCard.slice_text }}
-                            </p>
-                        </div>
-                    </transition>
-                </div>
-            </div>
-
-            <!-- Action Bar (Fixed Height) -->
-            <div class="h-24 shrink-0 flex items-center justify-center pt-6">
-                
-                <!-- Reveal Action -->
+            <!-- Edit Mode -->
+            <div v-else class="w-full relative">
+              <textarea
+                v-model="editingText"
+                ref="editInputRef"
+                rows="2"
+                class="w-full bg-zinc-50 border-2 border-blue-300 rounded-xl p-3 pr-20 text-lg text-center focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none resize-none font-serif"
+                placeholder="输入翻译..."
+                @keydown.ctrl.enter="saveEdit"
+                @keydown.esc="cancelEdit"
+              ></textarea>
+              <!-- Buttons inside textarea -->
+              <div class="absolute right-2 bottom-2 flex gap-1">
                 <button 
-                    v-if="!showResult"
-                    @click="revealAnswer"
-                    class="w-full max-w-sm py-3.5 bg-white text-zinc-900 font-bold text-base rounded-2xl shadow-xl shadow-white/5 hover:bg-zinc-50 hover:shadow-white/10 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 transition-all flex items-center justify-center gap-2"
+                  @click="cancelEdit"
+                  class="p-1.5 rounded-full text-zinc-400 hover:text-zinc-600 hover:bg-zinc-200 transition-all"
+                  title="取消 (Esc)"
                 >
-                    <i class="i-mdi-eye-outline text-lg"></i>
-                    Show Answer
+                  <i-tabler-x class="text-base" />
                 </button>
-
-                <!-- Grading Actions -->
-                <div v-else class="flex gap-4 w-full max-w-sm">
-                    <button 
-                        @click="submitResult(false)"
-                        class="flex-1 py-3.5 rounded-2xl bg-[#2a2a2e] border border-zinc-700 hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-400 text-zinc-400 font-medium transition-all active:scale-95 flex items-center justify-center gap-2 group shadow-lg"
-                    >
-                        <i class="i-mdi-close text-lg group-hover:scale-110 transition-transform"></i>
-                        Forgot
-                    </button>
-
-                    <button 
-                        @click="submitResult(true)"
-                        class="flex-1 py-3.5 rounded-2xl bg-[#2a2a2e] border border-zinc-700 hover:bg-green-500/10 hover:border-green-500/50 hover:text-green-400 text-zinc-400 font-medium transition-all active:scale-95 flex items-center justify-center gap-2 group shadow-lg"
-                    >
-                        <i class="i-mdi-check text-lg group-hover:scale-110 transition-transform"></i>
-                        Good
-                    </button>
-                </div>
-
+                <button 
+                  @click="saveEdit"
+                  class="p-1.5 rounded-full text-green-500 hover:text-green-600 hover:bg-green-100 transition-all"
+                  title="保存 (Ctrl+Enter)"
+                >
+                  <i-tabler-check class="text-base" />
+                </button>
+              </div>
             </div>
+          </div>
+
+          <!-- Divider -->
+          <div class="w-full border-t border-zinc-200 shrink-0"></div>
+
+          <!-- Reveal / Answer Section (Fixed Height) -->
+          <div class="h-20 flex items-center justify-center w-full">
+            <!-- Show Answer Button -->
+            <button 
+              v-if="!showResult"
+              @click="revealAnswer"
+              class="flex items-center gap-2 text-zinc-400 hover:text-zinc-600 transition-colors"
+            >
+              <i-tabler-eye-off class="text-lg" />
+              <span class="text-sm">Show Answer</span>
+            </button>
+
+            <!-- Revealed Answer -->
+            <p 
+              v-else 
+              class="text-lg font-serif text-zinc-500 text-center leading-relaxed line-clamp-2 px-4"
+            >
+              {{ currentCard.slice_text }}
+            </p>
+          </div>
+
+          <!-- Action Buttons (Fixed Height) -->
+          <div class="h-12 flex items-center justify-center gap-6 shrink-0">
+            <button 
+              @click="submitResult(false)"
+              class="flex items-center gap-1 px-4 py-2 rounded-full border border-red-200 text-red-400 hover:bg-red-50 hover:border-red-300 transition-all"
+            >
+              <i-tabler-x class="text-sm" />
+              <span class="text-sm font-medium">Forgot</span>
+            </button>
+            <button 
+              @click="submitResult(true)"
+              class="flex items-center gap-1 px-4 py-2 rounded-full border border-green-200 text-green-500 hover:bg-green-50 hover:border-green-300 transition-all"
+            >
+              <i-tabler-thumb-up class="text-sm" />
+              <span class="text-sm font-medium">Good</span>
+            </button>
+          </div>
+
+          <div class="text-zinc-300 text-xs font-light mt-auto">{{ currentIndex + 1 }} / {{ totalCards }}</div>
 
         </div>
+        </Transition>
+      </div>
+
+      <!-- Right Arrow + Preview Card -->
+      <div class="hidden lg:flex items-center gap-3 flex-1 max-w-[200px]">
+        <!-- Right Arrow -->
+        <button 
+          v-if="currentIndex < dueCards.length - 1"
+          @click="goToNext"
+          class="arrow-btn w-12 h-12 rounded-full bg-white shadow-md flex items-center justify-center text-blue-500 hover:scale-125 hover:shadow-lg transition-all shrink-0 cursor-pointer"
+        >
+          <i-tabler-chevron-right class="text-2xl" />
+        </button>
+
+        <!-- Next Card Preview (3D Skew) -->
+        <div 
+          v-if="nextCard"
+          class="flex-1 h-[60vh] max-h-[500px] min-h-[350px] bg-white/60 rounded-2xl shadow-md flex items-center justify-center p-4 cursor-pointer hover:bg-white/80 transition-all"
+          style="transform: perspective(800px) rotateY(15deg);"
+          @click="goToNext"
+        >
+          <p class="text-zinc-400 text-sm text-center line-clamp-3">{{ nextCard.slice_translation || '...' }}</p>
+        </div>
+      </div>
 
     </div>
     
@@ -178,14 +210,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { reviewApi, type ReviewCard } from '@/api/reviewApi'
+import { useAudio, type AudioSlice } from '@/composables/useAudio'
+import { useRecording } from '@/composables/useRecording'
+
+import IconoirEmojiSingLeftNote from '~icons/iconoir/emoji-sing-left-note';
 
 // State
 const loading = ref(true)
 const dueCards = ref<ReviewCard[]>([])
 const currentIndex = ref(0)
 const showResult = ref(false)
+const slideDirection = ref<'slide-left' | 'slide-right'>('slide-left')
 
 // Edit State
 const isEditing = ref(false)
@@ -197,6 +234,31 @@ const audioRef = ref<HTMLAudioElement | null>(null)
 
 // Computed
 const currentCard = computed(() => dueCards.value[currentIndex.value])
+const prevCard = computed(() => currentIndex.value > 0 ? dueCards.value[currentIndex.value - 1] : null)
+const nextCard = computed(() => currentIndex.value < dueCards.value.length - 1 ? dueCards.value[currentIndex.value + 1] : null)
+const totalCards = computed(() => dueCards.value.length)
+
+// Audio slice for useAudio composable
+const currentAudioSlice = computed<AudioSlice | null>(() => {
+    const card = currentCard.value
+    if (!card) return null
+    return {
+        audio_url: card.audio_url,
+        start_time: card.start_time,
+        end_time: card.end_time
+    }
+})
+
+// Use audio composable
+const { isPlaying, isLoading: isAudioLoading, toggle: playAudio } = useAudio(audioRef, currentAudioSlice)
+
+// Use recording composable
+const { isRecording, recordedAudioUrl, isPlayingRecordedAudio, toggleRecording, playRecording, clearRecording } = useRecording()
+
+// Clear recording when switching cards
+watch(currentIndex, () => {
+    clearRecording()
+})
 
 // Lifecycle
 onMounted(async () => {
@@ -244,20 +306,21 @@ const handleKeydown = (e: KeyboardEvent) => {
     }
 }
 
-const playAudio = () => {
-  if (currentCard.value && audioRef.value) {
-    audioRef.value.src = currentCard.value.audio_url 
-    audioRef.value.currentTime = currentCard.value.start_time
-    audioRef.value.play().catch(e => console.warn("Audio play blocked", e))
-    
-    const stopTime = currentCard.value.end_time
-    const handleTimeUpdate = () => {
-      if (audioRef.value && audioRef.value.currentTime >= stopTime) {
-        audioRef.value.pause()
-        audioRef.value.removeEventListener('timeupdate', handleTimeUpdate)
-      }
-    }
-    audioRef.value.addEventListener('timeupdate', handleTimeUpdate)
+
+// Navigation Methods
+const goToPrev = () => {
+  if (currentIndex.value > 0) {
+    slideDirection.value = 'slide-right'
+    showResult.value = false
+    currentIndex.value--
+  }
+}
+
+const goToNext = () => {
+  if (currentIndex.value < dueCards.value.length - 1) {
+    slideDirection.value = 'slide-left'
+    showResult.value = false
+    currentIndex.value++
   }
 }
 
@@ -310,7 +373,7 @@ const submitResult = async (success: boolean) => {
 
     // Optimistic UI update: Move to next card immediately
     const cardId = currentCard.value.id
-    nextCard()
+    advanceToNextCard()
 
     // Background submission
     try {
@@ -320,7 +383,7 @@ const submitResult = async (success: boolean) => {
     }
 }
 
-const nextCard = () => {
+const advanceToNextCard = () => {
   showResult.value = false
   
   if (currentIndex.value < dueCards.value.length - 1) {
@@ -334,12 +397,55 @@ const nextCard = () => {
 </script>
 
 <style>
-.slide-fade-enter-active {
+/* Slide Left (Next) */
+.slide-left-enter-active,
+.slide-left-leave-active {
   transition: all 0.3s ease-out;
 }
 
-.slide-fade-enter-from {
+.slide-left-enter-from {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateX(50px);
+}
+
+.slide-left-leave-to {
+  opacity: 0;
+  transform: translateX(-50px);
+}
+
+/* Slide Right (Prev) */
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-right-enter-from {
+  opacity: 0;
+  transform: translateX(-50px);
+}
+
+.slide-right-leave-to {
+  opacity: 0;
+  transform: translateX(50px);
+}
+
+/* Arrow button animations */
+.arrow-btn {
+  animation: arrow-pulse 2s ease-in-out infinite;
+}
+
+.arrow-btn:hover {
+  animation: none;
+}
+
+@keyframes arrow-pulse {
+  0%, 100% { 
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1.05);
+  }
 }
 </style>

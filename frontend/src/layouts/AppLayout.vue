@@ -86,12 +86,16 @@ const handleCommand = (command: string | number | object) => {
       <el-aside width="auto" class="bg-slate-100 border-r-gray-300 border-r-1 flex flex-col">
         <el-menu :default-active="$route.path" router class="el-menu-vertical-demo"
           style="background-color: transparent; border-right: none;" :collapse="isCollapse">
+          <el-menu-item index="/">
+            <el-icon><HomeFilled /></el-icon>
+            <span>Home</span>
+          </el-menu-item>
           <el-sub-menu index="1">
             <template #title>
               <el-icon><icon-menu /></el-icon>
               <span>Phrase Seeker</span>
             </template>
-            <el-menu-item index="/">
+            <el-menu-item index="/phrase-seeker">
               <el-icon>
                 <Document />
               </el-icon>

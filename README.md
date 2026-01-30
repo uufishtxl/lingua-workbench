@@ -44,6 +44,19 @@ Sound Script provides AI-generated phonetic breakdown of spoken phrases, showing
 
 ![AI Dictionary](./docs/screenshots/fig_lwb_audio-slicer_ai-definition-result.png)
 
+### 📋 Daily Review
+Spaced repetition flashcard system for long-term retention:
+- **Leitner Box System**: Cards advance through 5 levels based on recall
+- **Audio-First Practice**: Listen and recall before seeing the answer
+- **Inline Translation Editing**: Fix translations directly during review
+- **Keyboard Shortcuts**: Space (play), Enter (reveal/good), 1/2 (forgot/good)
+
+### 🌐 Translation Manager
+Batch translate audio slices using DeepSeek AI:
+- **Missing Translation Detection**: Automatically finds untranslated slices
+- **One-Click Batch Translation**: Translate all pending items at once
+- **Progress Tracking**: Visual feedback during AI processing
+
 ### 🛠️ Editing Capabilities
 - **Dual Edit Modes**: 
   - **AI Note Mode**: Edit phonetic tags and notes

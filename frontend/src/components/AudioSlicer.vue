@@ -19,7 +19,7 @@
                     <el-button :type="loopRegion ? 'success' : ''" @click="loopRegion = !loopRegion" size="small" circle>
                         <i-tabler-repeat class="text-sm" />
                     </el-button>
-                    <PlaybackSpeedControl v-model="currentPlaybackRate" :options="speedOptions" @change="handleSpeedChange" theme="light" />
+                    <PlaybackSpeedControl v-model="currentPlaybackRate" :options="speedOptions" theme="light" />
                 </div>
             </div>
         </el-card>

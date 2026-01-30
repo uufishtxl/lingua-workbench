@@ -68,6 +68,16 @@
       <topicref href="topics/dictionary/t_lookup_phrase.dita"/>
       <topicref href="topics/dictionary/t_refresh_examples.dita"/>
     </chapter>
+    
+    <chapter navtitle="Daily Review">
+      <topicref href="topics/review/c_what_is_review.dita"/>
+      <topicref href="topics/review/t_daily_review.dita"/>
+    </chapter>
+    
+    <chapter navtitle="Translation Manager">
+      <topicref href="topics/translation/c_translation_manager.dita"/>
+      <topicref href="topics/translation/t_batch_translate.dita"/>
+    </chapter>
   </part>
 
   <!-- PART 3: Reference -->

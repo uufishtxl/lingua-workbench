@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="t_daily_review">
+  <title>Completing a Daily Review Session</title>
+  <shortdesc>Practice your audio slices using the flashcard review interface.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>You must have audio slices with translations to review. Slices become available for review based on their scheduling.</p>
+    </prereq>
+    
+    <steps>
+      <step>
+        <cmd>Navigate to the <uicontrol>Daily Review</uicontrol> page from the main menu.</cmd>
+        <stepresult>The Review Board displays your due cards in a carousel layout.</stepresult>
+      </step>
+      <step>
+        <cmd>Press <uicontrol>Space</uicontrol> or click the play button to listen to the audio.</cmd>
+        <info>Listen carefully to the pronunciation and try to understand the content.</info>
+      </step>
+      <step>
+        <cmd>Read the translation displayed on the card.</cmd>
+        <info>If the translation is missing or incorrect, click on it to edit directly.</info>
+      </step>
+      <step>
+        <cmd>Press <uicontrol>Enter</uicontrol> or click <uicontrol>Show Answer</uicontrol> to reveal the original English text.</cmd>
+      </step>
+      <step>
+        <cmd>Rate your recall:</cmd>
+        <choices>
+          <choice>Click <uicontrol>Forgot</uicontrol> (or press <uicontrol>1</uicontrol>) if you couldn't recall it</choice>
+          <choice>Click <uicontrol>Good</uicontrol> (or press <uicontrol>2</uicontrol>) if you remembered correctly</choice>
+        </choices>
+        <stepresult>The card advances and the next due card appears.</stepresult>
+      </step>
+      <step>
+        <cmd>Continue until all due cards are completed.</cmd>
+        <stepresult>A celebration screen appears when you finish all reviews.</stepresult>
+      </step>
+    </steps>
+    
+    <result>
+      <p>Your review progress is saved automatically. Cards marked "Good" advance to higher boxes and will be scheduled for later review. Cards marked "Forgot" return to Box 1 for more frequent practice.</p>
+    </result>
+    
+    <postreq>
+      <simpletable>
+        <sthead>
+          <stentry>Key</stentry>
+          <stentry>Action</stentry>
+        </sthead>
+        <strow>
+          <stentry><uicontrol>Space</uicontrol></stentry>
+          <stentry>Play/pause audio</stentry>
+        </strow>
+        <strow>
+          <stentry><uicontrol>Enter</uicontrol></stentry>
+          <stentry>Reveal answer / Mark as Good</stentry>
+        </strow>
+        <strow>
+          <stentry><uicontrol>1</uicontrol> or <uicontrol>←</uicontrol></stentry>
+          <stentry>Mark as Forgot</stentry>
+        </strow>
+        <strow>
+          <stentry><uicontrol>2</uicontrol> or <uicontrol>→</uicontrol></stentry>
+          <stentry>Mark as Good</stentry>
+        </strow>
+      </simpletable>
+    </postreq>
+  </taskbody>
+</task>

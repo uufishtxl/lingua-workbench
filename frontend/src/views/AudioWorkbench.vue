@@ -25,6 +25,8 @@ onMounted(async () => {
   try {
     // Fetch chunk data
     const response = await api.get(`/v1/audiochunks/${chunkId}/`)
+
+    console.log("response are", response)
     chunk.value = response.data
     
     // Fetch existing slices for this chunk

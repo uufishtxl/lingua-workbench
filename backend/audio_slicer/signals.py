@@ -1,7 +1,8 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
-from .models import AudioSlice, ReviewCard
+from .models import AudioSlice, ReviewCard, SourceAudio
+from .services import slice_source_to_chunks
 
 @receiver(post_save, sender=AudioSlice)
 def create_review_card_if_idiom(sender, instance, created, **kwargs):
@@ -22,3 +23,14 @@ def create_review_card_if_idiom(sender, instance, created, **kwargs):
                 next_review_date=timezone.now().date(),      # Due immediately
                 review_type=review_type
             )
+
+@receiver(post_save, sender=SourceAudio)
+def trigger_audio_slicing(sender, instance, created, **kwargs):
+    """
+    Trigger the slicing process when a SourceAudio is created (uploaded).
+    """
+    if created:
+        print(f"Triggering slice logic for SourceAudio: {instance.id}")
+        # Note: This is a synchronous call. For large files, this should be moved to a background task (e.g. Huey).
+        # But for now, user requested simplicity or it fits the current architecture.
+        slice_source_to_chunks(instance)

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "-//OASIS//DTD DITA Task//EN" "task.dtd">
+<task id="t_batch_translate">
+  <title>Batch Translating Slices</title>
+  <shortdesc>Translate multiple audio slices at once using AI.</shortdesc>
+  <taskbody>
+    <prereq>
+      <p>You must have audio slices with transcriptions but missing translations.</p>
+    </prereq>
+    
+    <steps>
+      <step>
+        <cmd>Navigate to the <uicontrol>Translation Manager</uicontrol> page.</cmd>
+        <stepresult>The page displays a count of slices missing translations and a table listing them.</stepresult>
+      </step>
+      <step>
+        <cmd>Review the list of pending items to confirm they are ready for translation.</cmd>
+        <info>Each row shows the original English text and a "Pending" status badge.</info>
+      </step>
+      <step>
+        <cmd>Click the <uicontrol>Translate All</uicontrol> button.</cmd>
+        <stepresult>The button shows a loading spinner while the AI processes the translations.</stepresult>
+      </step>
+      <step>
+        <cmd>Wait for the batch translation to complete.</cmd>
+        <info>Processing time depends on the number of items. Each slice is translated individually by the AI.</info>
+        <stepresult>Successfully translated items are removed from the list. A success message appears in the console.</stepresult>
+      </step>
+    </steps>
+    
+    <result>
+      <p>All processed slices now have Chinese translations and are ready for review in the Daily Review system. If all items were translated successfully, the page shows an empty state with a checkmark.</p>
+    </result>
+    
+    <postreq>
+      <p>After batch translation, you may want to review individual translations for accuracy by editing them in the Audio Slicer or during Daily Review sessions.</p>
+    </postreq>
+  </taskbody>
+</task>
