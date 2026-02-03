@@ -32,7 +32,7 @@ export interface AuthErrorResponse {
 }
 
 // Warning threshold in minutes
-const EXPIRATION_WARNING_MINUTES = 10
+const EXPIRATION_WARNING_MINUTES = 30 // in minutes
 
 export const useAuthStore = defineStore('auth', () => {
   // --- 1. State (状态) ---
@@ -62,6 +62,7 @@ export const useAuthStore = defineStore('auth', () => {
    * 检查 token 过期状态（内部函数）
    */
   function checkTokenExpiration(): void {
+    console.log('检查 token 过期状态')
     if (!accessToken.value) {
       expirationWarningActive.value = false
       secondsUntilExpiration.value = null
@@ -76,10 +77,12 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     secondsUntilExpiration.value = Math.floor(remaining / 1000)
+    console.log('Token 过期时间:', secondsUntilExpiration.value)
 
     // Check if we're within the warning threshold
     if (willExpireWithin(accessToken.value, EXPIRATION_WARNING_MINUTES)) {
       // First, try silent refresh (only once, not repeatedly)
+      console.log("发现即将过期，isRefreshing.value, silentRefreshAttempted.value", isRefreshing.value, silentRefreshAttempted.value)
       if (!isRefreshing.value && !silentRefreshAttempted.value) {
         console.log('Token 即将过期，尝试静默刷新...')
         silentRefreshAttempted.value = true
@@ -113,6 +116,7 @@ export const useAuthStore = defineStore('auth', () => {
    * 启动过期监控定时器
    */
   function startExpirationMonitor(): void {
+    console.log('启动过期监控定时器')
     // Clear any existing interval
     stopExpirationMonitor()
 
@@ -186,6 +190,7 @@ export const useAuthStore = defineStore('auth', () => {
   async function refreshAccessToken(): Promise<boolean> {
     // If refresh token is in cookie, we don't need to send it in body
     // Note: apiClient.baseURL is '/api', so we use 'token/refresh/' not '/api/token/refresh/'
+    // return false // 测试提示框 
     try {
       const response = await apiClient.post<RefreshResponse>('token/refresh/')
       accessToken.value = response.data.access
@@ -229,5 +234,7 @@ export const useAuthStore = defineStore('auth', () => {
     stopExpirationMonitor
   }
 }, {
-  persist: true,
+  persist: {
+    pick: ['accessToken', 'userEmail']
+  }
 })

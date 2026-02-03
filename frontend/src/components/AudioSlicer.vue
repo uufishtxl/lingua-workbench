@@ -24,40 +24,80 @@
             </div>
         </el-card>
 
-        <!-- Region List -->
-        <el-card class="flex-1 overflow-y-hidden flex flex-col">
-            <h2 class="font-bold mb-2 border-b-[0.5px] border-blue-100/50 pb-0">Selected Regions</h2>
-            
-            <div class="flex-1 overflow-y-auto min-h-0">
-                <div v-if="regionsList.length > 0" class="grid gap-[3px]" style="grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));">
-                    <SliceCard 
-                        v-for="(region, index) in sortedRegionsList" 
-                        :key="region.id" 
-                        :ref="el => setSliceCardRef(index, el)"
-                        :url="props.url"
-                        :start="Number(region.start)"
-                        :end="Number(region.end)"
-                        :region="region"
-                        :initial-highlights="region.savedHighlights"
-                        :initial-pronunciation-hard="region.isPronunciationHard"
-                        :initial-idiom="region.isIdiom"
-                        @delete="removeRegion"
-                        @adjust-start="(delta) => handleAdjustTime(region.id, 'start', delta)"
-                        @adjust-end="(delta) => handleAdjustTime(region.id, 'end', delta)"
-                        @update-markers="(markers) => handleUpdateMarkers(region.id, markers)"
-                    />
+        <!-- Region List with Expandable Side Panel -->
+        <div class="flex-1 flex flex-row gap-2 overflow-hidden">
+            <!-- Main Content: SliceCards -->
+            <el-card :class="['overflow-y-hidden flex flex-col transition-all duration-300', isPanelExpanded ? 'w-[22rem] flex-shrink-0' : 'flex-1']">
+                <h2 class="font-bold mb-2 border-b-[0.5px] border-blue-100/50 pb-0">Selected Regions</h2>
+                
+                <div class="flex-1 overflow-y-auto min-h-0">
+                    <div v-if="regionsList.length > 0" 
+                        class="grid gap-[3px]" 
+                        :style="isPanelExpanded 
+                            ? 'grid-template-columns: 1fr;' 
+                            : 'grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));'"
+                    >
+                        <SliceCard 
+                            v-for="(region, index) in sortedRegionsList" 
+                            :key="region.id" 
+                            :ref="el => setSliceCardRef(index, el)"
+                            :url="props.url"
+                            :start="Number(region.start)"
+                            :end="Number(region.end)"
+                            :region="region"
+                            :initial-highlights="region.savedHighlights"
+                            :initial-pronunciation-hard="region.isPronunciationHard"
+                            :initial-idiom="region.isIdiom"
+                            @delete="removeRegion"
+                            @adjust-start="(delta) => handleAdjustTime(region.id, 'start', delta)"
+                            @adjust-end="(delta) => handleAdjustTime(region.id, 'end', delta)"
+                            @update-markers="(markers) => handleUpdateMarkers(region.id, markers)"
+                        />
+                    </div>
+                    <div v-else class="flex flex-col items-center justify-center h-full">
+                        <p class="text-xs text-gray-600">Click and drag on the waveform to select regions.</p>
+                    </div>
                 </div>
-                <div v-else class="flex flex-col items-center justify-center h-full">
-                    <p class="text-xs text-gray-600">Click and drag on the waveform to select regions.</p>
+
+                <div class="mt-4 w-full text-center flex-shrink-0 flex lg:px-96">
+                    <el-button class="flex-1" type="primary" @click="saveRegions" :disabled="!regionsList.length" :loading="isSaving">
+                        Save All Changes
+                    </el-button>
                 </div>
+            </el-card>
+
+            <!-- Toggle Button (lg+ only) -->
+            <div class="hidden lg:flex items-center">
+                <button 
+                    @click="isPanelExpanded = !isPanelExpanded"
+                    class="w-6 h-16 bg-blue-500 hover:bg-blue-600 text-white rounded-md flex items-center justify-center transition-all shadow-md"
+                    :title="isPanelExpanded ? 'Collapse Panel' : 'Expand Panel'"
+                >
+                    <i-tabler-chevron-left v-if="isPanelExpanded" class="text-lg" />
+                    <i-tabler-chevron-right v-else class="text-lg" />
+                </button>
             </div>
 
-            <div class="mt-4 w-full text-center flex-shrink-0 flex lg:px-96">
-                <el-button class="flex-1" type="primary" @click="saveRegions" :disabled="!regionsList.length" :loading="isSaving">
-                    Save All Changes
-                </el-button>
-            </div>
-        </el-card>
+            <!-- Side Panel (lg+ only, with animation) -->
+            <Transition
+                enter-active-class="transition-all duration-300 ease-out"
+                leave-active-class="transition-all duration-300 ease-in"
+                enter-from-class="opacity-0 translate-x-4"
+                enter-to-class="opacity-100 translate-x-0"
+                leave-from-class="opacity-100 translate-x-0"
+                leave-to-class="opacity-0 translate-x-4"
+            >
+                <el-card 
+                    v-if="isPanelExpanded" 
+                    class="hidden lg:flex flex-1 flex-col overflow-hidden"
+                >
+                    <h2 class="font-bold mb-2 border-b-[0.5px] border-blue-100/50 pb-0">Side Panel</h2>
+                    <div class="flex-1 overflow-y-auto">
+                        <p class="text-sm text-gray-500 p-4">Side panel content placeholder...</p>
+                    </div>
+                </el-card>
+            </Transition>
+        </div>
 
     </div>
 </template>
@@ -72,6 +112,7 @@ import { createBatchSlices, deleteSlice, type CreateSliceRequest, type AudioSlic
 import { ElMessage } from 'element-plus';
 
 const baseWaveSurferRef = ref<InstanceType<typeof BaseWaveSurfer> | null>(null)
+const isPanelExpanded = ref<boolean>(false)
 const loopRegion = ref<boolean>(true)
 const isPlaying = ref<boolean>(false)
 const isSaving = ref<boolean>(false)

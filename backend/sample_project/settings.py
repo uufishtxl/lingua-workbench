@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'phrase_log',
     'audio_slicer',
     'ai_analysis',
-    'doc_assistant'
+    'doc_assistant',
+    'sandbox'
 ]
 
 MIDDLEWARE = [

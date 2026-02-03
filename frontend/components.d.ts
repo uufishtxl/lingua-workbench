@@ -16,6 +16,7 @@ declare module 'vue' {
     ChatWidget: typeof import('./src/components/ChatWidget.vue')['default']
     copy: typeof import('./src/components/RegionEditor copy.vue')['default']
     DictionarySection: typeof import('./src/components/highlight-editor/DictionarySection.vue')['default']
+    EditableText: typeof import('./src/components/EditableText.vue')['default']
     ElAlert: typeof import('element-plus/es')['ElAlert']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']

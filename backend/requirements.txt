@@ -17,6 +17,8 @@ asgiref==3.10.0
     #   django
     #   django-allauth
     #   django-cors-headers
+asttokens==3.0.1
+    # via stack-data
 attrs==25.4.0
     # via
     #   jsonschema
@@ -46,10 +48,13 @@ colorama==0.4.6
     # via
     #   build
     #   click
+    #   ipython
     #   tqdm
     #   uvicorn
 coloredlogs==15.0.1
     # via onnxruntime
+decorator==5.2.1
+    # via ipython
 distro==1.9.0
     # via
     #   google-genai
@@ -80,6 +85,8 @@ durationpy==0.10
     # via kubernetes
 et-xmlfile==2.0.0
     # via openpyxl
+executing==2.2.1
+    # via stack-data
 filelock==3.20.3
     # via huggingface-hub
 filetype==1.2.0
@@ -129,6 +136,12 @@ importlib-metadata==8.7.1
     # via opentelemetry-api
 importlib-resources==6.5.2
     # via chromadb
+ipython==9.9.0
+    # via -r requirements.in
+ipython-pygments-lexers==1.1.1
+    # via ipython
+jedi==0.19.2
+    # via ipython
 jiter==0.11.1
     # via openai
 jsonpatch==1.33
@@ -171,6 +184,8 @@ lxml==6.0.2
     # via -r requirements.in
 markdown-it-py==4.0.0
     # via rich
+matplotlib-inline==0.2.1
+    # via ipython
 mdurl==0.1.2
     # via markdown-it-py
 mmh3==5.2.0
@@ -230,13 +245,19 @@ packaging==25.0
     #   onnxruntime
 pandas==2.3.3
     # via -r requirements.in
+parso==0.8.5
+    # via jedi
 posthog==5.4.0
     # via chromadb
+prompt-toolkit==3.0.52
+    # via ipython
 protobuf==6.33.4
     # via
     #   googleapis-common-protos
     #   onnxruntime
     #   opentelemetry-proto
+pure-eval==0.2.3
+    # via stack-data
 pyasn1==0.6.2
     # via
     #   pyasn1-modules
@@ -259,7 +280,10 @@ pydantic==2.12.3
 pydantic-core==2.41.4
     # via pydantic
 pygments==2.19.2
-    # via rich
+    # via
+    #   ipython
+    #   ipython-pygments-lexers
+    #   rich
 pyjwt==2.10.1
     # via djangorestframework-simplejwt
 pypika==0.50.0
@@ -335,6 +359,8 @@ sniffio==1.3.1
     #   openai
 sqlparse==0.5.3
     # via django
+stack-data==0.6.3
+    # via ipython
 sympy==1.14.0
     # via onnxruntime
 tenacity==9.1.2
@@ -351,6 +377,10 @@ tqdm==4.67.1
     #   chromadb
     #   huggingface-hub
     #   openai
+traitlets==5.14.3
+    # via
+    #   ipython
+    #   matplotlib-inline
 typer==0.21.1
     # via chromadb
 typer-slim==0.21.1
@@ -390,6 +420,8 @@ uvicorn[standard]==0.40.0
     # via chromadb
 watchfiles==1.1.1
     # via uvicorn
+wcwidth==0.5.3
+    # via prompt-toolkit
 websocket-client==1.9.0
     # via kubernetes
 websockets==15.0.1

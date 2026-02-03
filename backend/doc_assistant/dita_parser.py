@@ -12,7 +12,7 @@ Key Concepts (for learning chunking):
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
-from lxml import etree
+from lxml import etree # Python 中最强大的 XML/HTML 解析库
 import hashlib
 
 
@@ -98,13 +98,16 @@ class DITAChunker:
         chunks = []
         
         # Parse XML
-        tree = etree.parse(str(file_path))
-        root = tree.getroot()
+        tree = etree.parse(str(file_path)) # tree 相当于整本书
+        root = tree.getroot() # root 相当于这本书的封面，或者整棵树的主干。比如一个 concept dita 文件，root 就是 concept
         
         # Determine topic type from root element
         topic_type = self._get_topic_type(root)
         
         # Get topic title
+        # ./title 表示当前节点的直接子元素
+        # .//title 表示当前节点的所有后代元素
+        # //title 从根节点开始任意深度查找 title
         topic_title = self._get_text(root.find('.//title'))
         
         # Get audience from root (defaults to 'all')

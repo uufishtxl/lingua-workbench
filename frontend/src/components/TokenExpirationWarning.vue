@@ -7,7 +7,7 @@
           登录即将过期 <span class="countdown">{{ formattedTime }}</span>
         </span>
         <div class="warning-actions">
-          <el-button type="warning" size="small" @click="handleSaveNow" :loading="isSaving">
+          <el-button v-if="$route.name === 'audio-workbench'" type="warning" size="small" @click="handleSaveNow" :loading="isSaving">
             <i-tabler-device-floppy class="mr-1" />
             立即保存
           </el-button>

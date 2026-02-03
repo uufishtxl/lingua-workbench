@@ -46,6 +46,7 @@ urlpatterns = [
 
     # Documentation Assistant (DITA RAG Chatbot)
     path('api/doc-assistant/', include('doc_assistant.urls')),
+    path('sandbox/', include('sandbox.urls'))
 
     # �蠘�頝舐眏
 

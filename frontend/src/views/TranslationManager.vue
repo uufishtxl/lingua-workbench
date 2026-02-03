@@ -12,7 +12,7 @@
         @click="$router.push('/')" 
         class="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-zinc-400 hover:text-zinc-600 hover:shadow-lg transition-all"
       >
-        <i class="i-mdi-close text-xl"></i>
+        <MaterialSymbolsLightHomeRounded class="hover:text-blue-300 cursor-pointer"/>
       </button>
     </header>
 
@@ -52,7 +52,7 @@
             <td colspan="2" class="px-6 py-16 text-center">
               <div class="text-4xl mb-4">✨</div>
               <p class="text-zinc-500 font-medium">No missing translations found.</p>
-              <p class="text-zinc-400 text-sm mt-1">You are all set!</p>
+              <el-button class="mt-4" type="primary" @click="$router.push('/')">Start Review</el-button>
             </td>
           </tr>
           <tr 
@@ -77,6 +77,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import MaterialSymbolsLightHomeRounded from '~icons/material-symbols-light/home-rounded';
 import { translationApi, type TranslationTask } from '@/api/translationApi'
 
 const tasks = ref<TranslationTask[]>([])
