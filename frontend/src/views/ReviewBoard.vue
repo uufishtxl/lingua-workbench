@@ -71,6 +71,7 @@
               class="w-14 h-14 rounded-full bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center shadow-lg transition-all hover:scale-110 active:scale-95 shrink-0 disabled:opacity-50 disabled:cursor-wait"
             >
               <i-tabler-loader-2 v-if="isAudioLoading" class="text-xl animate-spin" />
+              
               <i-tabler-player-pause-filled v-else-if="isPlaying" class="text-xl" />
               <i-tabler-player-play-filled v-else class="text-xl" />
             </button>
@@ -91,45 +92,12 @@
 
           <!-- Translation Text (Fixed Height, Editable) -->
           <div class="h-28 flex items-center justify-center w-full px-4 overflow-hidden">
-            <!-- Display Mode -->
-            <p 
-              v-if="!isEditing"
-              @click="startEdit"
-              class="text-xl md:text-2xl font-serif text-[#1F2937] text-center leading-relaxed line-clamp-3 cursor-pointer hover:text-blue-700 transition-colors"
-              title="Click to edit"
-            >
-              {{ currentCard.slice_translation || '点击添加翻译...' }}
-            </p>
-
-            <!-- Edit Mode -->
-            <div v-else class="w-full relative">
-              <textarea
-                v-model="editingText"
-                ref="editInputRef"
-                rows="2"
-                class="w-full bg-zinc-50 border-2 border-blue-300 rounded-xl p-3 pr-20 text-lg text-center focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none resize-none font-serif"
-                placeholder="输入翻译..."
-                @keydown.ctrl.enter="saveEdit"
-                @keydown.esc="cancelEdit"
-              ></textarea>
-              <!-- Buttons inside textarea -->
-              <div class="absolute right-2 bottom-2 flex gap-1">
-                <button 
-                  @click="cancelEdit"
-                  class="p-1.5 rounded-full text-zinc-400 hover:text-zinc-600 hover:bg-zinc-200 transition-all"
-                  title="取消 (Esc)"
-                >
-                  <i-tabler-x class="text-base" />
-                </button>
-                <button 
-                  @click="saveEdit"
-                  class="p-1.5 rounded-full text-green-500 hover:text-green-600 hover:bg-green-100 transition-all"
-                  title="保存 (Ctrl+Enter)"
-                >
-                  <i-tabler-check class="text-base" />
-                </button>
-              </div>
-            </div>
+            <EditableText
+              :modelValue="currentCard.slice_translation"
+              placeholder="点击添加翻译..."
+              displayClass="text-xl md:text-2xl font-serif text-[#1F2937] text-center leading-relaxed line-clamp-3"
+              @save="(text) => saveField('translation', text)"
+            />
           </div>
 
           <!-- Divider -->
@@ -147,13 +115,14 @@
               <span class="text-sm">Show Answer</span>
             </button>
 
-            <!-- Revealed Answer -->
-            <p 
-              v-else 
-              class="text-lg font-serif text-zinc-500 text-center leading-relaxed line-clamp-2 px-4"
-            >
-              {{ currentCard.slice_text }}
-            </p>
+            <!-- Revealed Answer (Editable) -->
+            <EditableText
+              v-else
+              :modelValue="currentCard.slice_text"
+              placeholder="点击添加原文..."
+              displayClass="text-lg font-serif text-zinc-500 text-center leading-relaxed line-clamp-2 px-4"
+              @save="(text) => saveField('original_text', text)"
+            />
           </div>
 
           <!-- Action Buttons (Fixed Height) -->
@@ -214,6 +183,7 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { reviewApi, type ReviewCard } from '@/api/reviewApi'
 import { useAudio, type AudioSlice } from '@/composables/useAudio'
 import { useRecording } from '@/composables/useRecording'
+import EditableText from '@/components/EditableText.vue'
 
 import IconoirEmojiSingLeftNote from '~icons/iconoir/emoji-sing-left-note';
 
@@ -223,11 +193,6 @@ const dueCards = ref<ReviewCard[]>([])
 const currentIndex = ref(0)
 const showResult = ref(false)
 const slideDirection = ref<'slide-left' | 'slide-right'>('slide-left')
-
-// Edit State
-const isEditing = ref(false)
-const editingText = ref('')
-const editInputRef = ref<HTMLTextAreaElement | null>(null)
 
 // Refs
 const audioRef = ref<HTMLAudioElement | null>(null)
@@ -324,43 +289,25 @@ const goToNext = () => {
   }
 }
 
-// Edit Methods
-const startEdit = () => {
+// Save field (unified handler for EditableText)
+const saveField = async (field: 'translation' | 'original_text', value: string) => {
     if (!currentCard.value) return
-    editingText.value = currentCard.value.slice_translation || ''
-    isEditing.value = true
-    // Auto focus
-    setTimeout(() => editInputRef.value?.focus(), 100)
-}
-
-const cancelEdit = () => {
-    isEditing.value = false
-    editingText.value = ''
-}
-
-const saveEdit = async () => {
-    if (!currentCard.value) return
-    const newText = editingText.value.trim()
-    if (!newText || newText === currentCard.value.slice_translation) {
-        cancelEdit()
-        return
-    }
-
+    
     try {
-        await reviewApi.updateTranslation(currentCard.value.audio_slice, newText)
+        await reviewApi.updateSlice(currentCard.value.audio_slice, { [field]: value })
         
         // Update local state
-        // We need to verify if `currentCard.value` is reactive in a way that allows direct mutation 
-        // since it is a computed property from `dueCards`. Mutating the source array item works.
         const card = dueCards.value[currentIndex.value]
         if (card) {
-            card.slice_translation = newText
+            if (field === 'translation') {
+                card.slice_translation = value
+            } else {
+                card.slice_text = value
+            }
         }
-        
-        isEditing.value = false
     } catch (e) {
-        console.error('Failed to update translation', e)
-        alert('Failed to save translation')
+        console.error(`Failed to update ${field}`, e)
+        alert(`Failed to save ${field}`)
     }
 }
 

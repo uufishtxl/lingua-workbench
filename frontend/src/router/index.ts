@@ -8,6 +8,7 @@ import AudioLab from '@/views/AudioLab.vue'
 import EpisodeSelector from '@/views/EpisodeSelector.vue'
 import LoadSource from '@/views/LoadSource.vue'
 import AudioWorkbench from '@/views/AudioWorkbench.vue'
+import { translationApi } from '@/api/translationApi'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -112,7 +113,7 @@ const router = createRouter({
 })
 
 // 2. 【新增】设置“全局前置守卫”
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   // (在“守卫”内部，我们才能安全地“激活” store)
   const authStore = useAuthStore()
   const isAuthenticated = authStore.isAuthenticated // (检查用户是否登录)
@@ -122,10 +123,13 @@ router.beforeEach((to, from, next) => {
 
   console.log("to.name", to.name, "isAuthenticated", isAuthenticated)
 
-  // --- 逻辑 1 (你问的)：如果“已登录”，还想去“登录/注册页” ---
-  if (isAuthPage && isAuthenticated) {
-    // 阻止他，并把他“踢”回主页
-    next({ name: 'home' })
+  if (to.name === "home" && isAuthenticated) {
+    const res = await translationApi.getMissingTranslations()
+    if (res?.data?.length > 0) {
+      next({ name: 'translations' })
+    } else {
+      next()
+    }
   }
 
   // --- 逻辑 2 (保护)：如果“未登录”，还想去“受保护的页面” ---

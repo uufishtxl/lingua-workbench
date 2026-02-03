@@ -19,3 +19,4 @@ langchain-google-genai
 # --- DITA RAG Chatbot ---
 chromadb
 lxml
+ipython
