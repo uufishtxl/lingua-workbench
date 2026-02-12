@@ -47,9 +47,19 @@
         <div :key="currentIndex" class="flex-1 bg-white rounded-3xl shadow-xl flex flex-col items-center p-6 gap-4 overflow-hidden">
           
           <!-- Tag -->
-          <span class="px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-blue-500 text-white shrink-0">
-            LISTEN TO THE AUDIO
-          </span>
+            <!-- Listen to audio Wrench Button -->
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-blue-500 text-white shrink-0">
+                LISTEN TO THE AUDIO
+            </span>
+            <button 
+                @click="refreshPage"
+                class="hover:bg-zinc-100 p-1 rounded-full text-zinc-300 hover:text-zinc-500 transition-colors"
+                title="Refresh Page (Fixes Stuck Audio)"
+            >
+                <i-tabler-tool class="text-xs" />
+            </button>
+          </div>
 
           <!-- Audio Controls Row -->
           <div class="flex items-center gap-6">
@@ -68,7 +78,7 @@
             <button 
               @click="playAudio"
               :disabled="isAudioLoading"
-              class="w-14 h-14 rounded-full bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center shadow-lg transition-all hover:scale-110 active:scale-95 shrink-0 disabled:opacity-50 disabled:cursor-wait"
+              class="w-14 h-14 rounded-full bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center shadow-lg transition-all hover:scale-110 active:scale-95 shrink-0 disabled:opacity-50 disabled:cursor-wait relative"
             >
               <i-tabler-loader-2 v-if="isAudioLoading" class="text-xl animate-spin" />
               
@@ -215,7 +225,7 @@ const currentAudioSlice = computed<AudioSlice | null>(() => {
 })
 
 // Use audio composable
-const { isPlaying, isLoading: isAudioLoading, toggle: playAudio } = useAudio(audioRef, currentAudioSlice)
+const { isPlaying, isLoading: isAudioLoading, toggle: playAudio, reload: reloadAudio } = useAudio(audioRef, currentAudioSlice)
 
 // Use recording composable
 const { isRecording, recordedAudioUrl, isPlayingRecordedAudio, toggleRecording, playRecording, clearRecording } = useRecording()
@@ -245,6 +255,10 @@ onUnmounted(() => {
 // Methods
 const handleKeydown = (e: KeyboardEvent) => {
     if (loading.value || !currentCard.value) return 
+
+    // Ignore shortcuts if user is typing in an input/textarea
+    const target = e.target as HTMLElement
+    if (['INPUT', 'TEXTAREA'].includes(target.tagName) || target.isContentEditable) return
     
     // Space to Play Audio
     if (e.code === 'Space') {
@@ -328,6 +342,12 @@ const submitResult = async (success: boolean) => {
     } catch (e) {
         console.error('Failed to submit review', e)
     }
+}
+
+// Refresh Page Logic
+const refreshPage = () => {
+    // Revert to full page refresh as requested by user - soft audio reload was insufficient
+    window.location.reload()
 }
 
 const advanceToNextCard = () => {

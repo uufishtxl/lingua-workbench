@@ -77,7 +77,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     secondsUntilExpiration.value = Math.floor(remaining / 1000)
-    console.log('Token 过期时间:', secondsUntilExpiration.value)
+    // console.log('Token 过期时间:', secondsUntilExpiration.value)
 
     // Check if we're within the warning threshold
     if (willExpireWithin(accessToken.value, EXPIRATION_WARNING_MINUTES)) {

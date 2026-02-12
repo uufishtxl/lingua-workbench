@@ -28,9 +28,20 @@ def create_review_card_if_idiom(sender, instance, created, **kwargs):
 def trigger_audio_slicing(sender, instance, created, **kwargs):
     """
     Trigger the slicing process when a SourceAudio is created (uploaded).
+    After slicing, schedule a background task to ingest and translate the script.
     """
     if created:
         print(f"Triggering slice logic for SourceAudio: {instance.id}")
-        # Note: This is a synchronous call. For large files, this should be moved to a background task (e.g. Huey).
-        # But for now, user requested simplicity or it fits the current architecture.
         slice_source_to_chunks(instance)
+
+        # Schedule background script ingest + translate task
+        from scripts.models import ScriptTask
+        from scripts.tasks import ingest_and_translate_script
+
+        script_task = ScriptTask.objects.create(
+            source_audio=instance,
+            status='pending',
+            message=f'Queued for S{instance.season:02d}E{instance.episode:02d}',
+        )
+        ingest_and_translate_script(script_task.id)
+        print(f"Scheduled script ingest+translate task #{script_task.id} for SourceAudio: {instance.id}")

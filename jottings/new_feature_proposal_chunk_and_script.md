@@ -1,5 +1,16 @@
 # New Propsal
 
+现在你有两个选择：
+
+重新导入（会自动删除旧数据）：
+POST /api/scripts/ingest/
+Body: { "season": 10, "episode": 13 }
+只删除不导入：
+DELETE /api/scripts/clear/?season=10&episode=13
+
+---
+
+
 ## 🎯 开发目标：实现“剧本流伴随与动态切分”功能 (Script Side Panel & Relay Workflow)
 
 **项目背景**：在现有的 Audio Slicer Workbench 中，新增一个右侧面板，用于展示从网页抓取的整集剧本。用户通过“接力棒”模式（Relay Mode），在学习过程中手动将剧本切分给后续的 Audio Chunk。

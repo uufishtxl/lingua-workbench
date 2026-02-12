@@ -17,6 +17,7 @@ import hashlib
 
 
 @dataclass
+
 class DITAChunk:
     """A single chunk extracted from a DITA file."""
     id: str                          # Unique chunk ID (hash of content + file)

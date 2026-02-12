@@ -8,6 +8,7 @@ Usage:
 """
 from pathlib import Path
 from django.core.management.base import BaseCommand
+from django.conf import settings
 
 
 class Command(BaseCommand):
@@ -40,8 +41,7 @@ class Command(BaseCommand):
             dita_root = Path(options['dita_path'])
         else:
             # Default: project_root/docs/dita
-            backend_dir = Path(__file__).resolve().parent.parent.parent.parent
-            dita_root = backend_dir.parent / 'docs' / 'dita'
+            dita_root = settings.DITA_DOCS_DIR
         
         if not dita_root.exists():
             self.stderr.write(

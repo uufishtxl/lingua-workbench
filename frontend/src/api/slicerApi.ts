@@ -89,3 +89,26 @@ export async function getSlicesByChunk(
 export async function deleteSlice(sliceId: number): Promise<void> {
     await apiClient.delete(`/v1/audioslices/${sliceId}/`)
 }
+
+// --- Chunk Progress API ---
+
+export interface ChunkCompleteResponse {
+    success: boolean
+    current_chunk_id: number
+    current_index: number
+    next_chunk_id: number | null
+    is_last: boolean
+    total_chunks: number
+    message: string
+}
+
+/**
+ * Mark a chunk as complete and get the next chunk ID.
+ */
+export async function completeChunk(chunkId: number): Promise<ChunkCompleteResponse> {
+    const response = await apiClient.post<ChunkCompleteResponse>(
+        `/v1/audiochunks/${chunkId}/complete/`
+    )
+    return response.data
+}
+

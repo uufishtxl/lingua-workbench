@@ -16,6 +16,10 @@ from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# 添加 DITA 路径配置
+PROJECT_BASE_DIR = BASE_DIR.parent
+DITA_DOCS_DIR = PROJECT_BASE_DIR / 'docs' / 'dita'
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -53,7 +57,9 @@ INSTALLED_APPS = [
     'audio_slicer',
     'ai_analysis',
     'doc_assistant',
-    'sandbox'
+    'sandbox',
+    'scripts',
+    'huey.contrib.djhuey',
 ]
 
 MIDDLEWARE = [
@@ -244,3 +250,10 @@ ACCOUNT_EMAIL_NORMALIZATION = True
 # https://docs.djangoproject.com/en/5.2/ref/settings/#media-root
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# --- Huey Task Queue Configuration ---
+from huey import SqliteHuey
+HUEY = SqliteHuey(
+    filename=str(BASE_DIR / 'db' / 'huey.db'),
+    immediate_use_memory=False,
+)

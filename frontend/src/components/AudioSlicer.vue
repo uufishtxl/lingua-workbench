@@ -27,14 +27,25 @@
         <!-- Region List with Expandable Side Panel -->
         <div class="flex-1 flex flex-row gap-2 overflow-hidden">
             <!-- Main Content: SliceCards -->
-            <el-card :class="['overflow-y-hidden flex flex-col transition-all duration-300', isPanelExpanded ? 'w-[22rem] flex-shrink-0' : 'flex-1']">
+            <el-card 
+                :class="[
+                    'overflow-y-hidden flex flex-col transition-all duration-300', 
+                    isPanelExpanded 
+                        ? (scriptPanelWidth === 'wide' ? 'w-[45rem] flex-shrink-0' : 'w-[22rem] flex-shrink-0') 
+                        : 'flex-1',
+                    isTransitioning ? 'transitioning-blur' : ''
+                ]"
+            >
                 <h2 class="font-bold mb-2 border-b-[0.5px] border-blue-100/50 pb-0">Selected Regions</h2>
                 
                 <div class="flex-1 overflow-y-auto min-h-0">
                     <div v-if="regionsList.length > 0" 
-                        class="grid gap-[3px]" 
+                        class="grid gap-[3px] transition-all duration-300" 
+                        :class="{ 'blur-content': isTransitioning }"
                         :style="isPanelExpanded 
-                            ? 'grid-template-columns: 1fr;' 
+                            ? (scriptPanelWidth === 'wide' 
+                                ? 'grid-template-columns: repeat(2, 1fr);' 
+                                : 'grid-template-columns: 1fr;')
                             : 'grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));'"
                     >
                         <SliceCard 
@@ -66,15 +77,16 @@
                 </div>
             </el-card>
 
-            <!-- Toggle Button (lg+ only) -->
-            <div class="hidden lg:flex items-center">
+            <!-- Floating Bubble Toggle Button (lg+ only) -->
+            <div class="hidden lg:flex items-center relative">
                 <button 
-                    @click="isPanelExpanded = !isPanelExpanded"
-                    class="w-6 h-16 bg-blue-500 hover:bg-blue-600 text-white rounded-md flex items-center justify-center transition-all shadow-md"
-                    :title="isPanelExpanded ? 'Collapse Panel' : 'Expand Panel'"
+                    @click="togglePanel"
+                    class="floating-toggle-btn"
+                    :class="{ 'is-expanded': isPanelExpanded }"
+                    :title="isPanelExpanded ? 'Collapse Panel' : 'Expand Script Panel'"
                 >
-                    <i-tabler-chevron-left v-if="isPanelExpanded" class="text-lg" />
-                    <i-tabler-chevron-right v-else class="text-lg" />
+                    <i-tabler-chevron-left v-if="isPanelExpanded" class="text-base" />
+                    <i-tabler-chevron-right v-else class="text-base" />
                 </button>
             </div>
 
@@ -89,12 +101,18 @@
             >
                 <el-card 
                     v-if="isPanelExpanded" 
-                    class="hidden lg:flex flex-1 flex-col overflow-hidden"
+                    class="hidden lg:flex flex-1 flex-col overflow-hidden relative"
                 >
-                    <h2 class="font-bold mb-2 border-b-[0.5px] border-blue-100/50 pb-0">Side Panel</h2>
-                    <div class="flex-1 overflow-y-auto">
-                        <p class="text-sm text-gray-500 p-4">Side panel content placeholder...</p>
-                    </div>
+                    <ScriptPanel
+                        :chunk-id="props.chunkId"
+                        :next-chunk-id="nextChunkId"
+                        :review-mode="props.reviewMode"
+                        :current-index="props.currentIndex"
+                        :total-chunks="props.totalChunks"
+                        :script-panel-width="scriptPanelWidth"
+                        @search-slice="handleSearchSlice"
+                        @toggle-width="scriptPanelWidth = scriptPanelWidth === 'normal' ? 'wide' : 'normal'"
+                    />
                 </el-card>
             </Transition>
         </div>
@@ -109,10 +127,13 @@ import BaseWaveSurfer from './BaseWaveSurfer.vue';
 import SliceCard from './SliceCard.vue';
 import PlaybackSpeedControl from './PlaybackSpeedControl.vue';
 import { createBatchSlices, deleteSlice, type CreateSliceRequest, type AudioSliceResponse } from '@/api/slicerApi';
+import ScriptPanel from './ScriptPanel.vue';
 import { ElMessage } from 'element-plus';
 
 const baseWaveSurferRef = ref<InstanceType<typeof BaseWaveSurfer> | null>(null)
 const isPanelExpanded = ref<boolean>(false)
+const scriptPanelWidth = ref<'normal' | 'wide'>('normal')  // normal: 22rem, wide: 44rem
+const isTransitioning = ref<boolean>(false)  // For blur effect during transition
 const loopRegion = ref<boolean>(true)
 const isPlaying = ref<boolean>(false)
 const isSaving = ref<boolean>(false)
@@ -120,6 +141,16 @@ const isDirty = ref<boolean>(false)  // Track if changes were made
 const currentPlaybackRate = ref(1);
 const speedOptions = [0.2, 0.5, 1];
 let activeRegion: Region | null = null;
+
+// Toggle panel with blur transition
+const togglePanel = () => {
+  isTransitioning.value = true
+  isPanelExpanded.value = !isPanelExpanded.value
+  // Remove blur after transition completes (300ms matches CSS duration)
+  setTimeout(() => {
+    isTransitioning.value = false
+  }, 350)
+}
 
 // ↓↓↓↓↓↓↓↓↓ Depreciated! Replaced by watch mechanism
 // const handleSpeedChange = (rate: number) => {
@@ -132,7 +163,25 @@ const props = defineProps<{
     title: string | null; 
     chunkId: number;
     initialSlices?: AudioSliceResponse[];
+    // Review mode props
+    nextChunkId?: number | null;
+    currentIndex?: number;
+    totalChunks?: number;
+    reviewMode?: boolean;
 }>()
+
+// Watch for review mode changes to adjust defaults
+watch(
+  () => props.reviewMode,
+  (isReviewMode) => {
+    if (isReviewMode) {
+      // In review mode: turn off loop, open side panel
+      loopRegion.value = false
+      isPanelExpanded.value = true
+    }
+  },
+  { immediate: true }
+)
 
 // type audio_type = 'Link' | 'H-Del' | 'Th-Del' | 'Flap-T'
 
@@ -157,6 +206,38 @@ const regionsList = ref<RegionInfo[]>([])
 const sortedRegionsList = computed(() => 
     [...regionsList.value].sort((a, b) => Number(a.start) - Number(b.start))
 )
+
+// Next chunk ID for script panel (placeholder - should be passed as prop or computed)
+const nextChunkId = computed(() => {
+    // TODO: This should be computed based on source audio chunks
+    // For now, return chunkId + 1 as placeholder
+    return props.chunkId ? props.chunkId + 1 : undefined
+})
+
+// Handle search request from ScriptPanel
+const handleSearchSlice = (text: string) => {
+    // Find SliceCard that contains this text
+    const matchIndex = sortedRegionsList.value.findIndex(region => {
+        const sliceCard = sliceCardRefs.value.get(sortedRegionsList.value.indexOf(region))
+        const sliceData = sliceCard?.getSliceData?.()
+        return sliceData?.original_text?.toLowerCase().includes(text.toLowerCase())
+    })
+    
+    if (matchIndex >= 0) {
+        // Scroll to and highlight the matching card
+        const sliceCard = sliceCardRefs.value.get(matchIndex)
+        if (sliceCard?.$el) {
+            sliceCard.$el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            sliceCard.$el.classList.add('ring-2', 'ring-blue-500')
+            setTimeout(() => {
+                sliceCard.$el.classList.remove('ring-2', 'ring-blue-500')
+            }, 2000)
+        }
+        ElMessage.success('Found matching slice')
+    } else {
+        ElMessage.warning('No matching audio slice found')
+    }
+}
 
 // Store refs to SliceCard components
 const sliceCardRefs = ref<Map<number, InstanceType<typeof SliceCard>>>(new Map())
@@ -417,3 +498,65 @@ const saveRegions = async () => {
     }
 };
 </script>
+
+<style scoped>
+/* Floating Bubble Toggle Button */
+.floating-toggle-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.floating-toggle-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+}
+
+.floating-toggle-btn.is-expanded {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.floating-toggle-btn.is-expanded:hover {
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+}
+
+/* Blur Content During Transition */
+.blur-content {
+  filter: blur(4px);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Optional: Add skeleton shimmer effect */
+.transitioning-blur .blur-content {
+  position: relative;
+}
+
+.transitioning-blur .blur-content::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  animation: shimmer 0.4s ease-out;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+</style>

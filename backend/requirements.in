@@ -20,3 +20,6 @@ langchain-google-genai
 chromadb
 lxml
 ipython
+bs4
+Pillow
+huey

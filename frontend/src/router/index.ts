@@ -8,11 +8,21 @@ import AudioLab from '@/views/AudioLab.vue'
 import EpisodeSelector from '@/views/EpisodeSelector.vue'
 import LoadSource from '@/views/LoadSource.vue'
 import AudioWorkbench from '@/views/AudioWorkbench.vue'
+import Dashboard from '@/views/Dashboard.vue'
 import { translationApi } from '@/api/translationApi'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: Dashboard,
+      meta: {
+        layout: 'AppLayout',
+        requiresAuth: true
+      }
+    },
     {
       path: "/phrase-seeker",
       name: "phrase-seeker",
@@ -95,6 +105,15 @@ const router = createRouter({
       path: '/translations',
       name: 'translations',
       component: () => import('@/views/TranslationManager.vue'),
+      meta: {
+        layout: 'AppLayout',
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/blitz',
+      name: 'blitz-camp',
+      component: () => import('@/views/BlitzCamp.vue'),
       meta: {
         layout: 'AppLayout',
         requiresAuth: true
