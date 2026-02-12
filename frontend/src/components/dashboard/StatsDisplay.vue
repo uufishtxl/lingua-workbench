@@ -8,7 +8,9 @@ const props = defineProps<{
   reviewCount: number
 }>()
 
-const emits = defineEmits(['show-all', 'show-hard'])
+const emits = defineEmits<{
+  'filter-status': [status: 'hard' | 'learning']
+}>()
 
 const showHard = ref(false)
 
@@ -35,7 +37,7 @@ const theme = {
 
 <template>
   <div :class="['flex font-sans items-center', theme.container]">
-    <div :class="['flex items-center font-bold text-red-500', theme.item, theme.cursor]">
+    <div :class="['flex items-center font-bold text-red-500', theme.item, theme.cursor]" @click="emits('filter-status', 'hard')">
       <IonColorFillSharp :class="theme.icon" />
       <span :class="theme.count">{{ hardCount }}</span>
       <span :class="['uppercase tracking-wider opacity-80', theme.label]">Hard</span>
@@ -43,7 +45,7 @@ const theme = {
 
     <span v-if="variant === 'blitz-header'" class="text-gray-300 dark:text-gray-600">/</span>
 
-    <div :class="['flex items-center font-bold text-yellow-500', theme.item, theme.cursor]">
+    <div :class="['flex items-center font-bold text-yellow-500', theme.item, theme.cursor]" @click="emits('filter-status', 'learning')">
       <IonColorFillSharp :class="theme.icon" />
       <span :class="theme.count">{{ reviewCount }}</span>
       <span :class="['uppercase tracking-wider opacity-80', theme.label]">Review</span>

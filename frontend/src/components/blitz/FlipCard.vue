@@ -6,6 +6,7 @@ import { useRecording } from '@/composables/useRecording'
 import IonColorFillSharp from '~icons/ion/color-fill-sharp'
 
 import { getSpeakerAttributes } from '@/utils/speakerAssets'
+import CardAvatar from './CardAvatar.vue'
 
 const props = defineProps<{
   card: BlitzCard
@@ -21,10 +22,12 @@ const isMounted = ref(false)
 // guaranteeing audioEl ref is populated when the watch triggers.
 const audioSliceData = computed(() => {
   if (!isMounted.value) return null
+  const start_time = props.card.content.start_time || 0
+  const end_time = props.card.content.end_time || 0
   return {
     audio_url: props.card.content.audio_url || '',
-    start_time: props.card.content.start_time || 0,
-    end_time: props.card.content.end_time || 0
+    start_time,
+    end_time,
   }
 })
 
@@ -87,10 +90,27 @@ const toggleFlip = () => {
 
 // Episode Source Display
 const sourceDisplay = computed(() => {
-  const { episode, order } = props.card
+  const { episode, chunk_id } = props.card
   // e.g. Friends S10E12 #10
   // Backend now returns standardized episode string like "S10E12"
-  return `${episode} #${order} #${props.card.id}`
+  return `${episode} #${chunk_id} #${props.card.id}`
+})
+
+function getTextSizePerLength(text: string) {
+  const len = text.length
+  if (len < 20) return 'text-[18px]';       // 短句：超大号字体
+  if (len < 50) return 'text-lg';       // 中句：正常大号
+  if (len < 80) return 'text-md';       // 长句：中号
+  if (len < 200) return 'text-xs';       // 超长句：小号
+  return 'text-base';                    // 作文级别：基础字体
+}
+
+const fontSizeEn = computed(() => {
+  return getTextSizePerLength(props.card.content.text)
+})
+
+const fontSizeZh = computed(() => {
+  return getTextSizePerLength(props.card.content.text_zh)
 })
 
 const speakerAttrs = computed(() => getSpeakerAttributes(props.card.speaker))
@@ -99,7 +119,7 @@ const speakerAttrs = computed(() => getSpeakerAttributes(props.card.speaker))
 
 <template>
   <!-- Card Container -->
-  <div class="flip-card-container w-full h-[360px] perspective-1000">
+  <div class="flip-card-container w-full h-[300px] perspective-1000">
     <!-- Hidden Audio Element -->
     <audio ref="audioEl" class="hidden" preload="auto"></audio>
 
@@ -114,23 +134,22 @@ const speakerAttrs = computed(() => getSpeakerAttributes(props.card.speaker))
         <!-- Top Half: Avatar + Colored BG -->
         <!-- Click here to flip -->
         <div 
-          class="h-1/2 w-full flex items-center justify-center cursor-pointer relative"
+          class="h-1/4 w-full flex items-center justify-center cursor-pointer relative"
           :style="{ backgroundColor: speakerAttrs.themeColor }"
           @click="toggleFlip"
         >
-          <!-- Text Hint if avatar missing? (Should allow default) -->
-          <div class="w-28 h-28 rounded-full border-4 border-white/50 overflow-hidden shadow-sm bg-white">
-             <!-- Use API_BASE relative path or absolute URL from backend -->
-             <img :src="speakerAttrs.avatarUrl" :alt="card.speaker" class="w-full h-full object-cover" />
-          </div>
+          <CardAvatar 
+            :avatarUrl="speakerAttrs.avatarUrl" 
+            :speaker="card.speaker"
+          />
         </div>
 
         <!-- Bottom Half: Source + Chinese -->
-        <div class="h-1/2 w-full bg-white flex flex-col p-6 items-start justify-center gap-2">
-           <div class="text-xs font-bold text-gray-500 uppercase tracking-wide">
+        <div class="h-3/4 w-full bg-white flex flex-col p-6 items-start justify-center gap-2">
+           <div class="text-xs font-bold text-gray-500 uppercase tracking-wide pt-4">
              {{ sourceDisplay }}
            </div>
-           <p class="text-lg text-gray-800 font-medium leading-relaxed line-clamp-4">
+           <p :class="fontSizeZh" class="flex-1 text-gray-800 font-medium leading-relaxed line-clamp-4">
              {{ card.content.text_zh || 'No translation available' }}
            </p>
         </div>
@@ -144,19 +163,20 @@ const speakerAttrs = computed(() => getSpeakerAttributes(props.card.speaker))
         <!-- Top Half: Avatar + Colored BG (Same) -->
         <!-- Click here to flip back -->
         <div 
-          class="h-1/2 w-full flex items-center justify-center cursor-pointer relative"
+          class="h-1/4 w-full flex items-center justify-center cursor-pointer relative"
           :style="{ backgroundColor: speakerAttrs.themeColor }"
           @click="toggleFlip"
         >
-          <div class="w-28 h-28 rounded-full border-4 border-white/50 overflow-hidden shadow-sm bg-white">
-             <img :src="speakerAttrs.avatarUrl" :alt="card.speaker" class="w-full h-full object-cover" />
-          </div>
+          <CardAvatar 
+             :avatarUrl="speakerAttrs.avatarUrl" 
+             :speaker="card.speaker"
+          />
         </div>
 
         <!-- Bottom Half: English + Controls -->
-        <div class="h-1/2 w-full bg-gray-800 flex flex-col p-5 justify-between">
+        <div class="flex-grow  w-full bg-gray-800 flex flex-col p-5 pt-10 justify-between">
            <!-- English Text -->
-           <p class="text-white text-base font-medium leading-relaxed line-clamp-4 select-text">
+           <p :class="fontSizeEn" class="text-white font-medium leading-relaxed line-clamp-4 select-text">
              {{ card.content.text }}
            </p>
 
@@ -173,23 +193,23 @@ const speakerAttrs = computed(() => getSpeakerAttributes(props.card.speaker))
                @click.stop="toggleStatus"
                title="Mark Difficulty"
              >
-                <IonColorFillSharp class="text-xl" />
+                <IonColorFillSharp class="text-lg" />
              </button>
 
              <!-- Rec/Play Rec -->
              <div class="flex gap-3">
                <button 
-                 class="w-10 h-10 rounded-full flex items-center justify-center transition-all"
+                 class="w-7 h-7 rounded-full flex items-center justify-center transition-all"
                  :class="isRecording ? 'bg-red-500 text-white animate-pulse' : 'bg-gray-700 text-blue-400 hover:bg-gray-600'"
                  @click.stop="toggleRecording"
                >
-                  <i-tabler-microphone v-if="!isRecording" class="text-lg" />
-                  <i-tabler-player-stop-filled v-else class="text-lg" />
+                  <i-tabler-microphone v-if="!isRecording" class="text-sm" />
+                  <i-tabler-player-stop-filled v-else class="text-sm" />
                </button>
 
                <button 
                  v-if="recordedAudioUrl"
-                 class="w-8 h-8 rounded-full flex items-center justify-center bg-green-900/50 text-green-400 hover:bg-green-900 transition-colors"
+                 class="w-7 h-7 rounded-full flex items-center justify-center bg-green-900/50 text-green-400 hover:bg-green-900 transition-colors"
                  @click.stop="playRecording"
                >
                  <i-tabler-ear class="text-sm" />
@@ -198,8 +218,9 @@ const speakerAttrs = computed(() => getSpeakerAttributes(props.card.speaker))
 
              <!-- Play Original -->
              <button 
-               class="w-8 h-8 rounded-full flex items-center justify-center bg-green-500 text-gray-900 hover:bg-green-400 transition-colors shadow-lg shadow-green-500/20"
+               class="w-7 h-7 rounded-full flex items-center justify-center bg-green-500 text-gray-900 hover:bg-green-400 transition-colors shadow-lg shadow-green-500/20"
                @click.stop="toggleOriginal"
+               v-if="props.card.content.end_time"
              >
                 <i-tabler-player-pause-filled v-if="isPlayingOriginal" class="text-sm" />
                 <i-tabler-player-play-filled v-else class="text-sm" />

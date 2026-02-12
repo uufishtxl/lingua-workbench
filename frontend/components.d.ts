@@ -13,6 +13,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AudioSlicer: typeof import('./src/components/AudioSlicer.vue')['default']
     BaseWaveSurfer: typeof import('./src/components/BaseWaveSurfer.vue')['default']
+    CardAvatar: typeof import('./src/components/blitz/CardAvatar.vue')['default']
     ChatWidget: typeof import('./src/components/ChatWidget.vue')['default']
     ChunkCompleteBar: typeof import('./src/components/ChunkCompleteBar.vue')['default']
     copy: typeof import('./src/components/RegionEditor copy.vue')['default']
