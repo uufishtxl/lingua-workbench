@@ -26,7 +26,7 @@
             speakerColorClass
           ]"
         >
-          {{ line.speaker }}
+          #{{ line.id + " " }}{{ line.speaker }}
         </span>
         
         <!-- Content -->

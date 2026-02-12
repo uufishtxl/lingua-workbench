@@ -30,3 +30,9 @@ if not os.path.exists('data'):
 newp = Path('pathlib-create-folder')
 newp.mkdir(parents=True, exist_ok=True)
 # %%
+from pathlib import Path
+parent_folder = Path(__file__).parent / "chroma_db"
+# parent = Path(parent_folder)
+
+parent_folder.mkdir(parents=True, exist_ok=True)
+# %%

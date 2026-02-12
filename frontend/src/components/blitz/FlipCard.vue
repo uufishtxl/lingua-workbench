@@ -129,7 +129,7 @@ const speakerAttrs = computed(() => getSpeakerAttributes(props.card.speaker))
     >
       
       <!-- FRONT SIDE -->
-      <div class="flip-card-front absolute w-full h-full backface-hidden flex flex-col rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden bg-white dark:bg-gray-800">
+      <div class="flip-card-front absolute w-full h-full backface-hidden flex flex-col rounded-2xl shadow-lg overflow-hidden bg-white dark:bg-gray-800">
         
         <!-- Top Half: Avatar + Colored BG -->
         <!-- Click here to flip -->
@@ -158,7 +158,7 @@ const speakerAttrs = computed(() => getSpeakerAttributes(props.card.speaker))
 
       <!-- BACK SIDE -->
       <div 
-        class="flip-card-back absolute w-full h-full backface-hidden rotate-y-180 flex flex-col rounded-2xl shadow-xl overflow-hidden bg-gray-800 border border-gray-700"
+        class="flip-card-back absolute w-full h-full backface-hidden rotate-y-180 flex flex-col rounded-2xl shadow-xl overflow-hidden bg-gray-800"
       >
         <!-- Top Half: Avatar + Colored BG (Same) -->
         <!-- Click here to flip back -->

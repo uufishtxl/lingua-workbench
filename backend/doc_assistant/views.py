@@ -98,35 +98,26 @@ class ChatStreamView(APIView):
             audience = 'user'
         
         def event_stream():
-            """Generate SSE events."""
+            """Generate SSE events from LangGraph multi-agent stream."""
             try:
                 service = DocAssistantService()
                 
-                # Stream tokens
-                collected_answer = []
-                generator = service.stream_answer(
+                # Stream tokens from LangGraph
+                for token in service.stream_answer(
                     question=message,
                     audience=audience,
-                )
-                
-                # Get search results for sources before streaming
-                search_results = service.vector_store.search(
-                    query=message,
-                    audience=audience,
-                    n_results=5,
-                )
-                sources = service._extract_sources(search_results)
-                
-                # Stream each token
-                for token in generator:
-                    collected_answer.append(token)
+                ):
                     event_data = json.dumps({
                         "type": "token",
                         "content": token,
                     }, ensure_ascii=False)
                     yield f"data: {event_data}\n\n"
                 
-                # Send sources
+                # Send sources (only relevant for DOC_QA)
+                sources = service.get_sources_after_stream(
+                    question=message,
+                    audience=audience,
+                )
                 sources_data = json.dumps({
                     "type": "sources",
                     "sources": sources,
