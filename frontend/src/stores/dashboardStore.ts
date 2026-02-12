@@ -12,6 +12,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
         error.value = null
         try {
             stats.value = await getDashboardStats()
+            // console.log('dashboard stats', stats.value)
         } catch (e: any) {
             error.value = e.message || 'Failed to fetch dashboard stats'
             console.error(e)

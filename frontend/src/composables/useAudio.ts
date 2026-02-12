@@ -98,6 +98,8 @@ export function useAudio(
      */
     const toggle = () => {
         if (!audioRef.value || !currentSlice.value || isLoading.value) return
+
+        console.log("Toggle Play/Pause", audioRef.value, currentSlice.value)
         const audio = audioRef.value
 
         if (!audio.paused) {

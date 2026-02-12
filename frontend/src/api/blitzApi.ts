@@ -34,9 +34,10 @@ export interface BlitzFilters {
 }
 
 export interface BlitzResponse {
+    count: number
+    next: string | null
+    previous: string | null
     results: BlitzCard[]
-    has_next: boolean
-    total: number
 }
 
 // Fetch Cards
