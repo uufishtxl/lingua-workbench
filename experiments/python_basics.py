@@ -1,4 +1,5 @@
 # %%
+from pydoc import text
 from dataclasses import dataclass
 @dataclass
 class Person:
@@ -54,4 +55,48 @@ print(f"Slots对象占用: {size_slotted} bytes")
 # 典型输出 (Python 3.10+):
 # 普通对象占用: 152 bytes  (48 + 104) -> 字典本身就很重
 # Slots对象占用: 48 bytes   -> 极其紧凑
+# %%
+n = 4
+n_str = f"{n:02d}"
+n_3_str = f"{n:03d}"
+print(n_str, n_3_str)
+# %%
+cleaned = "Mr Zelner: ".strip(':')
+print(cleaned)
+
+cleaned_2 = "Mr Zelner: ".strip()
+print(cleaned_2)
+
+cleaned_3 = "Mr Zelner:".strip(':')
+print(cleaned_3)
+# %%
+import re
+
+text = "bar foo"
+pattern = "foo"
+
+print(re.match(pattern, text))
+print(re.search(pattern, text))
+# %%
+import re
+
+text = "<div>hello</div><div>world</div>"
+pattern = r"<div>(.*?)</div>"
+
+matches = re.search(pattern, text)
+print(matches)
+
+pattern2 = r"<div>(.*)</div>"
+
+matches2 = re.search(pattern2, text)
+print(f"""
+{matches2}, 
+{matches2.group(0)}, 
+{matches2.group(1)}
+""")
+# %%
+text = "abbbnana"
+print(text.strip("a"))
+# %%
+print('www.example.com'.strip('cmowz.'))
 # %%

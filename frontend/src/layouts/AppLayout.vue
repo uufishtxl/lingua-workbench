@@ -15,6 +15,7 @@ import {
   Setting,
   QuestionFilled,
   VideoPlay,
+  GoldMedal,
   // Clock,
   Scissor,
 } from '@element-plus/icons-vue'
@@ -41,6 +42,59 @@ const handleCommand = (command: string | number | object) => {
     handleLogout()
   }
 }
+
+// Menu Items Configuration
+const menuItems = [
+  {
+    index: '/',
+    icon: HomeFilled,
+    title: 'Home',
+  },
+  {
+    index: '/dashboard',
+    icon: GoldMedal,
+    title: 'Dashboard',
+  },
+  {
+    index: '1',
+    icon: IconMenu,
+    title: 'Phrase Seeker',
+    children: [
+      {
+        index: '/phrase-seeker',
+        icon: Document,
+        title: 'Lookup',
+      },
+      {
+        index: '/quiz',
+        icon: QuestionFilled,
+        title: 'Quiz',
+      },
+    ],
+  },
+  {
+    index: '2',
+    icon: IconMenu,
+    title: 'Audio Slicer',
+    children: [
+      {
+        index: '/slicer/load-source',
+        icon: RiArchive2Fill,
+        title: 'Load Source',
+      },
+      {
+        index: '/audio-lab',
+        icon: Scissor,
+        title: 'Audio Clip',
+      },
+    ],
+  },
+  {
+    index: '/history',
+    icon: Setting,
+    title: 'Setting',
+  },
+]
 </script>
 
 <template>
@@ -86,57 +140,27 @@ const handleCommand = (command: string | number | object) => {
       <el-aside width="auto" class="bg-slate-100 border-r-gray-300 border-r-1 flex flex-col">
         <el-menu :default-active="$route.path" router class="el-menu-vertical-demo"
           style="background-color: transparent; border-right: none;" :collapse="isCollapse">
-          <el-menu-item index="/">
-            <el-icon><HomeFilled /></el-icon>
-            <span>Home</span>
-          </el-menu-item>
-          <el-sub-menu index="1">
-            <template #title>
-              <el-icon><icon-menu /></el-icon>
-              <span>Phrase Seeker</span>
-            </template>
-            <el-menu-item index="/phrase-seeker">
-              <el-icon>
-                <Document />
-              </el-icon>
-              <span>Lookup</span>
-            </el-menu-item>
-            <el-menu-item index="/quiz">
-              <el-icon>
-                <QuestionFilled />
-              </el-icon>
-              <span>Quiz</span>
-            </el-menu-item>
-          </el-sub-menu>
-
-          <el-menu :default-active="$route.path" router class="el-menu-vertical-demo"
-            style="background-color: transparent; border-right: none;" :collapse="isCollapse">
-            <el-sub-menu index="2">
+          
+          <template v-for="item in menuItems" :key="item.index">
+            <!-- If item has children, render SubMenu -->
+            <el-sub-menu v-if="item.children" :index="item.index">
               <template #title>
-                <el-icon><icon-menu /></el-icon>
-                <span>Audio Slicer</span>
+                <el-icon><component :is="item.icon" /></el-icon>
+                <span>{{ item.title }}</span>
               </template>
-              <el-menu-item index="/slicer/load-source">
-                <el-icon>
-                  <RiArchive2Fill />
-                </el-icon>
-                <span>Load Source</span>
-              </el-menu-item>
-              <el-menu-item index="/audio-lab">
-                <el-icon>
-                  <Scissor />
-                </el-icon>
-                <span>Audio Clip</span>
+              <el-menu-item v-for="child in item.children" :key="child.index" :index="child.index">
+                <el-icon><component :is="child.icon" /></el-icon>
+                <span>{{ child.title }}</span>
               </el-menu-item>
             </el-sub-menu>
-          </el-menu>
 
-          <el-menu-item index="/history">
-            <el-icon>
-              <setting />
-            </el-icon>
-            <span>Setting</span>
-          </el-menu-item>
+            <!-- Else render MenuItem -->
+            <el-menu-item v-else :index="item.index">
+              <el-icon><component :is="item.icon" /></el-icon>
+              <span>{{ item.title }}</span>
+            </el-menu-item>
+          </template>
+
         </el-menu>
 
         <div class="mt-auto p-4 flex justify-end">

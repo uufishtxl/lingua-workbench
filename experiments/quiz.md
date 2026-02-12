@@ -1,133 +1,113 @@
-## Q1 
+# 📝 今日复习 (2026-02-06)
 
-有两种方法，一种是通过嵌套 seriazlier（另外还可以 `source`）。
+## 🔧 后端 (Backend) - 5 题
 
-
+### Q1. [错题复习] Django `update()` 与 signals
 ```python
-# models.py
-from djangos.db import models
-
-class SourceAudio(models.Model):
-    title = CharField(max_length=255, blank=True)
-
-class AudioChunk(models.Model):
-    source_audio = models.ForeignKey(SourceAudio, on_delete=models.CASCADE)
+User.objects.filter(is_active=False).update(is_active=True)
 ```
+这个操作会触发 `post_save` signal 吗？为什么？
 
-```Python
-# serializers.py
-from djangos.db import serializers
+### Q2. [新题] Django Management Command
+在 Django 中创建自定义命令 `python manage.py my_task`，需要满足哪些条件？（至少说 3 点）
 
-class SourceAudioSeriazlier(serializers.ModelSeializer):
-    class Meta:
-        model = SourceAudio
-        fields = ['title']
-
-class AudioChunkSerializer(serials.ModelSerializer):
-    source_audio = SourceAudioSerializer(read_only=True)
-    #...
-```
-
-如果是轻型的引用，可以用 source
-
+### Q3. [新题] argparse `action='store_true'`
 ```python
-# serializers.py
-class AudioChunkSerializer(serializers.ModelSeializer):
-    title = serializers.CharField(source=source_audio.title, read_only=True)
-    class Meta:
-        model = AudioChunk,
-        fields = ['title']
+parser.add_argument('--verbose', action='store_true')
 ```
+当用户运行 `python manage.py my_task` 时（不带 `--verbose`），`options['verbose']` 的值是什么？
 
-## Q2
-Read Uncommitted < Read Committed < Repeatable Read < Serializable
+### Q4. [错题复习] Django `makemigrations` Non-null 问题
+给一个已有数据的 model 添加一个 `CharField(max_length=100)` 字段（不设默认值），运行 `makemigrations` 会发生什么？有哪两种解决方案？
 
-## Q3
-这种小众的题目别考了吧？DITA 也不会考这个，python更不会考 XML的库。
+### Q5. [错题复习] `multipart/form-data` 用在什么场景？
+在 HTTP 请求中，`Content-Type: multipart/form-data` 通常用于什么类型的请求？为什么不能用 `application/json`？
 
-title 是在当前元素找title 这个 tag
-.//title 是在任何下层元素找 title 这个 tag
+## 🐍 Python 基础 - 5 题
 
-## Q4
-filter 是找到符合条件的；exclude 是剔除符合条件的
+### Q6. [错题复习] `strip()` 的行为
+```python
+s = "  hello world  "
+print(s.strip())
+```
+输出什么？如果 `s = "xxhelloxx"`，`s.strip('x')` 输出什么？
 
-## Q5
+### Q7. [错题复习] `raise_for_status()`
+```python
+import requests
+response = requests.get("https://example.com/404")
+response.raise_for_status()
+```
+如果服务器返回 404，这段代码会怎样？不调用 `raise_for_status()` 会怎样？
 
-可以将一个长度很长的唯一的字符串哈希转换为一个32位十六进制字符，这个过程会丢失信息，但是可以用来快速判断两个字符串是否相同。
+### Q8. [错题复习] 正则表达式 Greedy vs Non-greedy
+```python
+import re
+text = "<div>hello</div><div>world</div>"
+print(re.findall(r"<div>.*</div>", text))
+print(re.findall(r"<div>.*?</div>", text))
+```
+分别输出什么？解释 `*` 和 `*?` 的区别。
 
-## Q6
-用 __slots__ 可以为类的属性开辟固定的内存分配空间，从而节省内存，但是也意味着不允许动态添加属性。
+### Q9. [错题复习] `re.match()` vs `re.search()`
+```python
+import re
+text = "hello world"
+print(re.match(r"world", text))
+print(re.search(r"world", text))
+```
+分别输出什么？为什么？
 
-## Q7
-如果数据比较多方法比较少，用 @dataclass；如果方法比较多数据比较少，用普通的 class 进行封装即可
+### Q10. [新题] `Path` 操作
+```python
+from pathlib import Path
+p = Path("/home/user/docs/file.txt")
+```
+写出获取以下内容的代码：
+- 文件名（含扩展名）
+- 文件名（不含扩展名）
+- 扩展名
+- 父目录
 
-## Q8
+## 🎨 前端 (Frontend) - 5 题
 
-同Q3 浪费题目额度
-
-一个是返回元素；一个返回文本
-
-## Q9
-
-这是一个工具类 Class
-又一道浪费名额的题目。不需要我在看什么，就考什么题。我只是想了解下之前整个用 DITA 做 RAG 的流程而已。结果你给我出了好几道这种开发和文档面试都不会考的题目。
-
-## Q10
-天啊！第四道！
-"docs/toic.dita:概述:安装"
-
-## Q11
-
-模板中可以直接使用 $route，这是 Vue Router 提供的全局对象；
-但是在 script 中需要通过 composable 引入，也就是 useRoute()
-
-## Q12
-
-作用是只使用 K 中包含的键名，然后结合 P，生成一个新的 typing
-```typescript
-type Pick<T, K extends keyof T> = {
-    [P in K]: T[P]
+### Q11. [错题复习] CSS `z-index` 失效
+```css
+.box {
+  z-index: 999;
 }
 ```
+为什么有时候设了超大的 `z-index` 却没有效果？需要满足什么前提条件？
 
+### Q12. [错题复习] Vue `key` 的作用
+在 `v-for` 中为什么要绑定 `:key`？如果不绑定或者用 `index` 作为 key 会有什么问题？
 
-## Q13
-
-? 没有问题吧，如果要保留所有属性的状态。除非你要pick 就有问题了
-
-## Q14
-
-什么类型？什么意思？不就是计算属性吗？并且会缓存内存，具有惰性，只有依赖的属性发生变化，才会重新计算，否则可以直接从缓存中读取，比较节约开销。
-
-## Q15
-
-304，表示资源未修改，可以直接从缓存读取。
-
----
-
-补充：
-
-Q3
-
-比如有一张 author 的表格，也有一张 book 的表格。
-当我想要找到素有的 author 的 book 的时候。有两种方法:
-* 一种是用 select_related。方法就是将 book 作为主表，然后将 author 的信息 JOIN 到 book 表中。如果用代码表示就是：
-```python
-books = Book.objects.select_related('author').all
+### Q13. [新题] Vue 生命周期
+```javascript
+onMounted(() => {
+  console.log('mounted')
+})
+onBeforeMount(() => {
+  console.log('before mount')
+})
 ```
-* 另一种是用 prefetch_related。
-```python
-books = Author.objects.prefetch_related('book_set').all()
+这两个 log 的打印顺序是什么？`onMounted` 时能访问 DOM 吗？
+
+### Q14. [新题] TypeScript `Partial<T>`
+```typescript
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
 ```
+如何用内置工具类型创建一个"所有字段都可选"的 `User` 类型？
 
-Q8
-*args 打包成了 tuple，为了支持位置参数，比如 add(1, 2, 3)
-**kwargs 打包成了 dict，为了支持关键值参数，比如 add(a=1, b=2, c=3)
-
-Q9
-GET 是幂等的；POST 不是幂等的。
-GET 是一种比较安全的操作，不需要查询服务器权限；POST 则需要。
-GET 会缓存，POST 不会？
-
-Q10
-v-if 会销毁和重建元素，开销比较大；v-show 只是隐藏和显示元素，开销比较小。
+### Q15. [新题] HTTP 状态码
+说出以下状态码的含义：
+- 200
+- 201
+- 400
+- 401
+- 404
+- 500

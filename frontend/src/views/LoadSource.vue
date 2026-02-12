@@ -3,6 +3,7 @@ import { ref, reactive, watch, nextTick } from 'vue'
 import { ElMessage, type ElSelect, type UploadRequestOptions } from 'element-plus'
 import { isAxiosError } from 'axios'
 import api from '@/api/axios'
+import { pollScriptTask } from '@/api/scriptApi'
 // import waitGif from '@/assets/wait.gif'
 import waitJpg from '@/assets/wait.jpg'
 import { useRouter } from 'vue-router'
@@ -294,7 +295,7 @@ const handleUploadHttpRequest = async (options: UploadRequestOptions) => {
   }
 }
 
-const handleUploadSuccess = (newSourceAudio: { drama: number, season: number, episode: number }) => {
+const handleUploadSuccess = (newSourceAudio: { id: number, drama: number, season: number, episode: number }) => {
   ElMessage.success('Upload successful! Chunks are being processed.')
   showUpload.value = false
   isLoadingChunks.value = true
@@ -316,6 +317,28 @@ const handleUploadSuccess = (newSourceAudio: { drama: number, season: number, ep
 
   // Now, proceed with looking up the chunks for the newly created source
   lookupSourceAudio(newSourceAudio.drama, newSourceAudio.season, newSourceAudio.episode);
+
+  // Start polling for background script ingest + translate task
+  pollScriptTask(newSourceAudio.id, {
+    interval: 3000,
+    onStatusChange: (status, message) => {
+      if (status === 'ingesting') {
+        ElMessage.info({ message: '📜 Ingesting script...', duration: 3000 })
+      } else if (status === 'translating') {
+        ElMessage.info({ message: '🌐 Translating script...', duration: 3000 })
+      }
+    },
+  }).then((task) => {
+    ElMessage.success({
+      message: `✅ Script ready! ${task.ingest_count} lines ingested, ${task.translate_count} translated.`,
+      duration: 5000,
+    })
+  }).catch((err) => {
+    ElMessage.error({
+      message: `Script task failed: ${err.message}`,
+      duration: 5000,
+    })
+  })
 }
 
 const handleStartEditing = () => {

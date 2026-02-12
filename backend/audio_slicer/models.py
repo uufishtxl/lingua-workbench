@@ -4,7 +4,14 @@ from django.conf import settings
 class Drama(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, unique=True, help_text="e.g., Friends, The Office")
-    # 你未来还可以加海报、简介等...
+    
+    # [NEW] Cover image for Dashboard display
+    cover_image = models.ImageField(
+        upload_to='covers/%Y/%m/',
+        null=True,
+        blank=True,
+        help_text="剧集封面/海报"
+    )
 
     def __str__(self):
         return self.name
@@ -26,6 +33,14 @@ class SourceAudio(models.Model):
 
     file = models.FileField(upload_to='audio_slicer/originals/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    
+    # Cover image for this episode (for Dashboard display & plot recall)
+    cover_image = models.ImageField(
+        upload_to='covers/episodes/%Y/%m/',
+        null=True,
+        blank=True,
+        help_text="Episode cover/screenshot for plot recall"
+    )
 
     class Meta:
         unique_together = ('drama', 'season', 'episode')
@@ -51,8 +66,13 @@ class AudioChunk(models.Model):
     file = models.FileField(upload_to=audio_chunk_upload_path)
     has_slices = models.BooleanField(default=False, help_text="Indicates if this chunk has any AudioSlices associated with it")
     
+    # [NEW] Progress tracking for Dashboard
+    is_studied = models.BooleanField(default=False, db_index=True, help_text="已完成复习")
+    last_studied_at = models.DateTimeField(null=True, blank=True, help_text="最后复习时间")
+    
     class Meta:
         unique_together = ('source_audio', 'chunk_index')
+        ordering = ['source_audio', 'chunk_index']  # Ensure consistent ordering
 
     def __str__(self):
         return f"{self.source_audio.drama.name} S{self.source_audio.season:02d}E{self.source_audio.episode:02d} Chunk {self.chunk_index:03d}"

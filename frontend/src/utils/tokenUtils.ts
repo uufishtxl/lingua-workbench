@@ -74,7 +74,7 @@ export function willExpireWithin(token: string, minutes: number): boolean {
     if (remaining === null) {
         return false;
     }
-    console.log('Will expire within', minutes, 'minutes', remaining < minutes * 60 * 1000);
+    // console.log('Will expire within', minutes, 'minutes', remaining < minutes * 60 * 1000);
     return remaining < minutes * 60 * 1000;
 }
 

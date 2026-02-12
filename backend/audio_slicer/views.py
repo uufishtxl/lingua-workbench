@@ -93,6 +93,46 @@ class SourceAudioViewSet(viewsets.ModelViewSet):
         
         return Response(list(episodes))
 
+    @action(detail=True, methods=['post'])
+    def upload_cover(self, request, pk=None):
+        """
+        Upload a cover image for this episode.
+        POST /api/v1/audios/{id}/upload_cover/
+        Body: multipart/form-data with 'cover_image' file
+        """
+        source_audio = self.get_object()
+        
+        # Verify ownership
+        if source_audio.user != request.user:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        cover_image = request.FILES.get('cover_image')
+        if not cover_image:
+            return Response(
+                {'error': 'No cover_image file provided'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Delete old cover if exists
+        if source_audio.cover_image:
+            source_audio.cover_image.delete(save=False)
+        
+        # Save new cover
+        source_audio.cover_image = cover_image
+        source_audio.save()
+        
+        # Return updated info with cover URL
+        cover_url = request.build_absolute_uri(source_audio.cover_image.url) if source_audio.cover_image else None
+        
+        return Response({
+            'success': True,
+            'source_audio_id': source_audio.id,
+            'cover_url': cover_url,
+        })
+
     @action(detail=False, methods=['get'])
     def lookup(self, request):
         """
@@ -294,6 +334,7 @@ class DramaViewSet(viewsets.ReadOnlyModelViewSet):
     """
     serializer_class = DramaSerializer
     permission_classes = [IsAuthenticated]
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser, parsers.JSONParser]
 
     def get_queryset(self):
         """
@@ -311,6 +352,46 @@ class DramaViewSet(viewsets.ReadOnlyModelViewSet):
         seasons = SourceAudio.objects.filter(drama=drama).values_list('season', flat=True).distinct().order_by('season')
         return Response(list(seasons))
 
+    @action(detail=True, methods=['post'])
+    def upload_cover(self, request, pk=None):
+        """
+        Upload a cover image for the drama.
+        POST /api/v1/dramas/{id}/upload_cover/
+        Body: multipart/form-data with 'cover_image' file
+        """
+        drama = self.get_object()
+        
+        # Verify ownership
+        if drama.user != request.user:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        cover_image = request.FILES.get('cover_image')
+        if not cover_image:
+            return Response(
+                {'error': 'No cover_image file provided'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Delete old cover if exists
+        if drama.cover_image:
+            drama.cover_image.delete(save=False)
+        
+        # Save new cover
+        drama.cover_image = cover_image
+        drama.save()
+        
+        # Return updated drama with cover URL
+        cover_url = request.build_absolute_uri(drama.cover_image.url) if drama.cover_image else None
+        
+        return Response({
+            'success': True,
+            'drama_id': drama.id,
+            'cover_url': cover_url,
+        })
+
 
 class AudioChunkViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -325,6 +406,46 @@ class AudioChunkViewSet(viewsets.ReadOnlyModelViewSet):
         for the currently authenticated user.
         """
         return AudioChunk.objects.filter(source_audio__user=self.request.user)
+
+    @action(detail=True, methods=['post'])
+    def complete(self, request, pk=None):
+        """
+        Mark chunk as studied and return the next chunk ID.
+        POST /api/v1/chunks/{id}/complete/
+        
+        Returns:
+        - next_chunk_id: ID of next chunk (null if this was the last)
+        - is_last: true if this was the final chunk in the episode
+        - total_chunks: total number of chunks in this episode
+        - current_index: current chunk's index (0-based)
+        """
+        chunk = self.get_object()
+        
+        # Mark as studied
+        chunk.is_studied = True
+        chunk.last_studied_at = timezone.now()
+        chunk.save()
+        
+        # Find next chunk in same source audio
+        next_chunk = AudioChunk.objects.filter(
+            source_audio=chunk.source_audio,
+            chunk_index__gt=chunk.chunk_index
+        ).order_by('chunk_index').first()
+        
+        # Get total count for progress display
+        total_chunks = AudioChunk.objects.filter(
+            source_audio=chunk.source_audio
+        ).count()
+        
+        return Response({
+            'success': True,
+            'current_chunk_id': chunk.id,
+            'current_index': chunk.chunk_index,
+            'next_chunk_id': next_chunk.id if next_chunk else None,
+            'is_last': next_chunk is None,
+            'total_chunks': total_chunks,
+            'message': 'Chunk marked as complete!'
+        })
 
 
 
@@ -386,4 +507,127 @@ class ReviewCardViewSet(viewsets.ModelViewSet):
         })
 
 
+class DashboardViewSet(viewsets.ViewSet):
+    """
+    Dashboard API endpoints for learning progress.
+    """
+    permission_classes = [IsAuthenticated]
 
+    @action(detail=False, methods=['get'])
+    def resume(self, request):
+        """
+        Get the chunk to resume learning from.
+        
+        Logic:
+        1. Find the last studied chunk (most recent last_studied_at)
+        2. Return the next unstudied chunk after it
+        3. If no studied chunks, return the first chunk
+        
+        Returns:
+        - chunk_id: ID of chunk to resume from
+        - source_audio: Source audio info (drama, season, episode)
+        - cover_url: Drama cover image URL
+        - current_index: Current chunk index
+        - total_chunks: Total chunks in this episode
+        - last_studied_at: When last studied
+        """
+        user = request.user
+        
+        # Find the most recently studied chunk
+        last_studied = AudioChunk.objects.filter(
+            source_audio__user=user,
+            is_studied=True
+        ).order_by('-last_studied_at').first()
+        
+        if last_studied:
+            # Find the next chunk after the last studied one
+            next_chunk = AudioChunk.objects.filter(
+                source_audio=last_studied.source_audio,
+                chunk_index__gt=last_studied.chunk_index
+            ).order_by('chunk_index').first()
+            
+            # If no next chunk, use the last studied one (user can review it)
+            resume_chunk = next_chunk if next_chunk else last_studied
+            source_audio = resume_chunk.source_audio
+        else:
+            # No studied chunks - find the first chunk of any source audio
+            first_chunk = AudioChunk.objects.filter(
+                source_audio__user=user
+            ).order_by('source_audio__id', 'chunk_index').first()
+            
+            if not first_chunk:
+                return Response({
+                    'has_content': False,
+                    'message': 'No audio content found. Upload some audio to get started!'
+                })
+            
+            resume_chunk = first_chunk
+            source_audio = first_chunk.source_audio
+        
+        # Get total chunks for this source audio
+        total_chunks = AudioChunk.objects.filter(
+            source_audio=source_audio
+        ).count()
+        
+        # Build cover URL - use episode cover, fallback to drama cover
+        cover_url = None
+        if source_audio.cover_image:
+            cover_url = request.build_absolute_uri(source_audio.cover_image.url)
+        elif source_audio.drama.cover_image:
+            cover_url = request.build_absolute_uri(source_audio.drama.cover_image.url)
+        
+        return Response({
+            'has_content': True,
+            'chunk_id': resume_chunk.id,
+            'chunk_index': resume_chunk.chunk_index,
+            'total_chunks': total_chunks,
+            'is_studied': resume_chunk.is_studied,
+            'last_studied_at': last_studied.last_studied_at if last_studied else None,
+            'source_audio': {
+                'id': source_audio.id,
+                'drama_id': source_audio.drama.id,
+                'drama_name': source_audio.drama.name,
+                'season': source_audio.season,
+                'episode': source_audio.episode,
+                'title': source_audio.title,
+                'cover_url': cover_url,
+            }
+        })
+
+    @action(detail=False, methods=['get'])
+    def stats(self, request):
+        """
+        Get learning stats for the dashboard.
+        
+        Returns:
+        - total_chunks_studied: Number of chunks completed
+        - hard_sentences: Count of sentences marked hard (highlight=red)
+        - review_sentences: Count of sentences needing review (highlight=yellow)
+        """
+        user = request.user
+        
+        # Import ScriptLine model
+        from scripts.models import ScriptLine
+        
+        # Count studied chunks
+        total_studied = AudioChunk.objects.filter(
+            source_audio__user=user,
+            is_studied=True
+        ).count()
+        
+        # Count hard/review sentences
+        hard_count = ScriptLine.objects.filter(
+            chunk__source_audio__user=user,
+            highlight='red'
+        ).count()
+        
+        review_count = ScriptLine.objects.filter(
+            chunk__source_audio__user=user,
+            highlight='yellow'
+        ).count()
+        
+        return Response({
+            'total_chunks_studied': total_studied,
+            'hard_sentences': hard_count,
+            'review_sentences': review_count,
+        })
