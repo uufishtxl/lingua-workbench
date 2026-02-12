@@ -44,7 +44,7 @@ class ScriptLineViewSet(viewsets.ViewSet):
         chunk = get_object_or_404(AudioChunk, pk=chunk_pk)
         limit = int(request.query_params.get('limit', 50))
         
-        lines = ScriptLine.objects.filter(chunk=chunk).order_by('index')[:limit]
+        lines = ScriptLine.objects.filter(chunk=chunk).order_by('order')[:limit]
         serializer = ScriptLineListSerializer(lines, many=True)
         
         total_count = ScriptLine.objects.filter(chunk=chunk).count()

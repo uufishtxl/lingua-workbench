@@ -1,54 +1,32 @@
 """
 RAG Service for Documentation Assistant
 
-Orchestrates the retrieval and generation pipeline with streaming support.
+Refactored to use LangGraph multi-agent system.
+Orchestrates routing between DocQA, ScriptEditor, and General agents.
 """
 from typing import Generator
 from pathlib import Path
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
+from langchain_core.messages import HumanMessage, AIMessage
 from django.conf import settings
-import os
 
+from .graph import app as agent_app
 from .vector_store import DITAVectorStore
-
-
-# System prompt for the documentation assistant
-SYSTEM_PROMPT = """You are a helpful documentation assistant for Lingua Workbench, 
-a language learning application for studying spoken English from audio sources.
-
-Your role is to answer questions based on the provided documentation context.
-Always be helpful, accurate, and concise.
-
-Guidelines:
-- Answer in the same language as the user's question (Chinese or English)
-- If the context doesn't contain relevant information, say so honestly
-- Reference specific features or steps from the documentation
-- For how-to questions, provide step-by-step guidance
-
-Documentation Context:
-{context}
-
-User's Question: {question}"""
 
 
 class DocAssistantService:
     """
-    Main service for handling documentation Q&A with RAG.
+    Main service for handling documentation Q&A with multi-agent RAG.
+    
+    Delegates to LangGraph graph which routes between:
+    - DocQA Agent (documentation questions)
+    - ScriptEditor Agent (insert/edit script lines)
+    - General Agent (casual conversation)
     """
     
     def __init__(self):
+        self.app = agent_app
+        # Keep vector_store accessible for views that need direct access
         self.vector_store = DITAVectorStore()
-        self.llm = ChatGoogleGenerativeAI(
-            model="gemini-2.5-flash",
-            google_api_key=os.getenv("GOOGLE_API_KEY"),
-            temperature=0.3,
-            streaming=True,
-        )
-        
-        self.prompt = ChatPromptTemplate.from_template(SYSTEM_PROMPT)
-        self.chain = self.prompt | self.llm | StrOutputParser()
     
     def get_answer(self, question: str, audience: str = 'all') -> dict:
         """
@@ -56,42 +34,41 @@ class DocAssistantService:
         
         Args:
             question: User's question
-            audience: 'user' or 'developer'
+            audience: 'user' or 'developer' (used for DocQA filtering)
             
         Returns:
             Dict with answer and sources
         """
-        # Retrieve relevant context
-        search_results = self.vector_store.search(
-            query=question,
-            audience=audience,
-            n_results=5,
-        )
-        
-        # Format context from search results
-        context = self._format_context(search_results)
-        
-        # Generate answer
-        answer = self.chain.invoke({
-            "context": context,
-            "question": question,
+        # Invoke the graph
+        result = self.app.invoke({
+            "messages": [HumanMessage(content=question)],
+            "next": "",
+            "context": "",
+            "sources": [],
         })
         
-        # Extract sources
-        sources = self._extract_sources(search_results)
+        # Extract the final AI message
+        last_ai_msg = ""
+        for msg in reversed(result["messages"]):
+            if isinstance(msg, AIMessage) and msg.content:
+                last_ai_msg = msg.content
+                break
         
         return {
-            "answer": answer,
-            "sources": sources,
+            "answer": last_ai_msg,
+            "sources": result.get("sources", []),
         }
     
     def stream_answer(
         self,
         question: str,
         audience: str = 'all',
-    ) -> Generator[str, None, dict]:
+    ) -> Generator[str, None, None]:
         """
-        Stream the answer token by token for typewriter effect.
+        Stream the answer token by token.
+        
+        Uses LangGraph's stream_mode="messages" to yield individual tokens
+        from whichever agent is responding.
         
         Args:
             question: User's question
@@ -99,47 +76,40 @@ class DocAssistantService:
             
         Yields:
             String tokens as they are generated
-            
-        Returns:
-            Final dict with sources (after iteration complete)
         """
-        # Retrieve relevant context
+        initial_state = {
+            "messages": [HumanMessage(content=question)],
+            "next": "",
+            "context": "",
+            "sources": [],
+        }
+        
+        for msg, metadata in self.app.stream(
+            initial_state,
+            stream_mode="messages",
+        ):
+            # Only yield content tokens from AI messages (not tool calls)
+            if (
+                isinstance(msg, AIMessage)
+                and msg.content
+                and not msg.tool_calls
+            ):
+                yield msg.content
+    
+    def get_sources_after_stream(self, question: str, audience: str = 'all') -> list[dict]:
+        """
+        Get sources after streaming is complete.
+        
+        Since streaming doesn't easily return sources inline,
+        this re-runs a quick vector search to get sources.
+        Only relevant for DOC_QA queries.
+        """
         search_results = self.vector_store.search(
             query=question,
             audience=audience,
             n_results=5,
         )
-        
-        # Format context
-        context = self._format_context(search_results)
-        
-        # Stream the response
-        for chunk in self.chain.stream({
-            "context": context,
-            "question": question,
-        }):
-            yield chunk
-        
-        # Return sources info at the end
-        return {
-            "sources": self._extract_sources(search_results),
-        }
-    
-    def _format_context(self, search_results: list[dict]) -> str:
-        """Format search results into context string."""
-        if not search_results:
-            return "No relevant documentation found."
-        
-        parts = []
-        for i, result in enumerate(search_results, 1):
-            metadata = result.get('metadata', {})
-            title = metadata.get('title', 'Unknown')
-            section_path = metadata.get('section_path', '')
-            content = result.get('content', '')
-            
-            parts.append(f"[Document {i}: {section_path or title}]\n{content}")
-        
-        return "\n\n---\n\n".join(parts)
+        return self._extract_sources(search_results)
     
     def _extract_sources(self, search_results: list[dict]) -> list[dict]:
         """Extract source information from search results."""

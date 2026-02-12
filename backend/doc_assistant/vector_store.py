@@ -37,41 +37,43 @@ class DITAVectorStore:
         if persist_directory is None:
             persist_directory = Path(__file__).parent / "chroma_db"
         
-        self.persist_directory = Path(persist_directory)
+        self.persist_directory = persist_directory # Path(persist_directory)
         self.persist_directory.mkdir(parents=True, exist_ok=True)
         
-        # Initialize Chroma client with persistence
+        # Initialize Chroma client with persistence | 创建永久性 Chroma 实例，保存至磁盘，需要传递 path 参数，这里还设置关闭了匿名统计
         self.client = chromadb.PersistentClient(
             path=str(self.persist_directory),
-            settings=Settings(anonymized_telemetry=False),
+            settings=Settings(anonymized_telemetry=False), # 关闭匿名统计
         )
         
         # Initialize Gemini embeddings
         # Note: Model name needs "models/" prefix for LangChain
         self.embeddings = GoogleGenerativeAIEmbeddings(
-            model="models/text-embedding-004",
+            model="models/gemini-embedding-001",
             google_api_key=os.getenv("GOOGLE_API_KEY")
         )
         
-        # Get or create collection
+        # Get or create collection | 创建集合
         self.collection = self.client.get_or_create_collection(
             name=self.COLLECTION_NAME,
             metadata={"description": "DITA documentation chunks for RAG"}
         )
     
-    def add_chunks(self, chunks: list[DITAChunk], batch_size: int = 50) -> int:
+    def add_chunks(self, chunks: list[DITAChunk], batch_size: int = 10) -> int:
         """
         Add chunks to the vector store with embeddings.
         
         Args:
             chunks: List of DITAChunk objects
-            batch_size: Process in batches to respect API rate limits
+            batch_size: Process in batches to respect API limits (Default 10, Gemini Free Tier is 100 docs/min)
             
         Returns:
             Number of chunks added
         """
+        import time
         total_added = 0
         
+        # Process in smaller batches with delay | 分批处理，避免超限
         for i in range(0, len(chunks), batch_size):
             batch = chunks[i:i + batch_size]
             
@@ -80,20 +82,31 @@ class DITAVectorStore:
             documents = [chunk.content for chunk in batch]
             metadatas = [chunk.to_metadata() for chunk in batch]
             
-            # Generate embeddings
-            embeddings = self.embeddings.embed_documents(documents)
+            try:
+                # Generate embeddings
+                # Note: embed_documents might batch internally, but we control the outer loop
+                embeddings = self.embeddings.embed_documents(documents)
+                
+                # Upsert to collection (handles duplicates)
+                self.collection.upsert(
+                    ids=ids,
+                    documents=documents,
+                    metadatas=metadatas,
+                    embeddings=embeddings,
+                )
+                
+                total_added += len(batch)
+                print(f"Added {total_added}/{len(chunks)} chunks... (Sleeping 10s for strict 100 RPM quota)")
+                
+                # Rate Limiting: Sleep to ensure < 100 docs/minute
+                # 10 docs / 10s = 60 docs/minute (Safe) 根据实践经验，虽然一批次发了10个文档，但是Google Embedding API仍然视作10次Embedding请求，因此这里设置10秒才安全。 
+                time.sleep(10.0)
+                
+            except Exception as e:
+                print(f"Error adding batch {i}: {e}")
+                # Optional: continue or break? Let's break to avoid partial corruption or massive errors
+                raise e
             
-            # Upsert to collection (handles duplicates)
-            self.collection.upsert(
-                ids=ids,
-                documents=documents,
-                metadatas=metadatas,
-                embeddings=embeddings,
-            )
-            
-            total_added += len(batch)
-            print(f"Added {total_added}/{len(chunks)} chunks...")
-        
         return total_added
     
     def search(

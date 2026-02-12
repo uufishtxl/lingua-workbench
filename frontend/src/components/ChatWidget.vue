@@ -27,7 +27,9 @@ interface ChatMessage {
 
 const messages = ref<ChatMessage[]>([]);
 const inputMessage = ref('');
+
 const messagesContainer = ref<HTMLElement | null>(null);
+const textareaRef = ref<HTMLTextAreaElement | null>(null);
 let messageIdCounter = 0;
 
 // Computed
@@ -112,6 +114,14 @@ function handleKeydown(event: KeyboardEvent) {
     sendMessage();
   }
 }
+
+function autoResize() {
+  const el = textareaRef.value;
+  if (el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
+}
 </script>
 
 <template>
@@ -189,8 +199,10 @@ function handleKeydown(event: KeyboardEvent) {
       <!-- Input -->
       <div class="chat-input-area">
         <textarea
+          ref="textareaRef"
           v-model="inputMessage"
           @keydown="handleKeydown"
+          @input="autoResize"
           placeholder="Ask a question..."
           :disabled="isLoading"
           rows="1"
@@ -448,6 +460,17 @@ function handleKeydown(event: KeyboardEvent) {
   resize: none;
   outline: none;
   font-family: inherit;
+  line-height: 1.5;
+  max-height: 125px; /* Approx 5 rows */
+  overflow-y: auto;
+  
+  /* Hide scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.chat-input-area textarea::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 
 .chat-input-area textarea:focus {

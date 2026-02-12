@@ -23,3 +23,6 @@ ipython
 bs4
 Pillow
 huey
+google-generativeai
+# --- Multi-Agent ---
+langgraph
