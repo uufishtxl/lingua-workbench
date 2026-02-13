@@ -390,7 +390,7 @@ function autoResize() {
 .message-content {
   padding: 12px 16px;
   border-radius: 16px;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.5;
   white-space: pre-wrap;
   word-break: break-word;
@@ -428,7 +428,7 @@ function autoResize() {
 }
 
 .sources-label {
-  font-size: 11px;
+  font-size: 10px;
   color: #808090;
 }
 
@@ -436,7 +436,7 @@ function autoResize() {
   padding: 2px 8px;
   background: rgba(102, 126, 234, 0.15);
   border-radius: 10px;
-  font-size: 11px;
+  font-size: 10px;
   color: #a0a0ff;
 }
 
@@ -451,12 +451,12 @@ function autoResize() {
 
 .chat-input-area textarea {
   flex: 1;
-  padding: 10px 14px;
+  padding: 10px 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   background: #2a2a40;
   color: #e0e0e8;
-  font-size: 14px;
+  font-size: 12px;
   resize: none;
   outline: none;
   font-family: inherit;

@@ -5,38 +5,28 @@
       <div class="flex items-center gap-2">
         <h2 class="font-bold text-gray-700">Script</h2>
         <el-button-group size="small">
-          <el-button
-            :type="displayLang === 'en' ? 'primary' : 'default'"
-            @click="displayLang = 'en'"
-          >
+          <el-button :type="displayLang === 'en' ? 'primary' : 'default'" @click="displayLang = 'en'">
             EN
           </el-button>
-          <el-button
-            :type="displayLang === 'zh' ? 'primary' : 'default'"
-            @click="displayLang = 'zh'"
-          >
+          <el-button :type="displayLang === 'zh' ? 'primary' : 'default'" @click="displayLang = 'zh'">
             中文
           </el-button>
-          <el-button
-            :type="displayLang === 'both' ? 'primary' : 'default'"
-            @click="displayLang = 'both'"
-          >
+          <el-button :type="displayLang === 'both' ? 'primary' : 'default'" @click="displayLang = 'both'">
             Bi-lingual
           </el-button>
         </el-button-group>
         <!-- Width Toggle Button -->
-        <el-button 
-          size="small" 
-          :type="scriptPanelWidth === 'wide' ? 'primary' : 'default'"
-          @click="$emit('toggleWidth')"
-          :title="scriptPanelWidth === 'wide' ? 'Shrink panel' : 'Expand panel'"
-        >
+        <el-button size="small" :type="scriptPanelWidth === 'wide' ? 'primary' : 'default'"
+          @click="$emit('toggleWidth')" :title="scriptPanelWidth === 'wide' ? 'Shrink panel' : 'Expand panel'">
           <i-tabler-arrows-horizontal class="text-sm" />
         </el-button>
       </div>
-      <span v-if="totalCount > 0" class="text-xs text-gray-500">
-        {{ lines.length }} / {{ totalCount }} lines
-      </span>
+      <div class="flex flex-row gap-1 items-center">
+        <span v-if="totalCount > 0" class="text-xs text-gray-500">
+          {{ lines.length }} / {{ totalCount }} lines
+        </span>
+        <el-button circle size="small" @click="loadLines" :disabled="loading"><i-tabler-refresh /></el-button>
+      </div>
     </div>
 
     <!-- Loading State -->
@@ -50,13 +40,7 @@
     <div v-else-if="lines.length === 0" class="flex-1 flex flex-col items-center justify-center text-gray-500">
       <i-tabler-script-x class="text-4xl mb-2" />
       <p class="text-sm">No script loaded</p>
-      <el-button
-        v-if="canIngest"
-        type="primary"
-        size="small"
-        class="mt-4"
-        @click="$emit('ingest')"
-      >
+      <el-button v-if="canIngest" type="primary" size="small" class="mt-4" @click="$emit('ingest')">
         Load Script
       </el-button>
     </div>
@@ -64,19 +48,11 @@
     <!-- Script Lines -->
     <div v-else class="flex-1 overflow-y-auto space-y-1.5">
       <TransitionGroup name="list">
-        <ScriptLineItem
-          v-for="line in lines"
-          :key="line.id"
-          :line="line"
-          :next-chunk-id="nextChunkId"
-          :can-split="!!nextChunkId"
-          :display-lang="displayLang"
-          @split="handleSplit"
-          @search="handleSearch"
-          @updated="handleLineUpdated"
-        />
+        <ScriptLineItem v-for="line in lines" :key="line.id" :line="line" :next-chunk-id="nextChunkId"
+          :can-split="!!nextChunkId" :display-lang="displayLang" @split="handleSplit" @search="handleSearch"
+          @updated="handleLineUpdated" />
       </TransitionGroup>
-      
+
       <!-- Load More -->
       <div v-if="hasMore" class="text-center py-4">
         <el-button size="small" @click="loadMore">
@@ -87,10 +63,8 @@
 
     <!-- Undo Toast -->
     <Transition name="slide-up">
-      <div
-        v-if="undoState"
-        class="absolute bottom-24 left-4 right-4 bg-gray-800 text-white px-4 py-3 rounded-lg shadow-lg flex items-center justify-between z-10"
-      >
+      <div v-if="undoState"
+        class="absolute bottom-24 left-4 right-4 bg-gray-800 text-white px-4 py-3 rounded-lg shadow-lg flex items-center justify-between z-10">
         <span>Moved {{ undoState.count }} lines to Chunk #{{ undoState.toChunkId }}</span>
         <el-button type="primary" size="small" @click="handleUndo">
           Undo
@@ -99,14 +73,8 @@
     </Transition>
 
     <!-- Review Mode: Complete & Continue Bar -->
-    <ChunkCompleteBar
-      v-if="reviewMode"
-      :chunk-id="chunkId"
-      :next-chunk-id="nextChunkId"
-      :is-last-chunk="!nextChunkId"
-      :current-index="currentIndex"
-      :total-chunks="totalChunks"
-    />
+    <ChunkCompleteBar v-if="reviewMode" :chunk-id="chunkId" :next-chunk-id="nextChunkId" :is-last-chunk="!nextChunkId"
+      :current-index="currentIndex" :total-chunks="totalChunks" />
   </div>
 </template>
 
@@ -159,7 +127,7 @@ const hasMore = computed(() => lines.value.length < totalCount.value)
 // Load script lines
 const loadLines = async (append = false) => {
   if (!props.chunkId) return
-  
+
   loading.value = true
   try {
     const limit = append ? loadLimit.value + 50 : loadLimit.value
@@ -180,26 +148,26 @@ const loadMore = () => loadLines(true)
 // Split handler
 const handleSplit = async (startIndex: number) => {
   if (!props.nextChunkId) return
-  
+
   try {
     const result = await splitScript(props.chunkId, startIndex, props.nextChunkId)
-    
+
     // Animate removal
     lines.value = lines.value.filter(line => line.index < startIndex)
     totalCount.value -= result.moved_count
-    
+
     // Show undo toast
     undoState.value = {
       count: result.moved_count,
       fromChunkId: props.chunkId,
       toChunkId: props.nextChunkId,
     }
-    
+
     // Auto-clear undo after 5 seconds
     setTimeout(() => {
       undoState.value = null
     }, 5000)
-    
+
     ElMessage.success(`Moved ${result.moved_count} lines to next chunk`)
   } catch (error) {
     console.error('Failed to split script:', error)
@@ -210,7 +178,7 @@ const handleSplit = async (startIndex: number) => {
 // Undo handler
 const handleUndo = async () => {
   if (!undoState.value) return
-  
+
   try {
     await undoSplit(undoState.value.fromChunkId, undoState.value.toChunkId)
     undoState.value = null
