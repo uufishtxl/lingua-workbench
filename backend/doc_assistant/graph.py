@@ -14,16 +14,36 @@ from .state import AgentState
 from .tools import get_surrounding_lines, insert_script_line, edit_script_line
 
 
+from django.conf import settings
+from langchain_openai import ChatOpenAI
+
 # ── LLM Instances ──────────────────────────────────────────────
 def _get_llm(**kwargs):
-    """Create a Gemini LLM instance with sensible defaults."""
+    """Create an LLM instance based on settings.LLM_CONFIG."""
+    config = settings.LLM_CONFIG
+    provider = config.get("provider", "gemini")
+    
+    # Base defaults from settings
     defaults = {
-        "model": "gemini-2.5-flash",
-        "google_api_key": os.getenv("GOOGLE_API_KEY"),
-        "temperature": 0.3,
+        "model": config.get("model_name"),
+        "temperature": config.get("temperature", 0.3),
     }
+    
+    # Override with per-call kwargs (e.g. temperature=0)
     defaults.update(kwargs)
-    return ChatGoogleGenerativeAI(**defaults)
+    
+    if provider == "deepseek":
+        return ChatOpenAI(
+            api_key=config.get("api_key"),
+            base_url=config.get("base_url"),
+            **defaults
+        )
+    else:
+        # Default to Gemini
+        return ChatGoogleGenerativeAI(
+            google_api_key=config.get("api_key"),
+            **defaults
+        )
 
 
 # ── Router Node ────────────────────────────────────────────────
@@ -161,7 +181,13 @@ When you modify the `text` field (English), you MUST also update `text_zh` \
 with the corresponding Chinese translation. Generate the translation yourself \
 based on the modified English text and surrounding context.
 
-### Rule 4: Language & Tone
+### Rule 4: Speaker Inference & Correction
+- If the user says "Change speaker to X", use edit_script_line(speaker="X").
+- If the user says "Fix the speaker", infer the correct speaker from context using \
+get_surrounding_lines.
+- When inserting a line, try to infer the speaker from previous lines if not provided.
+
+### Rule 5: Language & Tone
 - Answer in the same language as the user's message.
 - After performing the action, confirm what you did with a brief summary \
 showing before/after changes."""

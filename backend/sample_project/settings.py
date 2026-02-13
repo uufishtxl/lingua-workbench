@@ -16,6 +16,10 @@ from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv(BASE_DIR / '.env')
+
 # 添加 DITA 路径配置
 PROJECT_BASE_DIR = BASE_DIR.parent
 DITA_DOCS_DIR = PROJECT_BASE_DIR / 'docs' / 'dita'
@@ -257,3 +261,16 @@ HUEY = SqliteHuey(
     filename=str(BASE_DIR / 'db' / 'huey.db'),
     immediate_use_memory=False,
 )
+
+# --- LLM Configuration ---
+# Supports 'gemini' (default) or 'deepseek'
+import os
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini")
+LLM_CONFIG = {
+    "provider": LLM_PROVIDER,
+    "model_name": os.getenv("LLM_MODEL_NAME", "gemini-2.5-flash"),
+    "temperature": float(os.getenv("LLM_TEMPERATURE", "0.3")),
+    # Auto-select API key based on provider
+    "api_key": os.getenv("GOOGLE_API_KEY") if LLM_PROVIDER == "gemini" else os.getenv("DEEPSEEK_API_KEY"),
+    "base_url": os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com") if LLM_PROVIDER == "deepseek" else None,
+}
