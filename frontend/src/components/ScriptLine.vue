@@ -22,9 +22,11 @@
         <!-- Speaker Badge -->
         <span 
           :class="[
-            'speaker-badge px-2.5 py-1 rounded-full text-xs font-semibold flex-shrink-0',
+            'speaker-badge px-2.5 py-1 rounded-full text-xs font-semibold flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity',
             speakerColorClass
           ]"
+          @click="handleSpeakerClick"
+          title="Ask about this line"
         >
           #{{ line.id + " " }}{{ line.speaker }}
         </span>
@@ -63,7 +65,7 @@
                 v-if="canSplit"
                 class="icon-btn"
                 :title="`Split from here to Chunk #${nextChunkId}`"
-                @click="$emit('split', line.index)"
+                @click="confirmSplit"
               >
                 <i-tabler-scissors class="text-sm" />
               </button>
@@ -123,7 +125,8 @@
 import { ref, computed } from 'vue'
 import type { ScriptLine } from '@/api/scriptApi'
 import { updateScriptLine } from '@/api/scriptApi'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { useChatStore } from '@/stores/chatStore'
 
 const props = defineProps<{
   line: ScriptLine
@@ -236,6 +239,27 @@ const cycleHighlight = async () => {
     console.error('Failed to update highlight:', error)
     ElMessage.error('Failed to update highlight')
   }
+}
+// Confirm before split
+const confirmSplit = async () => {
+  try {
+    await ElMessageBox.confirm(
+      `Move lines from index ${props.line.index} onwards to Chunk #${props.nextChunkId}?`,
+      'Confirm Split',
+      { confirmButtonText: 'Split', cancelButtonText: 'Cancel', type: 'warning' }
+    )
+    emit('split', props.line.index)
+  } catch {
+    // User cancelled
+  }
+}
+
+// Global Chat Store
+const chatStore = useChatStore()
+
+const handleSpeakerClick = () => {
+  chatStore.open()
+  chatStore.appendToInput(`台词 #${props.line.id}`)
 }
 </script>
 

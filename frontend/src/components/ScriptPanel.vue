@@ -75,6 +75,48 @@
     <!-- Review Mode: Complete & Continue Bar -->
     <ChunkCompleteBar v-if="reviewMode" :chunk-id="chunkId" :next-chunk-id="nextChunkId" :is-last-chunk="!nextChunkId"
       :current-index="currentIndex" :total-chunks="totalChunks" />
+
+    <!-- Slice Search Dialog -->
+    <el-dialog
+      v-model="searchDialogVisible"
+      title="Find Matching Audio Slice"
+      width="520px"
+      :close-on-click-modal="false"
+    >
+      <div v-if="searchLoading" class="flex items-center justify-center py-8">
+        <el-icon class="is-loading text-2xl text-blue-500 mr-2"><i-tabler-loader-2 /></el-icon>
+        <span class="text-gray-500">Searching...</span>
+      </div>
+      <div v-else-if="searchResults.length === 0" class="text-center text-gray-400 py-8">
+        No matching slices found.
+      </div>
+      <div v-else class="space-y-3">
+        <p class="text-xs text-gray-400 mb-2">Query: <span class="text-gray-600">{{ searchQueryText }}</span></p>
+        <div
+          v-for="(match, i) in searchResults"
+          :key="match.slice_id"
+          class="border rounded-lg p-3 hover:border-blue-400 transition-colors cursor-pointer"
+          :class="{ 'border-blue-400 bg-blue-50': selectedSliceId === match.slice_id }"
+          @click="selectedSliceId = match.slice_id"
+        >
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs font-semibold text-gray-500">#{{ i + 1 }} · Slice {{ match.slice_id }}</span>
+            <span class="text-xs px-2 py-0.5 rounded-full"
+              :class="match.similarity > 0.85 ? 'bg-green-100 text-green-700' : match.similarity > 0.7 ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-500'"
+            >
+              {{ (match.similarity * 100).toFixed(1) }}%
+            </span>
+          </div>
+          <p class="text-sm text-gray-800">{{ match.original_text }}</p>
+          <p v-if="match.translation" class="text-xs text-gray-400 mt-1">{{ match.translation }}</p>
+          <p class="text-xs text-gray-300 mt-1">{{ formatTime(match.start_time) }} – {{ formatTime(match.end_time) }}</p>
+        </div>
+      </div>
+      <template #footer>
+        <el-button @click="searchDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" :disabled="!selectedSliceId" @click="handleBindSlice">Bind</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -86,7 +128,10 @@ import {
   getScriptLines,
   splitScript,
   undoSplit,
+  searchSlices,
+  bindSlice,
   type ScriptLine,
+  type SliceMatch,
 } from '@/api/scriptApi'
 import { ElMessage } from 'element-plus'
 
@@ -104,7 +149,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   ingest: []
-  searchSlice: [text: string]
   toggleWidth: []
 }>()
 
@@ -191,8 +235,58 @@ const handleUndo = async () => {
 }
 
 // Search handler
-const handleSearch = (line: ScriptLine) => {
-  emit('searchSlice', line.text)
+const searchDialogVisible = ref(false)
+const searchLoading = ref(false)
+const searchResults = ref<SliceMatch[]>([])
+const searchQueryText = ref('')
+const searchLineId = ref<number | null>(null)
+const selectedSliceId = ref<number | null>(null)
+
+const handleSearch = async (line: ScriptLine) => {
+  searchDialogVisible.value = true
+  searchLoading.value = true
+  searchResults.value = []
+  searchQueryText.value = line.text
+  searchLineId.value = line.id
+  selectedSliceId.value = null
+
+  try {
+    const response = await searchSlices(line.id)
+    searchResults.value = response.results
+    if (response.results.length === 0 && response.message) {
+      ElMessage.info(response.message)
+    }
+  } catch (error) {
+    console.error('Failed to search slices:', error)
+    ElMessage.error('Search failed')
+    searchDialogVisible.value = false
+  } finally {
+    searchLoading.value = false
+  }
+}
+
+const handleBindSlice = async () => {
+  if (!searchLineId.value || !selectedSliceId.value) return
+
+  try {
+    await bindSlice(searchLineId.value, selectedSliceId.value)
+    // Update local line data
+    const idx = lines.value.findIndex(l => l.id === searchLineId.value)
+    if (idx !== -1) {
+      lines.value[idx]!.slice = selectedSliceId.value
+    }
+    ElMessage.success('Slice bound successfully')
+    searchDialogVisible.value = false
+  } catch (error) {
+    console.error('Failed to bind slice:', error)
+    ElMessage.error('Failed to bind slice')
+  }
+}
+
+const formatTime = (seconds: number): string => {
+  const m = Math.floor(seconds / 60)
+  const s = Math.floor(seconds % 60)
+  return `${m}:${s.toString().padStart(2, '0')}`
 }
 
 // Line update handler (e.g., highlight changed)

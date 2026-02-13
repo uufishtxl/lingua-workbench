@@ -11,7 +11,7 @@ from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
 
 from .state import AgentState
-from .tools import get_surrounding_lines, insert_script_line, edit_script_line
+from .tools import get_surrounding_lines, insert_script_line, edit_script_line, split_script_line
 
 
 from django.conf import settings
@@ -155,6 +155,7 @@ Available tools:
 ALWAYS call this FIRST before inserting or editing.
 2. insert_script_line — Insert a new line before/after a reference line.
 3. edit_script_line — Edit fields of an existing line (speaker, text, etc.)
+4. split_script_line — Split a long line: keep first part, move the rest to another chunk.
 
 ## CRITICAL RULES (MUST FOLLOW):
 
@@ -190,11 +191,20 @@ get_surrounding_lines.
 ### Rule 5: Language & Tone
 - Answer in the same language as the user's message.
 - After performing the action, confirm what you did with a brief summary \
-showing before/after changes."""
+showing before/after changes.
+
+### Rule 6: Splitting long lines
+When the user says a line is too long and asks to move part of it to another chunk:
+- First call get_surrounding_lines to read the full text.
+- Identify the split point from the user's instruction (e.g. "from the second sentence").
+- Call split_script_line with keep_text (first part) and remaining_text (second part).
+- The user will specify or imply the target_chunk_id (often "next chunk"). \
+Read the chunk_id from context.
+- Always generate text_zh translations for both parts."""
 
 
 # Bind tools to the LLM
-SCRIPT_TOOLS = [get_surrounding_lines, insert_script_line, edit_script_line]
+SCRIPT_TOOLS = [get_surrounding_lines, insert_script_line, edit_script_line, split_script_line]
 
 
 def script_editor_node(state: AgentState) -> dict:

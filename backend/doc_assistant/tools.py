@@ -57,9 +57,27 @@ def get_surrounding_lines(line_id: int, radius: int = 3) -> str:
             f"{marker}"
         )
     
+    # Find prev/next chunks (same source_audio, adjacent chunk_index)
+    from audio_slicer.models import AudioChunk
+    current_chunk = ref_line.chunk
+    prev_chunk = (
+        AudioChunk.objects.filter(
+            source_audio=current_chunk.source_audio,
+            chunk_index=current_chunk.chunk_index - 1,
+        ).first()
+    )
+    next_chunk = (
+        AudioChunk.objects.filter(
+            source_audio=current_chunk.source_audio,
+            chunk_index=current_chunk.chunk_index + 1,
+        ).first()
+    )
+    prev_info = f"prev_chunk_id={prev_chunk.id}" if prev_chunk else "prev_chunk=None (first chunk)"
+    next_info = f"next_chunk_id={next_chunk.id}" if next_chunk else "next_chunk=None (last chunk)"
+
     header = (
         f"Context around line #{line_id} "
-        f"(chunk_id={ref_line.chunk_id}, showing {len(lines)} lines):\n"
+        f"(chunk_id={ref_line.chunk_id}, {prev_info}, {next_info}, showing {len(lines)} lines):\n"
     )
     return header + "\n".join(lines)
 
@@ -227,3 +245,95 @@ def edit_script_line(
         f"Successfully updated line #{line_id}:\n"
         + "\n".join(changes)
     )
+
+
+@tool
+def split_script_line(
+    line_id: int,
+    keep_text: str,
+    remaining_text: str,
+    target_chunk_id: int,
+    keep_text_zh: str = "",
+    remaining_text_zh: str = "",
+) -> str:
+    """Split a long script line into two lines.
+
+    The original line is truncated to keep_text (staying in its current chunk).
+    A new line with remaining_text is inserted into target_chunk_id.
+    The new line inherits speaker, line_type, and action_note from the original.
+
+    IMPORTANT: Always call get_surrounding_lines first to read the full text.
+
+    Args:
+        line_id: The ID of the ScriptLine to split.
+        keep_text: The English text to KEEP in the original line.
+        remaining_text: The English text to move to the new line.
+        target_chunk_id: The chunk ID where the new line should go.
+        keep_text_zh: Chinese translation for the kept text (generate one).
+        remaining_text_zh: Chinese translation for the remaining text (generate one).
+    """
+    from scripts.models import ScriptLine
+    from audio_slicer.models import AudioChunk
+
+    try:
+        line = ScriptLine.objects.get(id=line_id)
+    except ScriptLine.DoesNotExist:
+        return f"Error: ScriptLine with id={line_id} not found."
+
+    try:
+        target_chunk = AudioChunk.objects.get(id=target_chunk_id)
+    except AudioChunk.DoesNotExist:
+        return f"Error: AudioChunk with id={target_chunk_id} not found."
+
+    original_text = line.text
+
+    # 1. Update the original line (truncate)
+    line.text = keep_text
+    line.text_zh = keep_text_zh or line.text_zh
+    speaker_str = line.speaker or ""
+    line.raw_text = f"{speaker_str}: {keep_text}" if speaker_str else keep_text
+    line.save()
+
+    # 2. Calculate order for the new line in the target chunk
+    #    Auto-detect direction: if moving backward → append at end;
+    #    if moving forward → prepend at beginning
+    if target_chunk.chunk_index < line.chunk.chunk_index:
+        # Moving to PREVIOUS chunk → insert at END
+        last_in_target = (
+            ScriptLine.objects.filter(chunk=target_chunk)
+            .order_by('-order')
+            .values_list('order', flat=True)
+            .first()
+        )
+        new_order = (last_in_target + 1.0) if last_in_target is not None else 0.0
+    else:
+        # Moving to NEXT chunk → insert at BEGINNING
+        first_in_target = (
+            ScriptLine.objects.filter(chunk=target_chunk)
+            .order_by('order')
+            .values_list('order', flat=True)
+            .first()
+        )
+        new_order = (first_in_target - 1.0) if first_in_target is not None else 0.0
+
+    # 3. Create the new line
+    raw = f"{speaker_str}: {remaining_text}" if speaker_str else remaining_text
+    new_line = ScriptLine.objects.create(
+        chunk=target_chunk,
+        index=-1,
+        order=new_order,
+        line_type=line.line_type,
+        speaker=line.speaker,
+        text=remaining_text,
+        text_zh=remaining_text_zh,
+        action_note=line.action_note,
+        raw_text=raw,
+    )
+
+    return (
+        f"Successfully split line #{line_id}!\n"
+        f"  Original (kept): '{keep_text[:60]}...'\n"
+        f"  New line #{new_line.id} in chunk #{target_chunk_id}: '{remaining_text[:60]}...'\n"
+        f"  New order: {new_order}"
+    )
+

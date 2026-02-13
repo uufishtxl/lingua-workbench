@@ -10,9 +10,14 @@
  */
 import { ref, nextTick, computed } from 'vue';
 import { streamChatMessage, type ChatSource, type AudienceType } from '@/api/chatApi';
+import { useChatStore } from '@/stores/chatStore';
+import { storeToRefs } from 'pinia';
+
+const chatStore = useChatStore();
+const { isExpanded, inputMessage } = storeToRefs(chatStore);
 
 // Widget state
-const isExpanded = ref(false);
+// isExpanded moved to store
 const isLoading = ref(false);
 const currentAudience = ref<AudienceType>('user');
 
@@ -26,7 +31,7 @@ interface ChatMessage {
 }
 
 const messages = ref<ChatMessage[]>([]);
-const inputMessage = ref('');
+// inputMessage moved to store
 
 const messagesContainer = ref<HTMLElement | null>(null);
 const textareaRef = ref<HTMLTextAreaElement | null>(null);
@@ -39,7 +44,7 @@ const audienceLabel = computed(() =>
 
 // Methods
 function toggleWidget() {
-  isExpanded.value = !isExpanded.value;
+  chatStore.toggle();
 }
 
 function toggleAudience() {
@@ -144,7 +149,7 @@ function autoResize() {
       <div class="chat-header">
         <div class="chat-title">
           <span class="chat-icon">📚</span>
-          <span>Doc Assistant</span>
+          <span>Lingua Copilot</span>
         </div>
         <div class="chat-controls">
           <button 
@@ -163,11 +168,13 @@ function autoResize() {
       <!-- Messages -->
       <div class="chat-messages" ref="messagesContainer">
         <div v-if="messages.length === 0" class="chat-welcome">
-          <p>👋 你好！我是文档助手。</p>
-          <p>你可以问我任何关于 Lingua Workbench 的问题。</p>
+          <p>👋 欢迎！我是你的 Lingua Copilot。</p>
+          <p>无论是解答软件使用疑惑、修改数据库台词错误，还是死磕 Chandler 的地狱冷笑话，我都能帮你搞定。</p>
+          <p>💡 小贴士：划选任何台词并按下 Ctrl + Enter，即可直接对我发号施令！</p>
           <div class="sample-questions">
-            <button @click="inputMessage = '如何创建 slice?'">如何创建 slice?</button>
-            <button @click="inputMessage = 'What are phonetic tags?'">What are phonetic tags?</button>
+            <button @click="inputMessage = '💡 怎么把长音频切分成一个个 Slice？'">💡 怎么把长音频切分成一个个 Slice？</button>
+            <button @click="inputMessage = '📝 帮我在 #3405 后面插入一句 Janice 的台词'">📝 帮我在 #3405 后面插入一句 Janice 的台词</button>
+            <button @click="inputMessage = '🎧 there was 的 was 是不是会被吞音？'">🎧  "there was" 的""was" 是不是会被吞音？</button>
           </div>
         </div>
 
@@ -339,11 +346,13 @@ function autoResize() {
   text-align: center;
   color: #a0a0b0;
   padding: 20px;
+  font-size: 13px;
 }
 
 .chat-welcome p {
   margin: 8px 0;
 }
+
 
 .sample-questions {
   display: flex;
