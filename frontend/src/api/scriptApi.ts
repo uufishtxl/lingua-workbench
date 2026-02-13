@@ -107,6 +107,44 @@ export const updateScriptLine = async (
     return response.data
 }
 
+// --- Slice Search (Vector Match) ---
+
+export interface SliceMatch {
+    slice_id: number
+    original_text: string
+    translation: string
+    start_time: number
+    end_time: number
+    similarity: number
+}
+
+export interface SearchSlicesResponse {
+    query_text: string
+    results: SliceMatch[]
+    message?: string
+}
+
+/**
+ * Search for matching AudioSlices using embedding similarity.
+ */
+export const searchSlices = async (lineId: number): Promise<SearchSlicesResponse> => {
+    const response = await apiClient.post(`/scripts/lines/${lineId}/search-slices/`)
+    return response.data
+}
+
+/**
+ * Bind a ScriptLine to a specific AudioSlice.
+ */
+export const bindSlice = async (
+    lineId: number,
+    sliceId: number
+): Promise<{ line_id: number; slice_id: number; message: string }> => {
+    const response = await apiClient.post(`/scripts/lines/${lineId}/bind-slice/`, {
+        slice_id: sliceId,
+    })
+    return response.data
+}
+
 // --- Script Task Status (Background Ingest + Translate) ---
 
 export type ScriptTaskStatus = 'pending' | 'ingesting' | 'translating' | 'completed' | 'failed'

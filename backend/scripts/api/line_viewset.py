@@ -6,7 +6,8 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from ..models import ScriptLine
 from ..serializers import ScriptLineListSerializer, SplitRequestSerializer
-from audio_slicer.models import AudioChunk
+from audio_slicer.models import AudioChunk, AudioSlice
+import os
 
 class ScriptLineViewSet(viewsets.ViewSet):
     """
@@ -111,3 +112,123 @@ class ScriptLineViewSet(viewsets.ViewSet):
             'to_chunk_id': current_chunk.id,
             'from_chunk_id': from_chunk.id,
         })
+
+    def search_slices(self, request, pk=None):
+        """
+        POST /api/scripts/lines/{id}/search-slices/
+        Find the best matching AudioSlice for a ScriptLine using
+        embedding similarity (cosine). Searches within the same chunk.
+        """
+        import numpy as np
+        from langchain_google_genai import GoogleGenerativeAIEmbeddings
+        from django.conf import settings
+
+        line = get_object_or_404(ScriptLine, pk=pk)
+
+        # Check ownership
+        if line.chunk.source_audio.user != request.user:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Get all AudioSlices in the same chunk
+        slices = AudioSlice.objects.filter(
+            audio_chunk=line.chunk
+        ).order_by('start_time')
+
+        if not slices.exists():
+            return Response({
+                'results': [],
+                'message': 'No audio slices found in this chunk.',
+            })
+
+        # Prepare texts
+        query_text = line.text
+        candidate_texts = [s.original_text for s in slices]
+
+        # Filter out empty texts
+        valid_pairs = [
+            (s, t) for s, t in zip(slices, candidate_texts)
+            if t and t.strip()
+        ]
+        if not valid_pairs:
+            return Response({
+                'results': [],
+                'message': 'No audio slices with text found in this chunk.',
+            })
+
+        valid_slices, valid_texts = zip(*valid_pairs)
+
+        # Compute embeddings
+        api_key = os.getenv('GOOGLE_API_KEY') or ''
+        embeddings_model = GoogleGenerativeAIEmbeddings(
+            model="models/gemini-embedding-001",
+            google_api_key=api_key,
+        )
+
+        # Batch: embed query + all candidates in one call
+        all_texts = [query_text] + list(valid_texts)
+        all_embeddings = embeddings_model.embed_documents(all_texts)
+
+        query_vec = np.array(all_embeddings[0])
+        candidate_vecs = np.array(all_embeddings[1:])
+
+        # Cosine similarity
+        dot_products = candidate_vecs @ query_vec
+        query_norm = np.linalg.norm(query_vec)
+        candidate_norms = np.linalg.norm(candidate_vecs, axis=1)
+        similarities = dot_products / (query_norm * candidate_norms + 1e-10)
+
+        # Rank and pick top 3
+        top_indices = np.argsort(similarities)[::-1][:3]
+
+        results = []
+        for idx in top_indices:
+            s = valid_slices[idx]
+            results.append({
+                'slice_id': s.id,
+                'original_text': s.original_text,
+                'translation': s.translation or '',
+                'start_time': s.start_time,
+                'end_time': s.end_time,
+                'similarity': round(float(similarities[idx]), 4),
+            })
+
+        return Response({
+            'query_text': query_text,
+            'results': results,
+        })
+
+    def bind_slice(self, request, pk=None):
+        """
+        POST /api/scripts/lines/{id}/bind-slice/
+        Body: { "slice_id": 42 }
+        Bind a ScriptLine to a specific AudioSlice.
+        """
+        line = get_object_or_404(ScriptLine, pk=pk)
+
+        # Check ownership
+        if line.chunk.source_audio.user != request.user:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        slice_id = request.data.get('slice_id')
+        if slice_id is None:
+            return Response(
+                {'error': 'slice_id is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        audio_slice = get_object_or_404(AudioSlice, pk=slice_id)
+        line.slice = audio_slice
+        line.save()
+
+        return Response({
+            'line_id': line.id,
+            'slice_id': audio_slice.id,
+            'message': f'Line #{line.id} bound to slice #{audio_slice.id}',
+        })
+

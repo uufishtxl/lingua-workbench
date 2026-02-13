@@ -26,3 +26,4 @@ huey
 google-generativeai
 # --- Multi-Agent ---
 langgraph
+numpy

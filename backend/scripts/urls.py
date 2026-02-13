@@ -12,6 +12,12 @@ urlpatterns = [
     path('lines/<int:pk>/', ScriptLineViewSet.as_view({
         'patch': 'partial_update',
     }), name='script-line-detail'),
+    path('lines/<int:pk>/search-slices/', ScriptLineViewSet.as_view({
+        'post': 'search_slices',
+    }), name='script-line-search-slices'),
+    path('lines/<int:pk>/bind-slice/', ScriptLineViewSet.as_view({
+        'post': 'bind_slice',
+    }), name='script-line-bind-slice'),
     # Nested routes for chunk-specific operations
     path('chunk/<int:chunk_pk>/lines/', ScriptLineViewSet.as_view({
         'get': 'list',
