@@ -17,8 +17,10 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.16",
+    "@types/markdown-it": "^14.1.2",
     "axios": "^1.13.1",
     "element-plus": "^2.11.7",
+    "markdown-it": "^14.1.1",
     "pinia": "^3.0.3",
     "pinia-plugin-persistedstate": "^4.5.0",
     "uuid": "^13.0.0",

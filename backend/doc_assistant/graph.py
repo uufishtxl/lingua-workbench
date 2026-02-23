@@ -4,7 +4,6 @@ LangGraph Multi-Agent Graph
 Defines the Supervisor-Worker graph:
   Router → DocQA Agent / ScriptEditor Agent / General Chat
 """
-import os
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from langgraph.graph import StateGraph, END
@@ -18,10 +17,12 @@ from django.conf import settings
 from langchain_openai import ChatOpenAI
 
 # ── LLM Instances ──────────────────────────────────────────────
-def _get_llm(**kwargs):
-    """Create an LLM instance based on settings.LLM_CONFIG."""
-    config = settings.LLM_CONFIG
-    provider = config.get("provider", "gemini")
+def _get_llm(feature="default", **kwargs):
+    """Create an LLM instance based on settings.LLM_CONFIG for a specific feature."""
+    # Try formatted feature key, fallback to default
+    config = settings.LLM_CONFIG.get(feature, settings.LLM_CONFIG["default"])
+    
+    provider = config.get("provider", "deepseek")
     
     # Base defaults from settings
     defaults = {
@@ -64,7 +65,7 @@ User message:
 
 def router_node(state: AgentState) -> dict:
     """Classify the user's intent and set the `next` field."""
-    llm = _get_llm(temperature=0)
+    llm = _get_llm(feature="router", temperature=0)
     
     # Get the last human message
     last_msg = ""
@@ -115,7 +116,7 @@ def doc_qa_node(state: AgentState) -> dict:
     """Answer questions using DITA documentation (RAG)."""
     from .vector_store import DITAVectorStore
     
-    llm = _get_llm()
+    llm = _get_llm(feature="doc_qa")
     
     # Get the last human message
     last_msg = ""
@@ -209,7 +210,7 @@ SCRIPT_TOOLS = [get_surrounding_lines, insert_script_line, edit_script_line, spl
 
 def script_editor_node(state: AgentState) -> dict:
     """Handle script editing requests with tool-calling."""
-    llm = _get_llm(temperature=0)
+    llm = _get_llm(feature="script_editor", temperature=0)
     llm_with_tools = llm.bind_tools(SCRIPT_TOOLS)
     
     response = llm_with_tools.invoke([
@@ -238,7 +239,7 @@ Keep responses concise and friendly."""
 
 def general_node(state: AgentState) -> dict:
     """Handle general conversation."""
-    llm = _get_llm(temperature=0.7)
+    llm = _get_llm(feature="general", temperature=0.7)
     
     response = llm.invoke([
         SystemMessage(content=GENERAL_SYSTEM_PROMPT),

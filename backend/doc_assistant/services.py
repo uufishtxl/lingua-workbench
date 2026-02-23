@@ -88,6 +88,11 @@ class DocAssistantService:
             initial_state,
             stream_mode="messages",
         ):
+            # Only yield content tokens from actual response agents
+            # Skip messages from the Router node
+            if metadata.get("langgraph_node") == "router":
+                continue
+
             # Only yield content tokens from AI messages (not tool calls)
             if (
                 isinstance(msg, AIMessage)

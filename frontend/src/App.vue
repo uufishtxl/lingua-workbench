@@ -1,9 +1,10 @@
 <script setup lang="ts">
 // 1. 我们导入 Vue Router 的两个核心组件
 import { RouterLink, RouterView, useRoute } from 'vue-router'
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted, nextTick } from 'vue'
 // (我们顺便导入我们的“保安室”)
 import { useAuthStore } from '@/stores/authStore'
+import { useChatStore } from '@/stores/chatStore'
 import { layouts, type LayoutKey } from '@/utils/layouts'
 // Documentation Assistant ChatBot
 import ChatWidget from '@/components/ChatWidget.vue'
@@ -26,6 +27,55 @@ const handleLogout = () => {
   // 登出后，你可能想跳转回登录页
   // (我们稍后在 router/index.ts 里实现这个)
   // router.push({ name: 'login' }) 
+  // router.push({ name: 'login' }) 
+}
+
+// Global Hotkey for Chat Interaction
+const chatWidgetRef = ref()
+const chatStore = useChatStore()
+
+const handleGlobalKeydown = (e: KeyboardEvent) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    if (chatStore.activeSelection) {
+      e.preventDefault()
+      const { lineId, text } = chatStore.activeSelection
+      
+      const prompt = `#${lineId} 的 "${text}" 部分：\n`
+      
+      chatStore.open()
+      
+      // Wait for v-if to render if needed
+      nextTick(() => {
+        chatWidgetRef.value?.insertTextAtCursor(prompt)
+      })
+      
+      // Clear selection UI
+      window.getSelection()?.removeAllRanges()
+    }
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleGlobalKeydown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleGlobalKeydown)
+})
+
+const handleAskAI = () => {
+    if (chatStore.activeSelection) {
+      const { lineId, text } = chatStore.activeSelection
+      const prompt = `我要操作台词 #${lineId} 的 "${text}" 部分：\n`
+      
+      chatStore.open()
+      nextTick(() => {
+        chatWidgetRef.value?.insertTextAtCursor(prompt)
+      })
+      
+      window.getSelection()?.removeAllRanges()
+      chatStore.clearActiveSelection()
+    }
 }
 </script>
 
@@ -34,7 +84,20 @@ const handleLogout = () => {
     <RouterView />
   </component>
   <!-- Documentation Assistant ChatBot (global) -->
-  <ChatWidget v-if="authStore.isAuthenticated" />
+  <ChatWidget v-if="authStore.isAuthenticated" ref="chatWidgetRef" />
+
+  <!-- Ask AI Floating Button -->
+  <button
+    v-if="chatStore.activeSelection && chatStore.selectionCoordinates"
+    class="ask-ai-btn"
+    :style="{
+      top: `${chatStore.selectionCoordinates.y - 40}px`,
+      left: `${chatStore.selectionCoordinates.x}px`
+    }"
+    @mousedown.prevent="handleAskAI"
+  >
+    Ask AI ✨
+  </button>
 </template>
 
 <style scoped>
@@ -82,4 +145,34 @@ nav a.router-link-exact-active {
     color: #333;
 }
 
+.ask-ai-btn {
+  position: fixed;
+  transform: translateX(-50%);
+  z-index: 10000;
+  background: white;
+  border: 1px solid #e5e7eb;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #667eea; /* Widget gradient start color */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: all 0.2s;
+  animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ask-ai-btn:hover {
+  background: #fdfdfd;
+  transform: translateX(-50%) scale(1.05);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.25);
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: translateX(-50%) scale(0.8); }
+  to { opacity: 1; transform: translateX(-50%) scale(1); }
+}
 </style>

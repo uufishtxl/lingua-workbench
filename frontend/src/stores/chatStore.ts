@@ -25,12 +25,46 @@ export const useChatStore = defineStore('chat', () => {
         }
     }
 
+    // Active Selection State (for Ctrl+Enter hotkey)
+    const activeSelection = ref<{ lineId: number, text: string } | null>(null)
+
+    function setActiveSelection(lineId: number, text: string) {
+        activeSelection.value = { lineId, text }
+    }
+
+    function clearActiveSelection() {
+        activeSelection.value = null
+        selectionCoordinates.value = null
+    }
+
+    // Coordinates for floating button
+    const selectionCoordinates = ref<{ x: number, y: number } | null>(null)
+
+    function setSelectionCoordinates(x: number, y: number) {
+        selectionCoordinates.value = { x, y }
+    }
+
+    // Widget Position (left/right)
+    const position = ref<'left' | 'right'>('right')
+
+    function togglePosition() {
+        position.value = position.value === 'right' ? 'left' : 'right'
+    }
+
     return {
         isExpanded,
         inputMessage,
+        activeSelection,
+        selectionCoordinates,
+        position,
         toggle,
         open,
         close,
-        appendToInput
+        appendToInput,
+        setActiveSelection,
+        clearActiveSelection,
+        setSelectionCoordinates,
+        togglePosition
     }
 })
+

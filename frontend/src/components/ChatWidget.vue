@@ -12,9 +12,15 @@ import { ref, nextTick, computed } from 'vue';
 import { streamChatMessage, type ChatSource, type AudienceType } from '@/api/chatApi';
 import { useChatStore } from '@/stores/chatStore';
 import { storeToRefs } from 'pinia';
+import MarkdownIt from 'markdown-it';
+
+const md = new MarkdownIt({
+  breaks: true,
+  linkify: true,
+});
 
 const chatStore = useChatStore();
-const { isExpanded, inputMessage } = storeToRefs(chatStore);
+const { isExpanded, inputMessage, position } = storeToRefs(chatStore);
 
 // Widget state
 // isExpanded moved to store
@@ -127,10 +133,42 @@ function autoResize() {
     el.style.height = el.scrollHeight + 'px';
   }
 }
+
+function insertTextAtCursor(textToInsert: string) {
+  const textarea = textareaRef.value;
+  if (!textarea) return;
+
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  const originalText = inputMessage.value;
+
+  const beforeText = originalText.substring(0, start);
+  const afterText = originalText.substring(end);
+
+  inputMessage.value = beforeText + textToInsert + afterText;
+
+  nextTick(() => {
+    textarea.focus();
+    const newCursorPos = start + textToInsert.length;
+    textarea.setSelectionRange(newCursorPos, newCursorPos);
+    autoResize();
+  });
+}
+
+
+function renderMarkdown(content: string) {
+  if (!content) return '';
+  return md.render(content);
+}
+
+defineExpose({ insertTextAtCursor });
 </script>
 
 <template>
-  <div class="chat-widget">
+  <div 
+    class="chat-widget"
+    :class="{ 'chat-widget-left': position === 'left' }"
+  >
     <!-- Floating Button -->
     <button 
       v-if="!isExpanded"
@@ -148,10 +186,17 @@ function autoResize() {
       <!-- Header -->
       <div class="chat-header">
         <div class="chat-title">
-          <span class="chat-icon">📚</span>
+          <span class="chat-icon">✨</span>
           <span>Lingua Copilot</span>
         </div>
         <div class="chat-controls">
+          <button 
+            class="audience-toggle"
+            @click="chatStore.togglePosition"
+            :title="position === 'right' ? 'Move to Left' : 'Move to Right'"
+          >
+            {{ position === 'right' ? '⬅' : '➡' }}
+          </button>
           <button 
             class="audience-toggle"
             @click="toggleAudience"
@@ -183,10 +228,11 @@ function autoResize() {
           :key="msg.id"
           :class="['chat-message', msg.role]"
         >
-          <div class="message-content">
-            {{ msg.content }}
-            <span v-if="msg.isStreaming" class="typing-cursor">▊</span>
-          </div>
+          <div 
+            class="message-content"
+            v-html="renderMarkdown(msg.content)"
+          ></div>
+          <span v-if="msg.isStreaming" class="typing-cursor">▊</span>
           
           <!-- Sources -->
           <div v-if="msg.sources && msg.sources.length > 0" class="message-sources">
@@ -234,6 +280,12 @@ function autoResize() {
   right: 24px;
   z-index: 9999;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.chat-widget-left {
+  right: auto;
+  left: 24px;
 }
 
 /* Floating Toggle Button */
@@ -396,13 +448,80 @@ function autoResize() {
   align-self: flex-start;
 }
 
+/* Message Content Styling (Markdown) */
 .message-content {
   padding: 12px 16px;
   border-radius: 16px;
-  font-size: 12px;
-  line-height: 1.5;
-  white-space: pre-wrap;
+  font-size: 13px; /* Slightly larger for readability */
+  line-height: 1.6;
   word-break: break-word;
+}
+
+/* Deep selecotrs for v-html content */
+.message-content :deep(p) {
+  margin: 0.5em 0;
+}
+
+.message-content :deep(p):first-child {
+  margin-top: 0;
+}
+
+.message-content :deep(p):last-child {
+  margin-bottom: 0;
+}
+
+.message-content :deep(ul), .message-content :deep(ol) {
+  padding-left: 20px;
+  margin: 0.5em 0;
+}
+
+.message-content :deep(li) {
+  margin-bottom: 0.25em;
+}
+
+.message-content :deep(strong) {
+  font-weight: 600;
+  color: inherit; /* Inherit from parent */
+}
+
+/* Code blocks */
+.message-content :deep(code) {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.9em;
+}
+
+.message-content :deep(pre) {
+  background: #1e1e2e;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 0.8em 0;
+}
+
+.message-content :deep(pre code) {
+  background: transparent;
+  padding: 0;
+  color: #e0e0e0;
+}
+
+/* Tables */
+.message-content :deep(table) {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+}
+
+.message-content :deep(th), .message-content :deep(td) {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 6px 10px;
+  text-align: left;
+}
+
+.message-content :deep(th) {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .chat-message.user .message-content {

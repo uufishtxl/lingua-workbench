@@ -100,3 +100,18 @@ print(text.strip("a"))
 # %%
 print('www.example.com'.strip('cmowz.'))
 # %%
+some_dict = {}
+
+another_dict = {"name": "Edith"}
+
+print(some_dict.update(another_dict))
+print(some_dict)
+
+the_other_dict = {"name": "Tang", "age": 30}
+print(some_dict.update(the_other_dict))
+print(some_dict)
+
+third_other_dict = {"color": "blue"}
+print(some_dict | third_other_dict) # 不会原地更新
+print(some_dict)
+# %%

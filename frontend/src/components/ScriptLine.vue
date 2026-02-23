@@ -6,6 +6,7 @@
     ]"
     @mouseenter="showActions = true"
     @mouseleave="showActions = false"
+    @mouseup="handleSelection"
   >
     <!-- Scene Line -->
     <div v-if="line.line_type === 'scene'" class="scene-header py-3">
@@ -28,7 +29,8 @@
           @click="handleSpeakerClick"
           title="Ask about this line"
         >
-          #{{ line.id + " " }}{{ line.speaker }}
+        <!-- #{{ line.id + " " }} -->
+          {{ line.speaker }}
         </span>
         
         <!-- Content -->
@@ -260,6 +262,24 @@ const chatStore = useChatStore()
 const handleSpeakerClick = () => {
   chatStore.open()
   chatStore.appendToInput(`台词 #${props.line.id}`)
+}
+
+const handleSelection = () => {
+  const selection = window.getSelection()
+  const text = selection?.toString().trim()
+
+  if (text && selection && selection.rangeCount > 0) {
+    const range = selection.getRangeAt(0)
+    const rect = range.getBoundingClientRect()
+    // Calculate center-top position relative to viewport
+    const x = rect.left + rect.width / 2
+    const y = rect.top
+    
+    chatStore.setActiveSelection(props.line.id, text)
+    chatStore.setSelectionCoordinates(x, y)
+  } else {
+    chatStore.clearActiveSelection()
+  }
 }
 </script>
 

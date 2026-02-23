@@ -29,12 +29,13 @@ DITA_DOCS_DIR = PROJECT_BASE_DIR / 'docs' / 'dita'
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@v=^omi(x$=hsboew!)#@kyztpw^49=y-15)gvm&!n+_inf!)z'
+import os
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.31.215', '192.168.31.192', '192.168.31.13', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.31.215', '192.168.31.192', '192.168.31.13', '192.168.2.107', 'localhost']
 
 # Application definition
 
@@ -265,12 +266,22 @@ HUEY = SqliteHuey(
 # --- LLM Configuration ---
 # Supports 'gemini' (default) or 'deepseek'
 import os
-LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini")
+# LLM Configuration
+# Per-feature model selection. 
+# If a feature is not explicitly configured, it falls back to 'default' (DeepSeek).
 LLM_CONFIG = {
-    "provider": LLM_PROVIDER,
-    "model_name": os.getenv("LLM_MODEL_NAME", "gemini-2.5-flash"),
-    "temperature": float(os.getenv("LLM_TEMPERATURE", "0.3")),
-    # Auto-select API key based on provider
-    "api_key": os.getenv("GOOGLE_API_KEY") if LLM_PROVIDER == "gemini" else os.getenv("DEEPSEEK_API_KEY"),
-    "base_url": os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com") if LLM_PROVIDER == "deepseek" else None,
+    "default": {
+        "provider": "deepseek",
+        "model_name": "deepseek-chat",
+        "temperature": 0.3,
+        "api_key": os.getenv("DEEPSEEK_API_KEY"),
+        "base_url": os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),
+    },
+    # Example: Use Gemini for DocQA (uncomment to enable)
+    # "doc_qa": {
+    #     "provider": "gemini",
+    #     "model_name": "gemini-2.0-flash",
+    #     "temperature": 0.3,
+    #     "api_key": os.getenv("GOOGLE_API_KEY"),
+    # },
 }
