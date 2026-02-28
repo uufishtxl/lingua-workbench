@@ -4,8 +4,13 @@ urlpatterns = [
     # URLs from phrase_log app
     path('', include('phrase_log.urls')),
     
-    # URLs from audio_slicer app
     path('', include('audio_slicer.urls')),
 
-    path('', include('ai_analysis.urls'))
+    path('', include('ai_analysis.urls')),
+    
+    # URLs from reader app
+    path('', include('reader.urls')),
+    
+    # URLs from pomodoro app
+    path('', include('pomodoro.urls'))
 ]

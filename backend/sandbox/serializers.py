@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Author
 
 class AuthorSerializer(serializers.ModelSerializer):
-
+    # ... existing code ...
     class Meta:
         model = Author
         fields = '__all__'
@@ -20,6 +20,3 @@ class AuthorSerializer(serializers.ModelSerializer):
         if name == 'Child' and age >= 18:
             raise serializers.ValidationError("Child cannot be 18 or older")
         return attrs
-
-    # 问题：serializers.Seriazlier 和 ModelSerializer 的区别？
-    # 这里 attrs 是 Pydantic 数据类型吗？

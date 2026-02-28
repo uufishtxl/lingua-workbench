@@ -22,7 +22,7 @@ def ingest_and_translate_script(script_task_id):
     from .models import ScriptTask, ScriptLine
     from .parser import parse_fanfr_script
     from audio_slicer.models import AudioChunk
-    from ai_analysis.services import batch_translate_idioms
+    from ai_analysis.services import batch_translate_texts
     from django.db.models import Q
 
     try:
@@ -113,7 +113,7 @@ def ingest_and_translate_script(script_task_id):
 
         for i in range(0, len(all_lines), BATCH_SIZE):
             batch = all_lines[i:i + BATCH_SIZE]
-            translations = batch_translate_idioms(batch)
+            translations = batch_translate_texts(batch)
 
             for item in translations:
                 line_id = item.get('id')

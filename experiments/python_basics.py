@@ -115,3 +115,93 @@ third_other_dict = {"color": "blue"}
 print(some_dict | third_other_dict) # 不会原地更新
 print(some_dict)
 # %%
+ml = [1, 2, 3]
+for i in reversed(ml):
+    print(i)
+# %%
+prompt = """- SCRIPT_EDIT — if the user wants to insert, edit, modify, fix, or
+correct script lines..."""
+
+print(prompt)
+# 实际输出结果（句子被硬生生折断了，变成了两行）：
+# - SCRIPT_EDIT — if the user wants to insert, edit, modify, fix, or
+# correct script lines...
+# %%
+prompt = """- SCRIPT_EDIT — if the user wants to insert, edit, modify, fix, or \
+correct script lines..."""
+
+print(prompt)
+# 实际输出结果（完美连成了一整行）：
+# - SCRIPT_EDIT — if the user wants to insert, edit, modify, fix, or correct script lines...
+# %%
+my_list = set()
+my_list.add("1")
+print(my_list)
+my_list.add("2")
+print(my_list)
+my_list.add("1")
+print(my_list)
+# %%
+# 解包
+list1 = [1, 2]
+list2 = [3, *list1]
+print(list2)
+# %%
+# hasattrs
+dict1 = {"color": "blue"}
+print(hasattr(dict1, "color"))
+print('color' in dict1)
+print(hasattr(dict1, 'color'))
+# %%
+from dataclasses import dataclass
+@dataclass
+class Car:
+    color: str
+    brand: str
+    year: int
+    
+
+car = Car("red", "Toyota", 2022)
+print(car)
+print(hasattr(car, 'color'))
+# %%
+# 索引
+my_list = [1, 2, 3]
+print(my_list.index(2))
+
+dict_list = [{'age': 1}, {'age': 2}]
+print(dict_list.index({'age': 2}))
+# print(dict_list.index({'color': 'red'}))
+idx: int
+try:
+    idx = dict_list.index({'color': 'red'})
+except ValueError:
+    idx = -1
+print(idx)
+# %%
+a = "   ".strip()
+print(a)
+print(bool(a))
+# %%
+from dataclasses import dataclass
+@dataclass
+class BrandCar():
+    color: str
+    brand: str
+
+my_car = BrandCar("red", "Toyota")
+print(getattr(my_car, 'color'))
+
+print(getattr({'color': 'red'}, 'color', None))
+# %%
+for i in range(0, 100, 20):
+    print(i)
+# %%
+items = list(range(1, 86)) # 假装这是85个段落
+chunk_size = 20
+
+for i in range(0, len(items), chunk_size):
+    chunk = items[i:i+chunk_size]
+    print(f"Batch from {i} to {i+chunk_size}: length {len(chunk)}")
+
+# %%

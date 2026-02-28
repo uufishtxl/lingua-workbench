@@ -6,7 +6,7 @@ from ..models import ScriptLine, ScriptTask
 from ..serializers import IngestRequestSerializer
 from ..parser import parse_fanfr_script
 from audio_slicer.models import AudioChunk, SourceAudio
-from ai_analysis.services import batch_translate_idioms
+from ai_analysis.services import batch_translate_texts
 from django.db.models import Q
 
 class ScriptViewSet(viewsets.ViewSet):
@@ -175,10 +175,10 @@ class ScriptViewSet(viewsets.ViewSet):
         
         for i in range(0, len(all_lines), BATCH_SIZE):
             batch = all_lines[i:i + BATCH_SIZE]
-            # Format for batch_translate_idioms: [{'id': 1, 'text': '...'}]
+            # Format for batch_translate_texts: [{'id': 1, 'text': '...'}]
             
             try:
-                translations = batch_translate_idioms(batch)
+                translations = batch_translate_texts(batch)
                 
                 # Update database
                 for item in translations:

@@ -23,7 +23,7 @@ export default defineConfig((config) => {
   const env = loadEnv(mode, process.cwd(), '');
 
   // 2. 从 .env 中获取你的后端 API 地址
-  const backendUrl = env.VITE_API_BASE_URL;
+  const backendUrl = env.VITE_DEV_BACKEND_URL || 'http://127.0.0.1:8000';
 
   // 3. 返回你的 Vite 配置
   return {
@@ -76,19 +76,21 @@ export default defineConfig((config) => {
       }),
     ],
     server: {
+      // Vite Proxy Configuration
       host: '0.0.0.0',
       proxy: {
-        // 使用带斜杠的 '/api' 就说暗号，说明要转发至目标
+        // Core API proxy for backend communication
         '/api': {
-          target: backendUrl, // 代理的目标地址
-          changeOrigin: true, // 必须开启
-          // rewrite: (path) => path.replace(/^\/api/, ''), // 去掉 /api 前缀
+          target: backendUrl,
+          changeOrigin: true, // Required for Virtual Hosted environments to overwrite the Host header
+          // rewrite: (path) => path.replace(/^\/api/, ''), // Enable if backend routing does not expect the /api prefix
         },
-        // Whisper 服务代理
+        // Whisper speech-to-text service proxy
         '/whisper': {
-          target: 'http://localhost:8001',
+          target: 'http://localhost:8001', // Local instance of the Whisper inference service
           changeOrigin: true,
-          // 替换掉 whisper 前缀，比如前端请求 /whisper/transcribe 发到目标网络服务地址（这里是8001端口）时，会替换为 http://localhost:8001/transcribe
+          // Strip the '/whisper' prefix before forwarding to the target service
+          // e.g., '/whisper/transcribe' -> 'http://localhost:8001/transcribe'
           rewrite: (path) => path.replace(/^\/whisper/, ''),
         }
       }

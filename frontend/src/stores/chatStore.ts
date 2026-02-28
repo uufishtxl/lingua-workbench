@@ -9,6 +9,11 @@ export const useChatStore = defineStore('chat', () => {
         isExpanded.value = !isExpanded.value
     }
 
+    const refreshReaderTrigger = ref(0)
+    function triggerReaderRefresh() {
+        refreshReaderTrigger.value++
+    }
+
     function open() {
         isExpanded.value = true
     }
@@ -23,6 +28,10 @@ export const useChatStore = defineStore('chat', () => {
         } else {
             inputMessage.value = text
         }
+    }
+
+    function setInput(text: string) {
+        inputMessage.value = text
     }
 
     // Active Selection State (for Ctrl+Enter hotkey)
@@ -57,14 +66,17 @@ export const useChatStore = defineStore('chat', () => {
         activeSelection,
         selectionCoordinates,
         position,
+        refreshReaderTrigger,
         toggle,
         open,
         close,
         appendToInput,
+        setInput,
         setActiveSelection,
         clearActiveSelection,
         setSelectionCoordinates,
-        togglePosition
+        togglePosition,
+        triggerReaderRefresh
     }
 })
 

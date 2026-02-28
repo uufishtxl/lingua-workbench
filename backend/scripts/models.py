@@ -14,7 +14,8 @@ class ScriptLine(models.Model):
         help_text="归属的 Chunk，初始全部指向该集第一个 Chunk"
     )
     index = models.IntegerField(db_index=True, help_text="原始导入顺序 (0, 1, 2...), 不可修改")
-    order = models.FloatField(db_index=True, default=0, help_text="排序权重，支持小数插入 (1.5 = 在1和2之间)")
+    # db_index=True 只在纯粹的 order 排序时有用，目前业务不涉及，留着反而可能白白占用磁盘空间、妨碍写入速度。
+    order = models.FloatField(default=0, help_text="排序权重，支持小数插入 (1.5 = 在1和2之间)")
 
     # --- 2. 类型与内容 ---
     LINE_TYPES = [

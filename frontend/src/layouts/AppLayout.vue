@@ -94,6 +94,11 @@ const menuItems = [
     icon: Setting,
     title: 'Setting',
   },
+  {
+    index: '/read',
+    icon: Document,
+    title: 'Reader',
+  },
 ]
 </script>
 

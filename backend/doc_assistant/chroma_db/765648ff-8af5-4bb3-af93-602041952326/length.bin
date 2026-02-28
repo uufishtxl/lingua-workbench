@@ -1,11 +1,1 @@
-Technical documentation for the BaseWaveSurfer Vue component, which provides waveform visualization and region management.
-
-## Data Flow: AudioSlicer
-
-In the AudioSlicer context, users interact with the waveform to create regions:
-
-â€¢ Props: url, allowSelection=true
-
-â€¢ Events: region-created, region-updated, region-clicked, play, pause, ready
-
-â€¢ Exposed Methods: playPause(), addRegion()ÿÿÿÿÿÿ
+invalid type: string "Technical documentation for SliceCard, the core audio slice editing component.\n\n## Composables Used\n\nâ€¢ useRecording - Microphone recording\n\nâ€¢ useTranscription - Whisper transcription\n\nâ€¢ useHighlightSelection - Text selection & highlighting", expected i64ithin a single card UI.", expected f64 (seconds)\n\nâ€¢ endTime - Segment end time (seconds)", expected a bool

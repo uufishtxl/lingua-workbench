@@ -8,7 +8,7 @@
  * - Role switching (User/Developer)
  * - SSE streaming for typewriter effect
  */
-import { ref, nextTick, computed } from 'vue';
+import { ref, nextTick, computed, watch } from 'vue';
 import { streamChatMessage, type ChatSource, type AudienceType } from '@/api/chatApi';
 import { useChatStore } from '@/stores/chatStore';
 import { storeToRefs } from 'pinia';
@@ -102,6 +102,10 @@ async function sendMessage() {
           assistantMessage.sources = sources;
         },
         onDone: () => {
+          if (assistantMessage.content.includes('[REFRESH_READER]')) {
+             assistantMessage.content = assistantMessage.content.replace('[REFRESH_READER]', '').trim();
+             chatStore.triggerReaderRefresh();
+          }
           assistantMessage.isStreaming = false;
           isLoading.value = false;
         },
@@ -133,6 +137,12 @@ function autoResize() {
     el.style.height = el.scrollHeight + 'px';
   }
 }
+
+watch(inputMessage, () => {
+    nextTick(() => {
+        autoResize();
+    });
+});
 
 function insertTextAtCursor(textToInsert: string) {
   const textarea = textareaRef.value;
@@ -219,7 +229,7 @@ defineExpose({ insertTextAtCursor });
           <div class="sample-questions">
             <button @click="inputMessage = '💡 怎么把长音频切分成一个个 Slice？'">💡 怎么把长音频切分成一个个 Slice？</button>
             <button @click="inputMessage = '📝 帮我在 #3405 后面插入一句 Janice 的台词'">📝 帮我在 #3405 后面插入一句 Janice 的台词</button>
-            <button @click="inputMessage = '🎧 there was 的 was 是不是会被吞音？'">🎧  "there was" 的""was" 是不是会被吞音？</button>
+            <button @click="inputMessage = '✍️ [PID:15] 这段的翻译有点生硬，帮我重新翻译一下'">✍️ [PID:15] 这段的翻译有点生硬，帮我重新润色一下</button>
           </div>
         </div>
 

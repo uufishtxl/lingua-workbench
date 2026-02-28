@@ -10,7 +10,10 @@ from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
 
 from .state import AgentState
-from .tools import get_surrounding_lines, insert_script_line, edit_script_line, split_script_line
+from .tools import (
+    get_surrounding_lines, insert_script_line, edit_script_line, split_script_line, delete_script_line,
+    get_reader_context, edit_reader_paragraph, edit_reader_annotation, delete_reader_annotation
+)
 
 
 from django.conf import settings
@@ -19,7 +22,7 @@ from langchain_openai import ChatOpenAI
 # ── LLM Instances ──────────────────────────────────────────────
 def _get_llm(feature="default", **kwargs):
     """Create an LLM instance based on settings.LLM_CONFIG for a specific feature."""
-    # Try formatted feature key, fallback to default
+    # Try formatted feature key, fallback to default (SETTINGS.PY DOES NOT PROVIDE DOC_QA-SPECIFIC LLM CONFIG FOR NOW. SIMPLY USE DEFAULT)
     config = settings.LLM_CONFIG.get(feature, settings.LLM_CONFIG["default"])
     
     provider = config.get("provider", "deepseek")
@@ -52,12 +55,15 @@ ROUTER_SYSTEM_PROMPT = """\
 You are a routing assistant. Your ONLY job is to classify the user's intent.
 
 Respond with EXACTLY one of these words (no explanation, no punctuation):
-- DOC_QA — if the user is asking about documentation, how-to guides, \
-app features, or anything about the Lingua Workbench application.
+- DOC_QA — ONLY if the user is asking about the software's documentation, how-to guides, \
+or app features. Do NOT use this for English language learning questions.
 - SCRIPT_EDIT — if the user wants to insert, edit, modify, fix, or \
 correct script lines in the database (e.g. "在#100后面加一句", \
 "fix the speaker on line 50", "insert a line after #200").
-- GENERAL — for greetings, casual chat, or anything else.
+- READER_EDIT — if the user wants to resolve issues with reading materials, \
+e.g. edit a paragraph's content, fix translation in the reader, or modify/delete an annotation highlight.
+- GENERAL — for English learning questions (idioms, pronunciation, grammar, vocabulary), \
+greetings, casual chat, or anything else.
 
 User message:
 {message}"""
@@ -83,6 +89,8 @@ def router_node(state: AgentState) -> dict:
     
     if "SCRIPT" in decision:
         return {"next": "script_editor"}
+    elif "READER" in decision:
+        return {"next": "reader_editor"}
     elif "DOC" in decision:
         return {"next": "doc_qa"}
     else:
@@ -109,7 +117,9 @@ Guidelines:
 - For how-to questions, provide step-by-step guidance
 
 Documentation Context:
-{context}"""
+<context>
+{context}
+</context>"""
 
 
 def doc_qa_node(state: AgentState) -> dict:
@@ -130,8 +140,8 @@ def doc_qa_node(state: AgentState) -> dict:
     search_results = vector_store.search(query=last_msg, n_results=5)
     
     # Format context
-    context = _format_context(search_results)
-    sources = _extract_sources(search_results)
+    context = _format_context(search_results) # 将检索到的文档片段格式化为 Markdown 风格的字符串，包含标题、内容和来源信息
+    sources = _extract_sources(search_results) # 将检索到的文档片段格式化为列表，包含标题、路径和主题类型
     
     # Generate answer
     response = llm.invoke([
@@ -157,6 +167,7 @@ ALWAYS call this FIRST before inserting or editing.
 2. insert_script_line — Insert a new line before/after a reference line.
 3. edit_script_line — Edit fields of an existing line (speaker, text, etc.)
 4. split_script_line — Split a long line: keep first part, move the rest to another chunk.
+5. delete_script_line — Delete an existing script line completely.
 
 ## CRITICAL RULES (MUST FOLLOW):
 
@@ -199,13 +210,14 @@ When the user says a line is too long and asks to move part of it to another chu
 - First call get_surrounding_lines to read the full text.
 - Identify the split point from the user's instruction (e.g. "from the second sentence").
 - Call split_script_line with keep_text (first part) and remaining_text (second part).
-- The user will specify or imply the target_chunk_id (often "next chunk"). \
-Read the chunk_id from context.
+- The user will specify or imply the target_chunk_id (e.g., "previous chunk" or "next chunk"). \
+Carefully determine whether to move the text to the preceding or succeeding chunk based on context. \
+Read the exact chunk_id from the context provided by get_surrounding_lines.
 - Always generate text_zh translations for both parts."""
 
 
 # Bind tools to the LLM
-SCRIPT_TOOLS = [get_surrounding_lines, insert_script_line, edit_script_line, split_script_line]
+SCRIPT_TOOLS = [get_surrounding_lines, insert_script_line, edit_script_line, split_script_line, delete_script_line]
 
 
 def script_editor_node(state: AgentState) -> dict:
@@ -215,6 +227,49 @@ def script_editor_node(state: AgentState) -> dict:
     
     response = llm_with_tools.invoke([
         SystemMessage(content=SCRIPT_EDITOR_SYSTEM_PROMPT),
+        *state["messages"],
+    ])
+    
+    return {"messages": [response]}
+
+
+# ── ReaderEditor Node ─────────────────────────────────────────
+READER_EDITOR_SYSTEM_PROMPT = """\
+You are an intelligent reading assistant for Lingua Workbench. You help users \
+edit paragraphs, translations, and annotations in their reading materials.
+
+Available tools:
+1. get_reader_context — Fetch surrounding paragraphs for context. \
+ALWAYS call this FIRST before editing any paragraph or annotation. You can provide \
+either `paragraph_id` or `annotation_id`.
+2. edit_reader_paragraph — Edit the English text or Chinese translation of a paragraph.
+3. edit_reader_annotation — Modify an existing annotation's selected text, note, or type.
+4. delete_reader_annotation — Delete a reader annotation.
+
+## CRITICAL RULES (MUST FOLLOW):
+
+### Rule 1: Read before acting
+Always call get_reader_context before editing to understand the content. \
+If you only have an `annotation_id`, pass it to get_reader_context(annotation_id=...) to fetch the context first. \
+Never guess the text.
+
+### Rule 2: Provide feedback
+After performing an action, confirm what you did with a brief summary \
+showing what was changed based on the user's request. Answer in the same language \
+as the user's message.
+
+### Rule 3: Trigger Refresh
+If you successfully modify the database using the tools (edit_reader_paragraph, edit_reader_annotation, or delete_reader_annotation), you MUST include the exact string `[REFRESH_READER]` at the very end of your final response so the frontend knows to reload the article. Do NOT include this if no changes were made."""
+
+READER_TOOLS = [get_reader_context, edit_reader_paragraph, edit_reader_annotation, delete_reader_annotation]
+
+def reader_editor_node(state: AgentState) -> dict:
+    """Handle reader editing requests with tool-calling."""
+    llm = _get_llm(feature="reader_editor", temperature=0)
+    llm_with_tools = llm.bind_tools(READER_TOOLS)
+    
+    response = llm_with_tools.invoke([
+        SystemMessage(content=READER_EDITOR_SYSTEM_PROMPT),
         *state["messages"],
     ])
     
@@ -233,6 +288,8 @@ def should_continue_tools(state: AgentState) -> str:
 GENERAL_SYSTEM_PROMPT = """\
 You are a friendly assistant for Lingua Workbench, a language learning app. \
 Respond naturally to greetings, casual questions, and general conversation. \
+You also provide clear explanations for English vocabulary, idioms, and grammar. \
+When explaining English pronunciation, always refer to the rules and patterns of American spoken English. \
 Answer in the same language as the user's message (Chinese or English). \
 Keep responses concise and friendly."""
 
@@ -261,9 +318,11 @@ def _format_context(search_results: list[dict]) -> str:
         title = metadata.get('title', 'Unknown')
         section_path = metadata.get('section_path', '')
         content = result.get('content', '')
-        parts.append(f"[Document {i}: {section_path or title}]\n{content}")
+        
+        doc_xml = f'<document index="{i}">\n<source>{section_path or title}</source>\n<content>\n{content}\n</content>\n</document>'
+        parts.append(doc_xml)
     
-    return "\n\n---\n\n".join(parts)
+    return "\n\n".join(parts)
 
 
 def _extract_sources(search_results: list[dict]) -> list[dict]:
@@ -295,8 +354,9 @@ def build_graph() -> StateGraph:
     graph.add_node("router", router_node)
     graph.add_node("doc_qa", doc_qa_node)
     graph.add_node("script_editor", script_editor_node)
+    graph.add_node("reader_editor", reader_editor_node)
     graph.add_node("general", general_node)
-    graph.add_node("tools", ToolNode(SCRIPT_TOOLS))
+    graph.add_node("tools", ToolNode(SCRIPT_TOOLS + READER_TOOLS))
     
     # Entry point
     graph.set_entry_point("router")
@@ -308,6 +368,7 @@ def build_graph() -> StateGraph:
         {
             "doc_qa": "doc_qa",
             "script_editor": "script_editor",
+            "reader_editor": "reader_editor",
             "general": "general",
         }
     )
@@ -316,18 +377,29 @@ def build_graph() -> StateGraph:
     graph.add_edge("doc_qa", END)
     graph.add_edge("general", END)
     
-    # ScriptEditor → tool loop (ReAct pattern)
-    graph.add_conditional_edges(
-        "script_editor",
-        should_continue_tools,
-        {
-            "tools": "tools",
-            END: END,
-        }
-    )
+    # ScriptEditor and ReaderEditor → tool loop (ReAct pattern)
+    for node_name in ["script_editor", "reader_editor"]:
+        graph.add_conditional_edges(
+            node_name,
+            should_continue_tools,
+            {
+                "tools": "tools",
+                END: END,
+            }
+        )
     
-    # After tool execution → back to ScriptEditor for next reasoning step
-    graph.add_edge("tools", "script_editor")
+    # After tool execution → route back to the agent that called the tool. 
+    # But wait, ToolNode default edge goes back to the calling node? 
+    # In basic ToolNode, you might need to use standard edges, but LangGraph natively 
+    # requires explicit routing back. Let's write a simple router for going back from tools.
+    def tools_condition_back(state: AgentState) -> str:
+        # Check messages to see which agent made the tool_calls
+        last_msg = state["messages"][-2] # -1 is ToolMessage, -2 is AIMessage with tool_calls
+        # A simple hack is to rely on tools route_decision, or better, we can just look 
+        # at state['next'] which route_decision sets. So we route back to state['next']!
+        return state.get("next", "general")
+
+    graph.add_conditional_edges("tools", tools_condition_back)
     
     return graph.compile()
 

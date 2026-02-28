@@ -8,6 +8,8 @@ import { useChatStore } from '@/stores/chatStore'
 import { layouts, type LayoutKey } from '@/utils/layouts'
 // Documentation Assistant ChatBot
 import ChatWidget from '@/components/ChatWidget.vue'
+// Pomodoro Timer Widget
+import PomodoroWidget from '@/components/PomodoroWidget.vue'
 
 const authStore = useAuthStore()
 
@@ -85,6 +87,9 @@ const handleAskAI = () => {
   </component>
   <!-- Documentation Assistant ChatBot (global) -->
   <ChatWidget v-if="authStore.isAuthenticated" ref="chatWidgetRef" />
+
+  <!-- Pomodoro Widget (global) -->
+  <PomodoroWidget v-if="authStore.isAuthenticated" />
 
   <!-- Ask AI Floating Button -->
   <button

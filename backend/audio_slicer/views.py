@@ -11,7 +11,7 @@ from django.utils import timezone
 from .models import SourceAudio, AudioChunk, AudioSlice, Drama, ReviewCard
 from .serializers import SourceAudioSerializer, AudioSliceSerializer, DramaSerializer, AudioChunkSerializer, ReviewCardSerializer
 from .services import slice_source_to_chunks
-from ai_analysis.services import batch_translate_idioms
+from ai_analysis.services import batch_translate_texts
 
 class SourceAudioViewSet(viewsets.ModelViewSet):
     """
@@ -307,7 +307,7 @@ class AudioSliceViewSet(viewsets.ModelViewSet):
 
         # Call DeepSeek Service
         try:
-            translations = batch_translate_idioms(slices_data) 
+            translations = batch_translate_texts(slices_data) 
             # translations is list of {id, translation}
             
             updated_count = 0

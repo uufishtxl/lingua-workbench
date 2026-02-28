@@ -14,6 +14,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 
 from .schemas import SoundScriptResponse, DictionaryResponse, RefreshExampleResponse
+from django.conf import settings
 from .prompts import (
     SOUND_SCRIPT_SYSTEM_PROMPT, SOUND_SCRIPT_HUMAN_PROMPT,
     DICTIONARY_SYSTEM_PROMPT, DICTIONARY_HUMAN_PROMPT,
@@ -23,31 +24,33 @@ from .prompts import (
 
 # ============ LLM Factories ============
 
-_gemini_instance = None
-_deepseek_instance = None
-
-def get_gemini_llm():
-    """Get the singleton Gemini LLM instance (for Analysis)."""
-    global _gemini_instance
-    if _gemini_instance is None:
-        _gemini_instance = ChatGoogleGenerativeAI(
-            model=os.getenv("MODEL_NAME", "gemini-2.5-flash"), 
-            google_api_key=os.getenv("GOOGLE_API_KEY"), 
-            temperature=0,
+def _get_llm(feature="default", **kwargs):
+    """Create an LLM instance based on settings.LLM_CONFIG for a specific feature."""
+    config = settings.LLM_CONFIG.get(feature, settings.LLM_CONFIG["default"])
+    
+    provider = config.get("provider", "deepseek")
+    
+    # Base defaults from settings
+    defaults = {
+        "model": config.get("model_name"),
+        "temperature": config.get("temperature", 0),
+    }
+    
+    # Override with per-call kwargs
+    defaults.update(kwargs)
+    
+    if provider == "deepseek":
+        return ChatOpenAI(
+            api_key=config.get("api_key"),
+            base_url=config.get("base_url"),
+            **defaults
         )
-    return _gemini_instance
-
-def get_deepseek_llm():
-    """Get the singleton DeepSeek LLM instance (for Dictionary & Translation)."""
-    global _deepseek_instance
-    if _deepseek_instance is None:
-        _deepseek_instance = ChatOpenAI(
-            model="deepseek-chat", # DeepSeek model name
-            base_url=os.getenv("DEEPSEEK_BASE_URL"),
-            api_key=os.getenv("DEEPSEEK_API_KEY"),
-            temperature=0
+    else:
+        # Default to Gemini
+        return ChatGoogleGenerativeAI(
+            google_api_key=config.get("api_key"),
+            **defaults
         )
-    return _deepseek_instance
 
 
 # ============ Sound Script (Gemini) ============
@@ -60,7 +63,7 @@ def get_sound_script_chain():
     """
     global _sound_script_chain
     if _sound_script_chain is None:
-        llm = get_gemini_llm()
+        llm = _get_llm(feature="sound_script")
         structured_llm = llm.with_structured_output(
             SoundScriptResponse, 
             method="function_calling"
@@ -96,7 +99,7 @@ def get_dictionary_chain():
     """
     global _dictionary_chain
     if _dictionary_chain is None:
-        llm = get_deepseek_llm()
+        llm = _get_llm(feature="dictionary")
         structured_llm = llm.with_structured_output(
             DictionaryResponse,
             method="function_calling" # DeepSeek supports tool calling? If not, might need JSON mode.
@@ -138,7 +141,7 @@ _refresh_example_chain = None
 def get_refresh_example_chain():
     global _refresh_example_chain
     if _refresh_example_chain is None:
-        llm = get_gemini_llm() # Keep on Gemini
+        llm = _get_llm(feature="refresh_example")
         structured_llm = llm.with_structured_output(
             RefreshExampleResponse,
             method="function_calling"
@@ -176,11 +179,11 @@ def get_batch_translation_chain():
     """
     global _batch_translation_chain
     if _batch_translation_chain is None:
-        llm = get_deepseek_llm()
+        llm = _get_llm(feature="translation")
         
         # Simple Prompt
         prompt = ChatPromptTemplate.from_messages([
-            ("system", "You are a professional translator. You will receive a JSON list of objects with 'id' and 'text'. Translate the 'text' to Chinese (Simplified). Return a valid, minified JSON object with a single key 'translations' containing a list of {{id, translation}} objects. Do NOT output markdown code blocks."),
+            ("system", "You are a professional translator. You will receive a JSON list of objects with 'id' and 'text'. Translate the 'text' to Chinese (Simplified). Return a valid, minified JSON object with a single key 'translations' containing a list of {{\"id\": ..., \"translation\": ...}} objects. Do NOT output markdown code blocks."),
             ("human", "{json_input}")
         ])
         
@@ -189,9 +192,9 @@ def get_batch_translation_chain():
     
     return _batch_translation_chain
 
-def batch_translate_idioms(slices_data: List[Dict]) -> List[Dict]:
+def batch_translate_texts(slices_data: List[Dict]) -> List[Dict]:
     """
-    Batch translate audio slices.
+    Batch translate texts.
     
     Args:
         slices_data: List of dicts [{'id': 1, 'text': 'Hello'}, ...]
@@ -207,14 +210,14 @@ def batch_translate_idioms(slices_data: List[Dict]) -> List[Dict]:
     # Chunking: DeepSeek context is large, but to be safe let's process reasonable chunks or just one go if small.
     # Assuming frontend sends reasonable batch sizes (e.g. 50).
     
-    json_input = json.dumps(slices_data, ensure_ascii=False)
+    json_input = json.dumps(slices_data, ensure_ascii=False) # ensure_ascii 不需要将中文转换成\uXXXX格式
     
     response_msg = chain.invoke({"json_input": json_input})
     content = response_msg.content.strip()
     
     # Clean up markdown if present
     if content.startswith("```json"):
-        content = content.replace("```json", "", 1)
+        content = content.replace("```json", "", 1) # 1 表示最大替换次数
     if content.endswith("```"):
         content = content[:-3]
     

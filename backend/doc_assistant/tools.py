@@ -248,6 +248,31 @@ def edit_script_line(
 
 
 @tool
+def delete_script_line(line_id: int) -> str:
+    """Delete an existing script line.
+    
+    Use this to remove lines that are hallucinatory, duplicates, or completely irrelevant.
+    
+    Args:
+        line_id: The ID of the ScriptLine to delete.
+    """
+    from scripts.models import ScriptLine
+    
+    try:
+        line = ScriptLine.objects.get(id=line_id)
+    except ScriptLine.DoesNotExist:
+        return f"Error: ScriptLine with id={line_id} not found."
+    
+    text_preview = line.text[:50] + "..." if len(line.text) > 50 else line.text
+    speaker_info = f"{line.speaker}: " if line.speaker else ""
+    
+    line.delete()
+    
+    return f"Successfully deleted line #{line_id} ({speaker_info}'{text_preview}')."
+
+
+
+@tool
 def split_script_line(
     line_id: int,
     keep_text: str,
@@ -337,3 +362,173 @@ def split_script_line(
         f"  New order: {new_order}"
     )
 
+
+# ── Reader Management Tools ────────────────────────────────────
+
+@tool
+def get_reader_context(paragraph_id: Optional[int] = None, annotation_id: Optional[int] = None, radius: int = 2) -> str:
+    """Fetch surrounding article paragraphs for context.
+    
+    Use this BEFORE edit_reader_paragraph or edit_reader_annotation 
+    to understand the reading context. One of `paragraph_id` or `annotation_id` must be provided.
+    
+    Args:
+        paragraph_id: The ID of the reference Paragraph.
+        annotation_id: The ID of an Annotation (used to find its paragraph if paragraph_id is unknown).
+        radius: Number of paragraphs above and below to include.
+    """
+    from reader.models import Paragraph, Annotation
+    
+    # If annotation_id is provided, resolve it to paragraph_id
+    if annotation_id is not None:
+        try:
+            anno = Annotation.objects.get(id=annotation_id)
+            paragraph_id = anno.paragraph_id
+        except Annotation.DoesNotExist:
+            return f"Error: Annotation with id={annotation_id} not found."
+
+    if paragraph_id is None:
+        return "Error: You must provide either paragraph_id or annotation_id."
+
+    try:
+        ref_p = Paragraph.objects.select_related('article').get(id=paragraph_id)
+    except Paragraph.DoesNotExist:
+        return f"Error: Paragraph with id={paragraph_id} not found."
+    
+    siblings = Paragraph.objects.filter(article=ref_p.article).order_by('index')
+    siblings_list = list(siblings.values_list('id', flat=True))
+    try:
+        ref_idx = siblings_list.index(ref_p.id)
+    except ValueError:
+        return f"Error: Could not locate paragraph {paragraph_id} among siblings."
+    
+    start = max(0, ref_idx - radius)
+    end = min(len(siblings_list), ref_idx + radius + 1)
+    
+    surrounding_ids = siblings_list[start:end]
+    surrounding = Paragraph.objects.filter(id__in=surrounding_ids).order_by('index')
+    
+    lines = []
+    for p in surrounding:
+        marker = " <<<" if p.id == ref_p.id else ""
+        lines.append(f"[PID:{p.id}] {p.content}{' | zh: ' + p.translation if p.translation else ''}{marker}")
+    
+    return f"Context around Paragraph #{paragraph_id}:\n" + "\n".join(lines)
+
+
+@tool
+def edit_reader_paragraph(
+    paragraph_id: int, 
+    content: Optional[str] = None, 
+    translation: Optional[str] = None,
+    re_translate: bool = False
+) -> str:
+    """Edit the English text or Chinese translation of a reader paragraph.
+    
+    Args:
+        paragraph_id: Int ID of the Paragraph.
+        content: The updated English text (if correcting typos).
+        translation: The updated Chinese translation.
+        re_translate: If True, calls the central batch_translate_paragraphs API 
+                   to re-generate translation automatically.
+    """
+    from reader.models import Paragraph
+    try:
+        p = Paragraph.objects.get(id=paragraph_id)
+        updates = []
+        if content is not None and content.strip() != p.content:
+            p.content = content.strip()
+            updates.append("content")
+        
+        if translation is not None and translation.strip() != p.translation:
+            p.translation = translation.strip()
+            updates.append("translation")
+            
+        p.save()
+        
+        if re_translate and 'content' in updates:
+            from ai_analysis.services import batch_translate_texts
+            try:
+                res = batch_translate_texts([{"id": p.id, "text": p.content}])
+                if res and len(res) > 0 and 'translation' in res[0]:
+                    p.translation = res[0]['translation']
+                    p.save(update_fields=['translation'])
+                    updates.append("auto-translation")
+            except Exception as e:
+                updates.append(f"(Auto-translation failed: {e})")
+                
+        return f"Paragraph {paragraph_id} updated. Fields modified: {', '.join(updates)}. Current content: '{p.content[:50]}...'"
+    except Paragraph.DoesNotExist:
+        return f"Error: Paragraph {paragraph_id} not found."
+
+
+@tool
+def edit_reader_annotation(
+    annotation_id: int, 
+    selected_text: Optional[str] = None, 
+    user_note: Optional[str] = None, 
+    annotation_type: Optional[str] = None
+) -> str:
+    """Edit an existing annotation (highlight) in the reader.
+    
+    This function updates the annotation and automatically asks the AI 
+    to re-generate the analysis (ai_response) based on the new parameters.
+    
+    Args:
+        annotation_id: ID of the Annotation.
+        selected_text: The highlighted text (if correcting the bounds).
+        user_note: The user's thought/question (Socratic note).
+        annotation_type: Enums: 'yellow' (Jargon), 'blue' (Usage), 'pink' (Thought).
+    """
+    from reader.models import Annotation
+    try:
+        anno = Annotation.objects.select_related('paragraph', 'paragraph__article').get(id=annotation_id)
+        
+        changed = False
+        if selected_text is not None and selected_text != anno.selected_text:
+            anno.selected_text = selected_text
+            changed = True
+        if user_note is not None and user_note != anno.user_note:
+            anno.user_note = user_note
+            changed = True
+        if annotation_type is not None and annotation_type != anno.annotation_type:
+            anno.annotation_type = annotation_type
+            changed = True
+            
+        if changed:
+            # Re-trigger AI logic 
+            from reader.ai_services import assist_annotation
+            from reader.schemas import AnnotationContext
+            try:
+                domain = anno.paragraph.article.meta_context.get('domain', 'General')
+                res = assist_annotation(AnnotationContext(
+                    domain=domain,
+                    paragraph=anno.paragraph.content,
+                    selected_text=anno.selected_text,
+                    annotation_type=anno.annotation_type,
+                    user_note=anno.user_note or ""
+                ))
+                anno.ai_response = {"content": res["content"]}
+            except Exception as e:
+                return f"Annotation {annotation_id} updated partially, but AI re-generation failed: {e}"
+                
+            anno.save()
+            return f"Annotation {annotation_id} updated and AI response regenerated. New text: '{anno.selected_text}', Type: '{anno.annotation_type}'"
+        else:
+            return f"No changes provided for Annotation {annotation_id}."
+            
+    except Annotation.DoesNotExist:
+        return f"Error: Annotation {annotation_id} not found."
+
+
+@tool
+def delete_reader_annotation(annotation_id: int) -> str:
+    """Permanently delete an annotation from the reader."""
+    from reader.models import Annotation
+    try:
+        anno = Annotation.objects.get(id=annotation_id)
+        text = anno.selected_text
+        anno.delete()
+        return f"Annotation {annotation_id} ('{text}') deleted successfully."
+    except Annotation.DoesNotExist:
+        return f"Error: Annotation {annotation_id} not found."

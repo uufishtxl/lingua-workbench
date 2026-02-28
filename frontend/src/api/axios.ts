@@ -4,7 +4,7 @@ import { ElMessageBox } from 'element-plus';
 import router from '@/router';
 
 const apiClient = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   timeout: 60000, // 60 seconds for AI requests
   withCredentials: true, // Crucial for sending cookies (refresh token)
 });
