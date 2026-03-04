@@ -225,7 +225,7 @@ const currentAudioSlice = computed<AudioSlice | null>(() => {
 })
 
 // Use audio composable
-const { isPlaying, isLoading: isAudioLoading, toggle: playAudio, reload: reloadAudio } = useAudio(audioRef, currentAudioSlice)
+const { isPlaying, isLoading: isAudioLoading, toggle: playAudio, pause: pauseAudio, reload: reloadAudio } = useAudio(audioRef, currentAudioSlice)
 
 // Use recording composable
 const { isRecording, recordedAudioUrl, isPlayingRecordedAudio, toggleRecording, playRecording, clearRecording } = useRecording()
@@ -346,8 +346,14 @@ const submitResult = async (success: boolean) => {
 
 // Refresh Page Logic
 const refreshPage = () => {
-    // Revert to full page refresh as requested by user - soft audio reload was insufficient
-    window.location.reload()
+    // 🔄 Soft audio reload
+    // First stop audio if it's currently playing to prevent overlaps/glitches
+    if (isPlaying.value) {
+        pauseAudio()
+    }
+    
+    // Then reload the context
+    reloadAudio()
 }
 
 const advanceToNextCard = () => {

@@ -135,10 +135,103 @@ export function useAudio(
         audioRef.value.pause()
     }
 
+    const loadAudioSource = (targetSrc: string, targetTime: number, forceReload: boolean) => {
+        if (!audioRef.value) return
+        const audio = audioRef.value
+
+        const currentSrcUrl = audio.src ? new URL(audio.src, window.location.href).href : ''
+        const targetSrcUrl = new URL(targetSrc, window.location.href).href
+
+        if (currentSrcUrl !== targetSrcUrl || forceReload) {
+            isLoading.value = true
+            isReady.value = false
+
+            if (forceReload) {
+                audio.src = ''
+                audio.load()
+            }
+
+            const executeLoad = () => {
+                audio.src = targetSrc
+
+                // Use loadedmetadata for reliable seeking
+                const onLoadedMetadata = () => {
+                    audio.currentTime = targetTime
+                    audio.removeEventListener('loadedmetadata', onLoadedMetadata)
+                }
+
+                // Use seeked to confirm seek completed
+                const onSeeked = () => {
+                    isLoading.value = false
+                    isReady.value = true
+                    audio.removeEventListener('seeked', onSeeked)
+                }
+
+                // Fallback: canplaythrough + timeout
+                const onCanPlay = () => {
+                    if (isLoading.value) {
+                        audio.currentTime = targetTime
+                    }
+                    setTimeout(() => {
+                        if (isLoading.value) {
+                            isLoading.value = false
+                            isReady.value = true
+                        }
+                    }, 100)
+                    audio.removeEventListener('canplaythrough', onCanPlay)
+                }
+
+                const onError = () => {
+                    isLoading.value = false
+                    isReady.value = false
+                    console.error('Failed to load audio:', targetSrc)
+                    audio.removeEventListener('error', onError)
+                    audio.removeEventListener('loadedmetadata', onLoadedMetadata)
+                    audio.removeEventListener('seeked', onSeeked)
+                    audio.removeEventListener('canplaythrough', onCanPlay)
+                }
+
+                audio.addEventListener('loadedmetadata', onLoadedMetadata)
+                audio.addEventListener('seeked', onSeeked)
+                audio.addEventListener('canplaythrough', onCanPlay)
+                audio.addEventListener('error', onError)
+
+                audio.load()
+
+                // If already ready (cached), seek immediately
+                if (audio.readyState >= 1) {
+                    audio.currentTime = targetTime
+                }
+            }
+
+            if (forceReload) {
+                setTimeout(executeLoad, 50)
+            } else {
+                executeLoad()
+            }
+        } else {
+            // Same source, just seek
+            audio.currentTime = targetTime
+            isReady.value = true
+        }
+    }
+
+    /**
+     * Force reload the current audio source
+     */
+    const reload = () => {
+        if (!audioRef.value || !currentSlice.value) return
+        stop()
+
+        const targetSrc = currentSlice.value.audio_url
+        const targetTime = Number(currentSlice.value.start_time) || 0
+
+        loadAudioSource(targetSrc, targetTime, true)
+    }
+
     // Watch for slice changes and preload audio
     watch(currentSlice, (newSlice) => {
         if (!audioRef.value) return
-        const audio = audioRef.value
 
         setupPlaybackListeners()
 
@@ -156,63 +249,7 @@ export function useAudio(
         const targetSrc = newSlice.audio_url
         const targetTime = Number(newSlice.start_time) || 0
 
-        // Only reload if source changed
-        const currentSrcUrl = audio.src ? new URL(audio.src, window.location.href).href : ''
-        const targetSrcUrl = new URL(targetSrc, window.location.href).href
-
-        if (currentSrcUrl !== targetSrcUrl) {
-            isLoading.value = true
-            isReady.value = false
-
-            audio.src = targetSrc
-
-            // Use loadedmetadata for reliable seeking
-            const onLoadedMetadata = () => {
-                audio.currentTime = targetTime
-                audio.removeEventListener('loadedmetadata', onLoadedMetadata)
-            }
-
-            // Use seeked to confirm seek completed
-            const onSeeked = () => {
-                isLoading.value = false
-                isReady.value = true
-                audio.removeEventListener('seeked', onSeeked)
-            }
-
-            // Fallback: canplaythrough + timeout
-            const onCanPlay = () => {
-                if (isLoading.value) {
-                    audio.currentTime = targetTime
-                }
-                setTimeout(() => {
-                    if (isLoading.value) {
-                        isLoading.value = false
-                        isReady.value = true
-                    }
-                }, 100)
-                audio.removeEventListener('canplaythrough', onCanPlay)
-            }
-
-            const onError = () => {
-                isLoading.value = false
-                isReady.value = false
-                console.error('Failed to load audio:', targetSrc)
-                audio.removeEventListener('error', onError)
-                audio.removeEventListener('loadedmetadata', onLoadedMetadata)
-                audio.removeEventListener('seeked', onSeeked)
-                audio.removeEventListener('canplaythrough', onCanPlay)
-            }
-
-            audio.addEventListener('loadedmetadata', onLoadedMetadata)
-            audio.addEventListener('seeked', onSeeked)
-            audio.addEventListener('canplaythrough', onCanPlay)
-            audio.addEventListener('error', onError)
-            audio.load()
-        } else {
-            // Same source, just seek
-            audio.currentTime = targetTime
-            isReady.value = true
-        }
+        loadAudioSource(targetSrc, targetTime, false)
     }, { immediate: true })
 
     // Cleanup on unmount
@@ -229,6 +266,7 @@ export function useAudio(
         toggle,
         play,
         pause,
-        stop
+        stop,
+        reload
     }
 }

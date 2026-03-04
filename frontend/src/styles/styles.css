@@ -180,8 +180,65 @@
   transition: all 0.2s;
 }
 
+
 .group:hover .hover-reveal-icon {
   width: 0.75rem;
   /* w-3 = 12px */
   opacity: 1;
+}
+
+/* ===========================================
+   Neumorphic Primitives (Pomodoro Theme)
+   =========================================== */
+.neumorphic-panel {
+  background: #161618;
+  box-shadow: 10px 10px 20px #0c0c0d, -10px -10px 20px #202023;
+  color: #d1d1d6;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.neumorphic-inset {
+  background: #161618;
+  box-shadow: inset 6px 6px 12px #0c0c0d, inset -6px -6px 12px #202023;
+  border-radius: 16px;
+}
+
+.neumorphic-circle-btn {
+  background: #161618;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 5px 5px 10px #0c0c0d, -5px -5px 10px #202023;
+  color: #d1d1d6;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.neumorphic-circle-btn:active {
+  box-shadow: inset 3px 3px 6px #0c0c0d, inset -3px -3px 6px #202023;
+  transform: scale(0.96);
+}
+
+.neumorphic-circle-btn.small {
+  width: 32px;
+  height: 32px;
+  font-size: 12px;
+}
+
+.neumorphic-btn-accent {
+  background: #1e1e20;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.neumorphic-btn-small {
+  background: #161618;
+  border-radius: 10px;
+  box-shadow: 3px 3px 6px #0c0c0d, -3px -3px 6px #202023;
+  color: #8e8e93;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
 }

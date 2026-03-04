@@ -223,3 +223,6 @@ docs/dita/output
 playwright-screenshots/node_modules
 whisper/.venv
 whisper/upload
+
+# Practice Playground
+backend/playground/

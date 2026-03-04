@@ -8,7 +8,7 @@ from .serializers import PomodoroTagSerializer, PomodoroSerializer
 class PomodoroTagViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = PomodoroTagSerializer
-    queryset = PomodoroTag.objects.all().order_by('order')
+    queryset = PomodoroTag.objects.all()
     pagination_class = None
 
 class PomodoroViewSet(viewsets.ModelViewSet):
@@ -17,14 +17,7 @@ class PomodoroViewSet(viewsets.ModelViewSet):
     pagination_class = None
 
     def get_queryset(self):
-        qs = Pomodoro.objects.filter(user=self.request.user)
-
-        # 支持 ?date=2026-02-27 按日期筛选
-        date_str = self.request.query_params.get('date')
-        if date_str:
-            qs = qs.filter(created_at__date=date_str)
-
-        return qs.order_by('-created_at')
+        return Pomodoro.objects.filter(user=self.request.user).order_by('-created_at')
 
     def perform_create(self, serializer):
         existing = Pomodoro.objects.filter(
@@ -33,7 +26,6 @@ class PomodoroViewSet(viewsets.ModelViewSet):
         ).first()
         if existing:
             existing.status = Pomodoro.Status.INTERRUPTED
-            existing.completed_at = timezone.now()
             existing.save()
 
         serializer.save(user=self.request.user)
@@ -42,8 +34,8 @@ class PomodoroViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         new_status = serializer.validated_data.get('status')
 
-        if new_status in (Pomodoro.Status.COMPLETED, Pomodoro.Status.INTERRUPTED) \
-                and not instance.completed_at:
+        if (new_status == Pomodoro.Status.COMPLETED 
+                and not instance.completed_at):
             serializer.save(completed_at=timezone.now())
         else:
             serializer.save()
@@ -79,10 +71,10 @@ class PomodoroViewSet(viewsets.ModelViewSet):
         if not date_str:
             return Response({'error': 'date parameter is required'}, status=400)
 
-        records = Pomodoro.objects.filter(
-            user=request.user,
-            created_at__date=date_str
-        ).exclude(status=Pomodoro.Status.STARTED).order_by('created_at')
+        records = self.get_queryset().filter(
+            created_at__date=date_str,
+            status=Pomodoro.Status.COMPLETED
+        ).order_by('created_at')
 
         serializer = self.get_serializer(records, many=True)
         return Response(serializer.data)

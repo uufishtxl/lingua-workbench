@@ -3,6 +3,12 @@ import { useAuthStore } from '@/stores/authStore';
 import { ElMessageBox } from 'element-plus';
 import router from '@/router';
 
+// 告诉 Axios：去浏览器的 Cookie 里找叫 'csrftoken' 的东西
+axios.defaults.xsrfCookieName = 'csrftoken';
+// 告诉 Axios：发请求的时候，把它塞进一个叫 'X-CSRFToken' 的请求头里发给后端
+axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+
+
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
   timeout: 60000, // 60 seconds for AI requests

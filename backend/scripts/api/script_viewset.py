@@ -74,6 +74,7 @@ class ScriptViewSet(viewsets.ViewSet):
             script_lines.append(ScriptLine(
                 chunk=first_chunk,
                 index=idx,
+                order=float(idx),
                 line_type=line_data['type'],
                 speaker=line_data.get('speaker'),
                 text=line_data['text'],

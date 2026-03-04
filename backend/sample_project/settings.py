@@ -117,7 +117,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.TokenAuthentication', # For Chrome Extension
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -192,6 +192,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS ALLOWED ORIGINS
 raw_cors = os.environ.get('DJANGO_CORS_ORIGINS', 'http://localhost:5173')
 CORS_ALLOWED_ORIGINS = raw_cors.split(',')
+
+# 允许跨域的 CSRF 来源（比如 Vite 开发服务器）
+CSRF_TRUSTED_ORIGINS = raw_cors.split(',')
 
 # 允许前端发送 Cookie（比如登录的 Session 或 JWT 令牌）
 CORS_ALLOW_CREDENTIALS = True

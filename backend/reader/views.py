@@ -18,7 +18,7 @@ class ArticleViewSet(viewsets.ModelViewSet):
         return Article.objects.filter(user=self.request.user).order_by('-created_at')
 
     def get_serializer_class(self):
-        if self.action in ['list']:
+        if self.action == 'list':
             return ArticleListSerializer
         if self.action == 'create':
             return ArticleCreateSerializer

@@ -34,6 +34,9 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
     // 🆕 Real-time Sync: 当前活跃会话的后端 ID
     const activeSessionId = ref<number | null>(null);
 
+    // 🆕 Timer persistence: 绝对结束时间（毫秒时间戳）
+    const expectedEndTime = ref<number | null>(null);
+
     // 🆕 Session Recovery: 弹窗控制
     const showRecoveryDialog = ref(false);
     const recoverySession = ref<Pomodoro | null>(null);
@@ -182,7 +185,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
      * 🔄 改造：按下开始键时，先向后端发 POST 创建记录
      */
     async function startTimer() {
-        if (isRunning.value) return;
+        if (isRunning.value && timerId.value) return;
 
         if (currentState.value === 'IDLE') {
             currentState.value = 'WORK';
@@ -201,13 +204,17 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
             }
         }
 
-        const expectedEndTime = Date.now() + timeLeft.value * 1000;
+        // 如果没有预定的结束时间（通常是在新开始时），则设定一个
+        if (!expectedEndTime.value) {
+            expectedEndTime.value = Date.now() + timeLeft.value * 1000;
+        }
+
         isRunning.value = true;
 
         // Use 200ms interval for smoother UI tracking, calculate absolute remaining time
         timerId.value = window.setInterval(() => {
             const now = Date.now();
-            const remaining = Math.max(0, Math.round((expectedEndTime - now) / 1000));
+            const remaining = Math.max(0, Math.round(((expectedEndTime.value || 0) - now) / 1000));
 
             if (remaining <= 0) {
                 timeLeft.value = 0;
@@ -223,6 +230,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
     function pauseTimer() {
         isRunning.value = false;
+        expectedEndTime.value = null; // 清除结束时间标记
         if (timerId.value) {
             clearInterval(timerId.value);
             timerId.value = null;
@@ -245,6 +253,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
         }
 
         activeSessionId.value = null;
+        expectedEndTime.value = null;
         currentState.value = 'IDLE';
         timeLeft.value = workMinutes.value * 60;
     }
@@ -278,6 +287,7 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
             // Transition to REST immediately
             currentState.value = 'REST';
             timeLeft.value = restMinutes.value * 60;
+            expectedEndTime.value = null; // 重置，以便在 startTimer 里重新计算
             playAudioTone(880, 'sine', 1.0); // Gentle chime for rest start
             startTimer(); // auto-start rest
 
@@ -288,11 +298,13 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
                 // Skip IDLE, dive straight back to WORK
                 currentState.value = 'WORK';
                 timeLeft.value = workMinutes.value * 60;
+                expectedEndTime.value = null;
                 startTimer();
             } else {
                 // Normal flow: Transition back to IDLE
                 currentState.value = 'IDLE';
                 timeLeft.value = workMinutes.value * 60;
+                expectedEndTime.value = null;
             }
         }
     }
@@ -311,7 +323,9 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
 
     function flipToHistory() {
         isFlipped.value = true;
-        loadHistory(selectedDate.value);
+        const todayStr = formatDate(new Date());
+        selectedDate.value = todayStr;
+        loadHistory(todayStr);
         loadEarliestDate();
     }
 
@@ -367,6 +381,15 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
         return dates;
     }
 
+    // 🆕 这里的逻辑在 Pinia Store 初始化时运行
+    // 如果发现 isRunning 为 true 且有缓存的结束时间，自动恢复计时器
+    if (isRunning.value && expectedEndTime.value) {
+        // 延迟一个 tick 确保环境 Ready
+        setTimeout(() => {
+            startTimer();
+        }, 0);
+    }
+
     return {
         isExpanded,
         currentState,
@@ -412,4 +435,20 @@ export const usePomodoroStore = defineStore('pomodoro', () => {
         getWeekDates,
         formatDate
     };
+}, {
+    persist: {
+        // 我们只持久化关键状态，像 timerId 这种运行时非序列化数据必须排除
+        pick: [
+            'isExpanded',
+            'currentState',
+            'isRunning',
+            'workMinutes',
+            'restMinutes',
+            'timeLeft',
+            'activeSessionId',
+            'expectedEndTime',
+            'currentCategoryId',
+            'isSuperFlow'
+        ]
+    }
 });

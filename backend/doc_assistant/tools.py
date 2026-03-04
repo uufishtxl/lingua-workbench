@@ -118,14 +118,15 @@ def insert_script_line(
         return f"Error: ScriptLine with id={reference_line_id} not found."
     
     # Get ordered siblings in the same chunk
+    # Ordering fallback: if order is 0.0, use index as the baseline for the calculation to prevent stacking
     siblings = list(
         ScriptLine.objects.filter(chunk=ref_line.chunk)
-        .order_by('order')
-        .values_list('id', 'order')
+        .order_by('order', 'index')
+        .values_list('id', 'order', 'index')
     )
     
     ref_idx = None
-    for i, (sid, sorder) in enumerate(siblings):
+    for i, (sid, sorder, sidx) in enumerate(siblings):
         if sid == ref_line.id:
             ref_idx = i
             break
@@ -133,20 +134,23 @@ def insert_script_line(
     if ref_idx is None:
         return f"Error: Could not locate reference line {reference_line_id} in its chunk."
     
-    # Calculate new_order using the float average formula
-    ref_order = siblings[ref_idx][1]
+    def get_effective_order(s_order, s_index):
+        # If order was never set (is 0.0), assume its index as the starting effective order.
+        return float(s_index) if s_order == 0.0 else float(s_order)
+
+    ref_order = get_effective_order(siblings[ref_idx][1], siblings[ref_idx][2])
     
     if position == 'before':
         if ref_idx == 0:
             new_order = ref_order - 1.0
         else:
-            prev_order = siblings[ref_idx - 1][1]
+            prev_order = get_effective_order(siblings[ref_idx - 1][1], siblings[ref_idx - 1][2])
             new_order = (prev_order + ref_order) / 2.0
     else:  # after
         if ref_idx == len(siblings) - 1:
             new_order = ref_order + 1.0
         else:
-            next_order = siblings[ref_idx + 1][1]
+            next_order = get_effective_order(siblings[ref_idx + 1][1], siblings[ref_idx + 1][2])
             new_order = (ref_order + next_order) / 2.0
     
     # Build raw_text in canonical format
@@ -319,6 +323,9 @@ def split_script_line(
     line.raw_text = f"{speaker_str}: {keep_text}" if speaker_str else keep_text
     line.save()
 
+    def get_effective_order(s_order, s_index):
+        return float(s_index) if s_order == 0.0 else float(s_order)
+
     # 2. Calculate order for the new line in the target chunk
     #    Auto-detect direction: if moving backward → append at end;
     #    if moving forward → prepend at beginning
@@ -326,20 +333,28 @@ def split_script_line(
         # Moving to PREVIOUS chunk → insert at END
         last_in_target = (
             ScriptLine.objects.filter(chunk=target_chunk)
-            .order_by('-order')
-            .values_list('order', flat=True)
+            .order_by('-order', '-index')
+            .values_list('order', 'index')
             .first()
         )
-        new_order = (last_in_target + 1.0) if last_in_target is not None else 0.0
+        if last_in_target:
+            last_order = get_effective_order(last_in_target[0], last_in_target[1])
+            new_order = last_order + 1.0
+        else:
+            new_order = 0.0
     else:
         # Moving to NEXT chunk → insert at BEGINNING
         first_in_target = (
             ScriptLine.objects.filter(chunk=target_chunk)
-            .order_by('order')
-            .values_list('order', flat=True)
+            .order_by('order', 'index')
+            .values_list('order', 'index')
             .first()
         )
-        new_order = (first_in_target - 1.0) if first_in_target is not None else 0.0
+        if first_in_target:
+            first_order = get_effective_order(first_in_target[0], first_in_target[1])
+            new_order = first_order - 1.0
+        else:
+            new_order = 0.0
 
     # 3. Create the new line
     raw = f"{speaker_str}: {remaining_text}" if speaker_str else remaining_text

@@ -205,3 +205,15 @@ for i in range(0, len(items), chunk_size):
     print(f"Batch from {i} to {i+chunk_size}: length {len(chunk)}")
 
 # %%
+class MyClass:
+    def __init__(self):
+        self.public_var = "public"
+        self._protected_var = "_public"
+        self.__private_var = "__public"
+
+obj = MyClass()
+print(obj.public_var)
+print(obj._protected_var)
+# print(obj.__protected_var)
+print(obj._MyClass__private_var)
+# %%

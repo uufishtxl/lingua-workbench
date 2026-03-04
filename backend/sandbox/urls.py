@@ -4,6 +4,7 @@ from . import views
 
 router = DefaultRouter()
 router.register(r'authors', views.AuthorViewSet, basename='author')
+router.register(r'psandboxes', views.PSandboxViewSet, basename='psandbox')
 
 urlpatterns = [
     # Add the new router URLs to our urlpatterns

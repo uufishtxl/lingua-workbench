@@ -132,7 +132,7 @@ import { ElMessage } from 'element-plus';
 
 const baseWaveSurferRef = ref<InstanceType<typeof BaseWaveSurfer> | null>(null)
 const isPanelExpanded = ref<boolean>(false)
-const scriptPanelWidth = ref<'normal' | 'wide'>('normal')  // normal: 22rem, wide: 44rem
+const scriptPanelWidth = ref<'normal' | 'wide'>('wide')  // normal: 22rem, wide: 44rem
 const isTransitioning = ref<boolean>(false)  // For blur effect during transition
 const loopRegion = ref<boolean>(true)
 const isPlaying = ref<boolean>(false)
