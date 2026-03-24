@@ -2,19 +2,20 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '@/api/axios'
-import { getSlicesByChunk, type AudioSliceResponse } from '@/api/slicerApi'
+import { getSlicesByChunk, type AudioSliceResponse, type AudioChunkResponse } from '@/api/slicerApi'
 import { ElMessage } from 'element-plus'
 import AudioSlicer from '@/components/AudioSlicer.vue'
 import ResourceNotFoundJpg from '@/assets/resource_not_found.jpg'
 
 const route = useRoute()
-const chunk = ref<any>(null)
+const chunk = ref<AudioChunkResponse | null>(null)
 const savedSlices = ref<AudioSliceResponse[]>([])
 const isLoading = ref(false)
 const error = ref<string | null>(null)
 
 // Review mode state
 const nextChunkId = ref<number | null>(null)
+const prevChunkId = ref<number | null>(null)
 const totalChunks = ref(0)
 const currentIndex = ref(0)
 
@@ -33,6 +34,7 @@ const fetchChunkData = async (chunkId: string | string[]) => {
   chunk.value = null
   savedSlices.value = []
   nextChunkId.value = null
+  prevChunkId.value = null
   error.value = null
 
   isLoading.value = true
@@ -49,18 +51,27 @@ const fetchChunkData = async (chunkId: string | string[]) => {
     savedSlices.value = slices
     console.log("savedSlices are ", savedSlices.value)
     
-    // If in review mode, fetch next chunk info
-    if (isReviewMode.value && chunk.value?.source_audio) {
+    // Fetch all chunks for this source audio to find next/prev
+    if (chunk.value?.source_audio) {
       try {
         // Get all chunks for this source audio to find next
         const chunksResponse = await api.get(`/v1/audiochunks/`, {
           params: { source_audio: chunk.value.source_audio }
         })
         const chunks = chunksResponse.data.results || chunksResponse.data
+        // Ensure chunks are strictly ordered by chunk_index so prev/next calculations are always logical
+        chunks.sort((a: AudioChunkResponse, b: AudioChunkResponse) => a.chunk_index - b.chunk_index)
         totalChunks.value = chunks.length
         
-        // Find current chunk's position and next
-        const currentIdx = chunks.findIndex((c: any) => c.id === Number(chunkId))
+        // Find current chunk's position and next/prev
+        const currentIdx = chunks.findIndex((c: AudioChunkResponse) => c.id === Number(chunkId))
+        
+        if (currentIdx > 0) {
+          prevChunkId.value = chunks[currentIdx - 1].id
+        } else {
+          prevChunkId.value = null
+        }
+
         if (currentIdx !== -1 && currentIdx < chunks.length - 1) {
           nextChunkId.value = chunks[currentIdx + 1].id
         } else {
@@ -97,9 +108,8 @@ onMounted(() => {
 })
 </script>
 
-
 <template>
-  <div v-loading="isLoading" class="w-full h-full flex-col flex">
+  <div v-loading="isLoading" class="w-full h-full flex-col flex relative">
     <el-card v-if="error" class="flex-grow flex flex-col items-center justify-center min-h-0">
       <div class="flex-1 w-full h-full min-h-0 relative">
         <img :src="ResourceNotFoundJpg" class="absolute w-full h-full object-contain" alt="Resource Not Found">
@@ -109,12 +119,14 @@ onMounted(() => {
     
     <div v-else-if="chunk" class="min-h-0 flex flex-col flex-grow p-2">
       <AudioSlicer 
+        ref="slicerRef"
         class="flex-grow min-h-0" 
         :url="chunk.file" 
         :title="chunk.title" 
         :chunk-id="chunk.id"
         :initial-slices="savedSlices"
         :review-mode="isReviewMode"
+        :prev-chunk-id="prevChunkId"
         :next-chunk-id="nextChunkId"
         :current-index="currentIndex"
         :total-chunks="totalChunks"

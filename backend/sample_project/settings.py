@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'scripts',
     'reader',
     'pomodoro',
+    'english_corner',
 ]
 
 MIDDLEWARE = [
@@ -239,6 +240,13 @@ LLM_CONFIG = {
     #     "temperature": 0,
     #     "api_key": os.getenv("GOOGLE_API_KEY"),
     # },
+    "english_corner": {
+        "provider": "deepseek",
+        "model_name": "deepseek-chat",
+        "temperature": 0.7,
+        "api_key": os.getenv("DEEPSEEK_API_KEY"),
+        "base_url": os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),
+    },
 }
 
 LOGGING = {
@@ -270,5 +278,17 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+    },
+}
+# Huey Background Tasks Configuration
+import os
+HUEY = {
+    'huey_class': 'huey.SqliteHuey',  # Use SQLite for queue (no Redis needed)
+    'name': 'lingua_huey',
+    'results': True,  # Store return values of tasks
+    'store_none': False,
+    'immediate': True,  # True means run tasks synchronously (in-band)
+    'connection': {
+        'filename': os.path.join(BASE_DIR, 'huey.sqlite3'),
     },
 }

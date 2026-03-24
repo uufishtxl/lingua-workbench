@@ -36,6 +36,16 @@ export interface CreateSliceRequest {
     is_idiom?: boolean
 }
 
+export interface AudioChunkResponse {
+    id: number
+    source_audio: number
+    chunk_index: number
+    file: string
+    has_slices: boolean
+    title: string
+    drama: string
+}
+
 export interface AudioSliceResponse {
     id: number
     audio_chunk: number

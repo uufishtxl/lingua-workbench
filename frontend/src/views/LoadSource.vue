@@ -132,6 +132,7 @@ const lookupSourceAudio = async (dramaId: number | string, season: number, episo
     const response = await api.get('/v1/audios/lookup/', {
       params: { drama_id: dramaId, season: season, episode: episode }
     })
+    
     chunks.value = response.data
     showChunkGrid.value = true
   } catch (error: any) {

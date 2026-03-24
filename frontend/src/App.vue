@@ -1,10 +1,11 @@
 <script setup lang="ts">
 // 1. 我们导入 Vue Router 的两个核心组件
 import { RouterLink, RouterView, useRoute } from 'vue-router'
-import { computed, ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { computed, ref, onMounted, onUnmounted, nextTick, watch } from 'vue'
 // (我们顺便导入我们的“保安室”)
 import { useAuthStore } from '@/stores/authStore'
 import { useChatStore } from '@/stores/chatStore'
+import { usePomodoroStore } from '@/stores/pomodoroStore'
 import { layouts, type LayoutKey } from '@/utils/layouts'
 // Documentation Assistant ChatBot
 import ChatWidget from '@/components/ChatWidget.vue'
@@ -35,6 +36,17 @@ const handleLogout = () => {
 // Global Hotkey for Chat Interaction
 const chatWidgetRef = ref()
 const chatStore = useChatStore()
+const pomodoroStore = usePomodoroStore()
+
+const isEnglishCorner = computed(() => route.name === 'english-corner')
+
+// Mutual Exclusion: Widget ≤ 1
+watch(() => chatStore.isExpanded, (val) => {
+  if (val) pomodoroStore.isExpanded = false
+})
+watch(() => pomodoroStore.isExpanded, (val) => {
+  if (val) chatStore.isExpanded = false
+})
 
 const handleGlobalKeydown = (e: KeyboardEvent) => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
@@ -82,9 +94,11 @@ const handleAskAI = () => {
 </script>
 
 <template>
-  <component :is="layoutComponent">
-    <RouterView />
-  </component>
+  <div :class="['app-wrapper', { 'immersive-context': isEnglishCorner }]">
+    <component :is="layoutComponent">
+      <RouterView />
+    </component>
+  </div>
   <!-- Documentation Assistant ChatBot (global) -->
   <ChatWidget v-if="authStore.isAuthenticated" ref="chatWidgetRef" />
 
@@ -179,5 +193,33 @@ nav a.router-link-exact-active {
 @keyframes popIn {
   from { opacity: 0; transform: translateX(-50%) scale(0.8); }
   to { opacity: 1; transform: translateX(-50%) scale(1); }
+}
+
+/* --- Global Widget Overrides for Immersive Context --- */
+/* Use sibling selector (~) because widgets are outside app-wrapper */
+.app-wrapper.immersive-context ~ .chat-widget {
+  left: 32px !important;
+  right: auto !important;
+  bottom: 32px !important;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.app-wrapper.immersive-context ~ .pomodoro-widget {
+  left: 96px !important; /* side-by-side: 32 (offset) + 64 (gap/size) */
+  right: auto !important;
+  bottom: 32px !important;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Special adjustments for smaller bubble/buttons in immersive mode */
+.app-wrapper.immersive-context ~ :is(.chat-widget, .pomodoro-widget) :deep(.chat-toggle-btn),
+.app-wrapper.immersive-context ~ :is(.chat-widget, .pomodoro-widget) :deep(.pomodoro-toggle-btn) {
+  width: 48px !important;
+  height: 48px !important;
+  font-size: 11px !important;
+}
+
+.app-wrapper.immersive-context ~ .chat-widget-left {
+  left: 32px !important;
 }
 </style>

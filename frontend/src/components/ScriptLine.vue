@@ -39,10 +39,10 @@
             <div class="flex-1">
               <!-- Both Mode: Show EN and ZH -->
               <template v-if="displayLang === 'both'">
-                <span class="text-gray-800 leading-relaxed block">{{ line.text }}</span>
                 <span v-if="line.text_zh" class="text-gray-500 text-sm leading-relaxed block mt-0.5">
                   {{ line.text_zh }}
                 </span>
+                <span class="text-gray-800 leading-relaxed block">{{ line.text }}</span>
               </template>
               <!-- Single Language Mode -->
               <span v-else class="text-gray-800 leading-relaxed">

@@ -51,7 +51,10 @@ urlpatterns = [
     # Scripts (Fanfr.com script parser)
     path('api/scripts/', include('scripts.urls')),
 
-    # �蠘�頝舐眏
+    # 閱讀器路由
+
+    # English Corner (AI conversation practice)
+    path('api/', include('english_corner.urls')),
 
 ]
 

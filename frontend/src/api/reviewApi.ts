@@ -30,11 +30,6 @@ export const reviewApi = {
         return service.post<ReviewSubmissionResult>(`/v1/reviews/${cardId}/submit/`, { success })
     },
 
-    // Update slice translation
-    updateTranslation(sliceId: number, translation: string) {
-        return service.patch(`/v1/audioslices/${sliceId}/`, { translation })
-    },
-
     // Update any AudioSlice fields (original_text, translation, etc.)
     updateSlice(sliceId: number, data: Partial<{ translation: string; original_text: string }>) {
         return service.patch(`/v1/audioslices/${sliceId}/`, data)

@@ -53,7 +53,8 @@ class SourceAudioViewSet(viewsets.ModelViewSet):
                 )
 
             # Mutate the request data to replace the drama name with the drama ID
-            mutable_data = {key: value for key, value in request.data.items()}
+            # mutable_data = {key: value for key, value in request.data.items()}
+            mutable_data = request.data.copy()
             mutable_data['drama'] = drama.id
             
             # Proceed with the serializer and standard creation flow
@@ -61,7 +62,7 @@ class SourceAudioViewSet(viewsets.ModelViewSet):
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers) 
         
         # If drama is an ID or not provided, proceed with default behavior
         return super().create(request, *args, **kwargs)
@@ -151,13 +152,15 @@ class SourceAudioViewSet(viewsets.ModelViewSet):
 
         try:
             source_audio = SourceAudio.objects.get(
+                user=request.user,
                 drama_id=drama_id,
                 season=season,
                 episode=episode
             )
-            chunks = AudioChunk.objects.filter(source_audio=source_audio).order_by('chunk_index')
-            serializer = AudioChunkSerializer(chunks, many=True)
-            return Response(serializer.data)
+            # .values 产出一个包含字典的列表：[{'id': 1, 'chunk_index': 0, 'has_slices': True}, ...]
+            # .values_list 产出一个包含元组的列表：[(1, 0, True), ...]
+            chunks_data = source_audio.chunks.values('id', 'chunk_index', 'has_slices')
+            return Response(list(chunks_data))
         except SourceAudio.DoesNotExist:
             return Response(
                 {"error": "SourceAudio not found."},
@@ -395,17 +398,24 @@ class DramaViewSet(viewsets.ReadOnlyModelViewSet):
 
 class AudioChunkViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    API endpoint for listing dramas for the authenticated user.
+    API endpoint for listing chunks for the authenticated user.
     """
     serializer_class = AudioChunkSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = None
 
     def get_queryset(self):
         """
-        This view should return a list of all the dramas
-        for the currently authenticated user.
+        This view should return a list of all chunks
+        for the currently authenticated user, optionally filtered by source_audio.
         """
-        return AudioChunk.objects.filter(source_audio__user=self.request.user)
+        queryset = AudioChunk.objects.filter(source_audio__user=self.request.user)
+        
+        source_audio_id = self.request.query_params.get('source_audio')
+        if source_audio_id:
+            queryset = queryset.filter(source_audio_id=source_audio_id)
+            
+        return queryset
 
     @action(detail=True, methods=['post'])
     def complete(self, request, pk=None):

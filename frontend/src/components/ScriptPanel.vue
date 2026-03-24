@@ -25,7 +25,7 @@
         <span v-if="totalCount > 0" class="text-xs text-gray-500">
           {{ lines.length }} / {{ totalCount }} lines
         </span>
-        <el-button circle size="small" @click="loadLines" :disabled="loading"><i-tabler-refresh /></el-button>
+        <el-button circle size="small" @click="() => loadLines()" :disabled="loading"><i-tabler-refresh /></el-button>
       </div>
     </div>
 
@@ -73,8 +73,8 @@
     </Transition>
 
     <!-- Review Mode: Complete & Continue Bar -->
-    <ChunkCompleteBar v-if="reviewMode" :chunk-id="chunkId" :next-chunk-id="nextChunkId" :is-last-chunk="!nextChunkId"
-      :current-index="currentIndex" :total-chunks="totalChunks" />
+    <ChunkCompleteBar v-if="reviewMode" :chunk-id="chunkId" :next-chunk-id="nextChunkId" :is-last-chunk="!nextChunkId && (totalChunks ?? 0) > 0 && currentIndex === (totalChunks ?? 0) - 1"
+      :current-index="currentIndex" :total-chunks="totalChunks" @trigger-save="$emit('trigger-save')" />
 
     <!-- Slice Search Dialog -->
     <el-dialog
@@ -150,6 +150,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   ingest: []
   toggleWidth: []
+  'trigger-save': []
 }>()
 
 // State

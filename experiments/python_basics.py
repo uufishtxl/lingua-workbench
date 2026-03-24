@@ -217,3 +217,59 @@ print(obj._protected_var)
 # print(obj.__protected_var)
 print(obj._MyClass__private_var)
 # %%
+from dataclasses import dataclass
+@dataclass(frozen=True)
+class Person:
+    name: str
+    age: int
+
+    def __str__(self):
+        return f"{self.name} is {self.age} years old."
+
+
+person = Person("Edith", 30)
+kato = Person("Edith", 30)
+bla = Person("Bla", 20)
+print(person, person.__hash__, kato.__hash__)
+someset = set()
+someset.add(person)
+someset.add(kato)
+someset.add(bla)
+print(someset)
+# person.name = "edith"
+
+class MutablePerson:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def __hash__(self):
+        return hash((self.name, self.age))
+
+    def __eq__(self, other):
+        return self.name == other.name and self.age == other.age
+
+    def __str__(self):
+        return f"{self.name} is {self.age} years old."
+
+mp = MutablePerson("Edith", 30)
+print(mp)
+mp.age = 20
+print(mp)
+
+# %%
+somedict = {'id': 1, 'color': 'red'}
+items = somedict.items()
+print(items, type(items))
+for key, value in items:
+    print(key, value)
+# %%
+for value in somedict.values():
+    print(value)
+# %%
+for key in somedict.keys():
+    print(key)
+# %%
+_new = {key: value for key, value in items}
+print(_new)
+# %%

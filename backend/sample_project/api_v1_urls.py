@@ -12,5 +12,8 @@ urlpatterns = [
     path('', include('reader.urls')),
     
     # URLs from pomodoro app
-    path('', include('pomodoro.urls'))
+    path('', include('pomodoro.urls')),
+    
+    # URLs from english_corner app
+    path('english_corner/', include('english_corner.urls'))
 ]

@@ -2,8 +2,12 @@
     <div class="wave-surfer__wrapper flex flex-col gap-[4px] h-full overflow-hidden">
         <!-- Wave Container -->
         <el-card class="flex-none">
-            <p class="text-xs text-gray-400 mb-1">Source: {{ props.title }}</p>
-
+            <p class="text-xs text-gray-400 mb-1">
+                Source: {{ props.title }}
+                <span v-if="props.totalChunks" class="ml-1">
+                    Chunk {{ (props.currentIndex ?? 0) + 1 }} / {{ props.totalChunks }}
+                </span>
+            </p>
             <BaseWaveSurfer ref="baseWaveSurferRef" :url="props.url" @play="isPlaying = true" @pause="isPlaying = false"
                 @region-created="handleRegionCreated" @region-updated="handleRegionUpdated"
                 @region-removed="handleRegionRemoved" @region-in="handleRegionIn" @region-out="handleRegionOut"
@@ -11,15 +15,41 @@
 
             <!-- Controls -->
             <div class="flex justify-around items-center gap-4 mt-2">
-                <div class="flex gap-6 items-center">
+                <div class="flex gap-4 items-center">
+                    <el-button 
+                        size="small" circle 
+                        :type="props.prevChunkId ? 'primary' : ''"
+                        :disabled="!props.prevChunkId"
+                        @click="navigateChunk(props.prevChunkId)"
+                        title="上一片段"
+                    >
+                        <i-tabler-player-track-prev-filled class="text-xs" />
+                    </el-button>
+
                     <el-button type="primary" @click="handlePlayPause" size="small" circle>
                         <i-tabler-player-pause-filled v-if="isPlaying" class="text-sm" />
                         <i-tabler-player-play-filled v-else class="text-sm" />
                     </el-button>
+
+                    <el-button 
+                        size="small" circle 
+                        :type="props.nextChunkId ? 'primary' : ''"
+                        :disabled="!props.nextChunkId"
+                        @click="navigateChunk(props.nextChunkId)"
+                        title="下一片段"
+                    >
+                        <i-tabler-player-track-next-filled class="text-xs" />
+                    </el-button>
+
                     <el-button :type="loopRegion ? 'success' : ''" @click="loopRegion = !loopRegion" size="small" circle>
                         <i-tabler-repeat class="text-sm" />
                     </el-button>
-                    <PlaybackSpeedControl v-model="currentPlaybackRate" :options="speedOptions" theme="light" />
+
+                    <PlaybackSpeedControl 
+                        v-model="currentPlaybackRate" 
+                        :options="speedOptions" 
+                        theme="light" 
+                    />
                 </div>
             </div>
         </el-card>
@@ -71,7 +101,7 @@
                 </div>
 
                 <div class="mt-4 w-full text-center flex-shrink-0 flex lg:px-96">
-                    <el-button class="flex-1" type="primary" @click="saveRegions" :disabled="!regionsList.length" :loading="isSaving">
+                    <el-button class="flex-1" type="primary" @click="() => saveRegions()" :disabled="!regionsList.length" :loading="isSaving">
                         Save All Changes
                     </el-button>
                 </div>
@@ -105,13 +135,14 @@
                 >
                     <ScriptPanel
                         :chunk-id="props.chunkId"
-                        :next-chunk-id="nextChunkId"
+                        :next-chunk-id="props.nextChunkId ?? undefined"
                         :review-mode="props.reviewMode"
                         :current-index="props.currentIndex"
                         :total-chunks="props.totalChunks"
                         :script-panel-width="scriptPanelWidth"
                         @search-slice="handleSearchSlice"
                         @toggle-width="scriptPanelWidth = scriptPanelWidth === 'normal' ? 'wide' : 'normal'"
+                        @trigger-save="() => saveRegions(true)"
                     />
                 </el-card>
             </Transition>
@@ -129,6 +160,13 @@ import PlaybackSpeedControl from './PlaybackSpeedControl.vue';
 import { createBatchSlices, deleteSlice, type CreateSliceRequest, type AudioSliceResponse } from '@/api/slicerApi';
 import ScriptPanel from './ScriptPanel.vue';
 import { ElMessage } from 'element-plus';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const emit = defineEmits<{
+    (e: 'save-complete', success: boolean): void;
+}>()
 
 const baseWaveSurferRef = ref<InstanceType<typeof BaseWaveSurfer> | null>(null)
 const isPanelExpanded = ref<boolean>(false)
@@ -164,6 +202,7 @@ const props = defineProps<{
     chunkId: number;
     initialSlices?: AudioSliceResponse[];
     // Review mode props
+    prevChunkId?: number | null;
     nextChunkId?: number | null;
     currentIndex?: number;
     totalChunks?: number;
@@ -182,6 +221,13 @@ watch(
   },
   { immediate: true }
 )
+
+const navigateChunk = (id?: number | null) => {
+    if (id) {
+        // Assume route names are standard, keep current query params (like mode=review)
+        router.push({ params: { id: id.toString() }, query: router.currentRoute.value.query })
+    }
+}
 
 // type audio_type = 'Link' | 'H-Del' | 'Th-Del' | 'Flap-T'
 
@@ -206,13 +252,6 @@ const regionsList = ref<RegionInfo[]>([])
 const sortedRegionsList = computed(() => 
     [...regionsList.value].sort((a, b) => Number(a.start) - Number(b.start))
 )
-
-// Next chunk ID for script panel (placeholder - should be passed as prop or computed)
-const nextChunkId = computed(() => {
-    // TODO: This should be computed based on source audio chunks
-    // For now, return chunkId + 1 as placeholder
-    return props.chunkId ? props.chunkId + 1 : undefined
-})
 
 // Handle search request from ScriptPanel
 const handleSearchSlice = (text: string) => {
@@ -458,7 +497,7 @@ const handleUpdateMarkers = (regionId: string, markers: { isPronunciationHard: b
     }
 }
 
-const saveRegions = async () => {
+const saveRegions = async (suppressMessage = false) => {
     if (isSaving.value) return
     
     isSaving.value = true
@@ -488,15 +527,26 @@ const saveRegions = async () => {
         console.log('Saving slices:', slicesData)
         const result = await createBatchSlices(slicesData)
         console.log('Save result:', result)
-        ElMessage.success(`Saved ${result.length} slices successfully!`)
+        
+        if (!suppressMessage) {
+            ElMessage.success(`Saved ${result.length} slices successfully!`)
+        }
         isDirty.value = false  // Reset dirty after successful save
+        emit('save-complete', true)
     } catch (error) {
         console.error('Failed to save slices:', error)
-        ElMessage.error('Failed to save slices')
+        if (!suppressMessage) {
+            ElMessage.error('Failed to save slices')
+        }
+        emit('save-complete', false)
     } finally {
         isSaving.value = false
     }
 };
+
+defineExpose({
+    saveRegions
+})
 </script>
 
 <style scoped>

@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+/* 
+  Neumorphic (拟物) 风格基础 Token
+  颜色继承自 Lingua Workbench 原 Frontend 设计
+*/
+
+:root {
+  --bg-color: #161618;
+  --text-main: #ffffff;
+  --text-secondary: #8e8e93;
+
+  --shadow-light: rgba(255, 255, 255, 0.05);
+  --shadow-dark: #0c0c0d;
+  --shadow-primary: #202023;
+
+  --accent-color: #ffd60a;
+  --success-color: #8ce196;
+  --danger-color: #ff453a;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: 'Inter', 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow: hidden;
+  /* App should act like original native app, no pull to refresh */
+}
+
+/* Global Neumorphic Classes */
+.neumorphic-panel {
+  background: #1c1c1e;
+  border-radius: 20px;
+  box-shadow: inset 2px 2px 4px rgba(255, 255, 255, 0.02),
+    8px 8px 20px rgba(0, 0, 0, 0.4),
+    -8px -8px 20px rgba(32, 32, 35, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.neumorphic-btn {
+  background: var(--bg-color);
+  border: none;
+  border-radius: 12px;
+  color: var(--text-secondary);
+  box-shadow: 4px 4px 10px var(--shadow-dark),
+    -4px -4px 10px var(--shadow-primary);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+}
+
+.neumorphic-btn:active {
+  box-shadow: inset 4px 4px 10px var(--shadow-dark),
+    inset -4px -4px 10px var(--shadow-primary);
+  color: var(--text-main);
+}
+
+.neumorphic-circle-btn {
+  background: var(--bg-color);
+  border: none;
+  border-radius: 50%;
+  color: var(--text-secondary);
+  box-shadow: 4px 4px 10px var(--shadow-dark),
+    -4px -4px 10px var(--shadow-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.neumorphic-circle-btn:active {
+  box-shadow: inset 4px 4px 10px var(--shadow-dark),
+    inset -4px -4px 10px var(--shadow-primary);
+  transform: scale(0.95);
+  color: var(--text-main);
+}
+
+.neumorphic-circle-btn.small {
+  width: 32px;
+  height: 32px;
+}
+
+.neumorphic-btn-accent {
+  background: var(--bg-color);
+  color: #32d74b;
+  box-shadow: 6px 6px 15px var(--shadow-dark),
+    -6px -6px 15px var(--shadow-primary);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.neumorphic-btn-accent:active {
+  box-shadow: inset 4px 4px 10px var(--shadow-dark),
+    inset -4px -4px 10px var(--shadow-primary);
+  transform: scale(0.96);
+}
+
+.neumorphic-inset {
+  background: var(--bg-color);
+  border-radius: 16px;
+  box-shadow: inset 4px 4px 10px var(--shadow-dark),
+    inset -4px -4px 10px var(--shadow-primary);
+}
+
+/* 修复浏览器自动填充 (Autofill) 导致的默认白底/黄底问题 */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: inset 4px 4px 8px var(--shadow-dark),
+    inset -4px -4px 8px var(--shadow-primary),
+    0 0 0 1000px var(--bg-color) inset !important;
+  -webkit-text-fill-color: var(--text-main) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}

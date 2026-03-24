@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, computed } from 'vue';
 import { usePomodoroStore } from '@/stores/pomodoroStore';
+import { useChatStore } from '@/stores/chatStore';
 import { storeToRefs } from 'pinia';
 import PomodoroRuler from './PomodoroRuler.vue';
 import PomodoroHistory from './PomodoroHistory.vue';
@@ -20,6 +21,9 @@ const {
   recoverySession,
   isFlipped
 } = storeToRefs(pomodoroStore);
+
+const chatStore = useChatStore();
+const { position: chatPosition } = storeToRefs(chatStore);
 
 // Ruler state
 const isRulerOpen = ref(false);
@@ -50,14 +54,18 @@ function closeRuler() {
 </script>
 
 <template>
-  <div class="pomodoro-widget" :class="{ 'expanded': isExpanded }">
+  <div class="pomodoro-widget" :class="{ 'expanded': isExpanded, 'pomodoro-widget-right': chatPosition === 'left' }">
     <!-- Floating Button (Collapsed) -->
     <button 
       v-if="!isExpanded"
       class="pomodoro-toggle-btn neumorphic-btn"
+      :class="{ 'super-flow-active': isSuperFlow }"
       @click="toggleWidget"
       title="Pomodoro Timer"
     >
+      <div v-if="isSuperFlow" class="super-flow-ring">
+        <div class="super-flow-ring-inner"></div>
+      </div>
       <div class="timer-text">{{ displayTime }}</div>
     </button>
 
@@ -89,7 +97,8 @@ function closeRuler() {
               :class="{ 
                 'blinking': isRunning && pomodoroStore.timeLeft === 0,
                 'is-rest': currentState === 'REST',
-                'clickable': currentState === 'IDLE'
+                'clickable': currentState === 'IDLE',
+                'text-super-flow': isSuperFlow && currentState !== 'REST'
               }"
               @click="openRuler"
             >
@@ -190,6 +199,11 @@ function closeRuler() {
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.pomodoro-widget-right {
+  left: auto;
+  right: 24px;
+}
+
 /* --- 3D Flip Container --- */
 .card-container {
   width: 330px;
@@ -251,6 +265,11 @@ function closeRuler() {
 }
 
 .time-main.is-rest { color: #8ce196; }
+
+.time-main.text-super-flow {
+  color: #ffd60a;
+  text-shadow: 0 0 15px rgba(255, 214, 10, 0.2);
+}
 
 .super-flow-toggle {
   background: transparent;
@@ -348,12 +367,51 @@ function closeRuler() {
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
   padding: 0;
+  position: relative;
 }
 
 .pomodoro-toggle-btn:hover {
   transform: scale(1.08);
   box-shadow: 10px 10px 20px #0c0c0d, -10px -10px 20px #242427 !important;
   color: #ffffff !important;
+}
+
+.pomodoro-toggle-btn.super-flow-active {
+  border-color: transparent;
+}
+
+.pomodoro-toggle-btn.super-flow-active .timer-text {
+  color: #ffd60a !important;
+  text-shadow: 0 0 10px rgba(255, 214, 10, 0.4);
+  z-index: 2;
+  position: relative;
+}
+
+.super-flow-ring {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0%, transparent 50%, rgba(255, 214, 10, 0.8) 100%);
+  animation: spin 2.5s linear infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.super-flow-ring-inner {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  border-radius: 50%;
+  background: #161618;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
 }
 
 .timer-text {

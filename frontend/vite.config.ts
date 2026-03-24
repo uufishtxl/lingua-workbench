@@ -85,6 +85,11 @@ export default defineConfig((config) => {
           changeOrigin: true, // Required for Virtual Hosted environments to overwrite the Host header
           // rewrite: (path) => path.replace(/^\/api/, ''), // Enable if backend routing does not expect the /api prefix
         },
+        // Media files proxy
+        '/media': {
+          target: backendUrl,
+          changeOrigin: true,
+        },
         // Whisper speech-to-text service proxy
         '/whisper': {
           target: 'http://localhost:8001', // Local instance of the Whisper inference service

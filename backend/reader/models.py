@@ -9,7 +9,7 @@ class Article(models.Model):
         FAILED = 'failed', 'Failed'
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    url = models.URLField(max_length=1024, help_text="Original URL of the article")
+    url = models.CharField(max_length=1024, help_text="Original URL of the article")
     title = models.CharField(max_length=500, blank=True, help_text="Extracted title")
     author = models.CharField(max_length=255, blank=True, null=True)
     site_name = models.CharField(max_length=255, blank=True, null=True)

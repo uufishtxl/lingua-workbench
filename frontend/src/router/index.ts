@@ -129,6 +129,24 @@ const router = createRouter({
       }
     },
     {
+      path: '/english-corner',
+      name: 'english-corner',
+      component: () => import('@/views/EnglishCorner.vue'),
+      meta: {
+        layout: 'BlankLayout',
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/english-corner/review',
+      name: 'english-corner-review',
+      component: () => import('@/views/EnglishCornerReview.vue'),
+      meta: {
+        layout: 'BlankLayout',
+        requiresAuth: true
+      }
+    },
+    {
       path: '/read/:id?',
       name: 'reader',
       component: () => import('@/views/ReaderView.vue'),
@@ -136,7 +154,15 @@ const router = createRouter({
         layout: 'AppLayout',
         requiresAuth: true
       }
-    }
+    },
+    // {
+    //   path: '/trials/in-place',
+    //   name: 'trials-in-place',
+    //   component: () => import('@/components/Trials/InPlace.vue'),
+    //   meta: {
+    //     requiresAuth: false
+    //   }
+    // }
   ],
 })
 
