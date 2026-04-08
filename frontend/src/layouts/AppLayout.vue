@@ -19,6 +19,7 @@ import {
   // Clock,
   Scissor,
   ChatDotRound,
+  Calendar,
 } from '@element-plus/icons-vue'
 
 const isCollapse = ref(false)
@@ -104,6 +105,11 @@ const menuItems = [
     index: '/english-corner',
     icon: ChatDotRound,
     title: 'English Corner',
+  },
+  {
+    index: '/daily-phrases',
+    icon: Calendar,
+    title: 'Daily Phrases',
   },
 ]
 </script>

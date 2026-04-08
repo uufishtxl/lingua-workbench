@@ -12,6 +12,7 @@ const router = useRouter();
 const scenarios = ref<Scenario[]>([]);
 const graphData = ref<{ nodes: WordNode[], links: any[] }>({ nodes: [], links: [] });
 const chatRef = ref<any>(null);
+const graphRef = ref<any>(null);
 
 const loading = ref(true);
 
@@ -98,6 +99,12 @@ const handleExtractVocab = async (payload: { word: WordNode, scenarioId?: number
   }
 };
 
+const handleVocabClickInChat = (vocab: WordNode) => {
+  if (graphRef.value) {
+    graphRef.value.focusNode(vocab.id);
+  }
+};
+
 const refreshGraph = async () => {
   try {
     const res = await englishCornerApi.getGraph(currentScenarioId.value);
@@ -144,7 +151,7 @@ onUnmounted(() => {
 <template>
   <div class="immersive-screen">
     <!-- Level 0: Background Canvas (Full Screen) -->
-    <KnowledgeGraph :data="graphData" @node-click="handleNodeClick" />
+    <KnowledgeGraph ref="graphRef" :data="graphData" @node-click="handleNodeClick" />
 
     <!-- Level 1: Home Escape Pod (Left Sensor) -->
     <div class="home-sensor-zone">
@@ -176,6 +183,7 @@ onUnmounted(() => {
       v-if="currentScenarioId" 
       :scenario-id="currentScenarioId" 
       @extract-vocab="handleExtractVocab" 
+      @click-vocab="handleVocabClickInChat"
     />
 
     <!-- Level 4: Bottom Navigation (Scenario Switcher) -->

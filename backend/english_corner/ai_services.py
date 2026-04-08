@@ -14,9 +14,13 @@ import json
 import wave
 import logging
 import traceback
+from enum import Enum
+from typing import Literal
 
 from django.conf import settings
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.runnables import RunnablePassthrough
+from pydantic import BaseModel, Field
 from ai_analysis.services import _get_llm
 
 logger = logging.getLogger(__name__)
@@ -347,3 +351,143 @@ def generate_word_enrichment(label: str, context: str = "") -> dict:
     except json.JSONDecodeError:
         logger.warning(f"Word enrichment JSON parse failed: {content}")
         return {"explanation": "（生成失败）", "example": ""}
+
+
+# ================================================================
+# 7. Batch Scenario Generation — Daily Phrases
+# ================================================================
+
+ALLOWED_CONTEXT_TAGS = [
+    "Office", "Meeting", "Interview", "Remote_Work", "Cafe", 
+    "Restaurant", "Party", "Street", "Home", "Shopping", 
+    "Gym", "Commute", "Airport", "Hospital", "Hotel", 
+    "Texting", "Phone_Call"
+]
+
+# Create a dynamic Enum for Pydantic validation
+# 第一个参数：生成的枚举类的类名；第二个参数：字典推导式定义了美剧的成员名（KEY）和成员值（VALUE）
+ContextTag = Enum("ContextTag", {tag.upper(): tag for tag in ALLOWED_CONTEXT_TAGS}, type=str)
+
+BATCH_SCENARIO_SYSTEM_PROMPT = f"""Act as an expert linguist and language tutor. I will provide a JSON array of vocabulary words or phrases. For each item, generate exactly 3 distinct, practical, real-world contexts where this word is naturally used.
+
+Constraints:
+- Keep each scenario description brief (maximum 15 words).
+- Do not include the definition of the word.
+- You MUST assign one context tag to each scenario from the following exact list: {ALLOWED_CONTEXT_TAGS}. Do not invent new tags."""
+
+class ScenarioItem(BaseModel):
+    description: str = Field(description="A brief description of the scenario (max 15 words).")
+    tag: ContextTag = Field(description="The context tag from the allowed list.")
+
+class WordScenarios(BaseModel):
+    word: str = Field(description="The original vocabulary word requested.")
+    scenarios: list[ScenarioItem] = Field(description="List of exactly 3 distinct scenarios for this word.")
+
+class BatchScenarioResult(BaseModel):
+    results: list[WordScenarios] = Field(description="The list of results for all requested words.")
+
+def generate_batch_scenarios(words: list[dict]) -> dict:
+    """
+    Generate scenarios for multiple words in a single LLM call.
+    Returns: A dictionary mapping word labels to lists of scenario dicts.
+    """
+    llm = _get_llm(feature="english_corner").with_structured_output(BatchScenarioResult, method="function_calling")
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", BATCH_SCENARIO_SYSTEM_PROMPT),
+        ("human", "{input}")
+    ])
+
+    word_labels = [w['label'] for w in words]
+    
+    # Use LCEL with a dictionary-based mapper for cleaner JSON serialization
+    chain = (
+        {"input": lambda labels: json.dumps(labels, ensure_ascii=False)} 
+        | prompt 
+        | llm
+    )
+    
+    try:
+        response: BatchScenarioResult = chain.invoke(word_labels)
+        data = response.model_dump()
+        return {item["word"]: item["scenarios"] for item in data["results"]}
+    except Exception as e:
+        logger.exception(f"Batch scenario structured output failed: {e}")
+        return {}
+
+
+# ================================================================
+# 8. Sentence Verification — Daily Phrases
+# ================================================================
+
+VERIFY_SENTENCE_SYSTEM_PROMPT = """You are a Native English Teacher living in the United States. A student is practicing vocabulary by writing original sentences.
+
+You will receive:
+- target_word: the vocabulary word the student must use
+- user_sentence: the student's original sentence
+- bonus_words: a list of extra vocabulary words (with IDs)
+
+Your tasks:
+1. Determine if the student used the target_word correctly and naturally in context. Set is_pass to true or false.
+2. Polish the student's sentence (minimal grammatical corrections) into `polished_text`.
+3. Provide a `native_version`: Reimagine the sentence as a native speaker would naturally say it in the given context. CRITICAL: Prioritize natural flow and common idioms over the student's original structure.
+4. Provide a `community_version`: The 'Internet-native' or 'Street-smart' way to say this. Think Reddit, Hacker News, or X. Use sharp metaphors, internet slang, and high-impact verbs. It should sound like someone who is 'over' the corporate BS and tells it like it is.
+5. Provide brief, encouraging feedback (1-2 sentences).
+6. Check each bonus_word — if they used it naturally (or creatively adapted it), include its ID in mastered_word_ids. IMPORTANT: The student might make creative wordplay (e.g. 'AI rush' instead of 'gold rush'). Do NOT 'correct' their creative adaptations back to the dictionary form.
+6. ALWAYS provide 1-3 natural, high-leverage alternatives (idioms, phrases, or collocations).
+   - These alternatives should relate broadly to the theme or intent of the user's sentence. They do NOT need to perfectly substitute the text in the exact original grammar context. Be flexible.
+   - Dynamic "Vibe" Labeling: Label each with its specific context (e.g., "SHARP & CRITICAL", "CONVERSATIONAL", "BUSINESS / TECH").
+   - For each alternative, provide the "expression" (the alternative phrase) and an "example" (one clear sentence showing it in action). 
+     CRITICAL: For the "example" sentences, INVENT COMPLETELY NEW, DIVERSE CONTEXTS (e.g. workplace, daily life, travel, movies). Do NOT just reuse the precise topic of the student's original sentence. We want exposure to diverse situations."""
+
+class AlternativeItem(BaseModel):
+    vibe: str = Field(description="Dynamic vibe labeling, e.g. CONVERSATIONAL, BUSINESS / TECH")
+    expression: str = Field(description="The alternative phrase, idiom, or collocation.")
+    example: str = Field(description="A completely new, diverse context sentence showing it in action.")
+
+class VerificationResult(BaseModel):
+    is_pass: bool = Field(description="Whether the target_word was used correctly and naturally.")
+    polished_text: str = Field(description="Minimal grammatical corrections of the user's sentence.")
+    native_version: str = Field(description="Reimagine the sentence as a native speaker would naturally say it in the given context. CRITICAL: Prioritize natural flow and common idioms over the student's original structure. If the student used a good phrase, keep it ONLY if it's the most natural choice available. If a better, more idiomatic way exists (e.g., using a phrasal verb instead of a formal noun), prioritize the idiomatic version.")
+    community_version: str = Field(description="The 'Internet-native' or 'Street-smart' way to say this. Think Reddit, Hacker News, or X. Use sharp metaphors, internet slang, and high-impact verbs. It should sound like someone who is 'over' the corporate BS and tells it like it is.")
+    feedback: str = Field(description="Brief, encouraging feedback (1-2 sentences).")
+    mastered_word_ids: list[int] = Field(description="List of integer bonus_word IDs that were successfully used.")
+    alternatives: list[AlternativeItem] = Field(description="List of 1-3 natural, high-leverage alternatives.")
+
+def verify_user_sentence(target_word: str, user_sentence: str, bonus_words: list[dict]) -> dict:
+    """
+    Call LLM to verify a user's sentence for Daily Phrases.
+    Returns: A dictionary matching the VerificationResult schema.
+    """
+    llm = _get_llm(feature="english_corner").with_structured_output(VerificationResult, method="function_calling")
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", VERIFY_SENTENCE_SYSTEM_PROMPT),
+        ("human", "target_word: {target_word}\nuser_sentence: {user_sentence}\nbonus_words: {bonus_words}")
+    ])
+
+    # Cleaner LCEL pattern: JSON serialization of bonus_words is handled by the chain pipe itself
+    chain = (
+        RunnablePassthrough.assign(
+            bonus_words=lambda x: json.dumps(x["bonus_words"], ensure_ascii=False)
+        )
+        | prompt 
+        | llm
+    )
+
+    try:
+        response: VerificationResult = chain.invoke({
+            "target_word": target_word,
+            "user_sentence": user_sentence,
+            "bonus_words": bonus_words,
+        })
+        return response.model_dump()
+    except Exception as e:
+        logger.exception(f"Verify sentence structured output failed: {e}")
+        return {
+            "is_pass": False,
+            "polished_text": user_sentence,
+            "native_version": "",
+            "feedback": "（评估失败，大模型服务暂时不可用，请重试）",
+            "mastered_word_ids": [],
+            "alternatives": [],
+        }
+

@@ -157,6 +157,16 @@ class WordNode(models.Model):
     # SRS fields (synced with phrase_log or managed here)
     mastery = models.PositiveIntegerField(default=0, help_text="0-100 percentage")
     box_level = models.PositiveIntegerField(default=1, help_text="SRS box level (1-5)")
+    next_review_at = models.DateTimeField(
+        default=timezone.now,
+        help_text="SRS next review timestamp"
+    )
+
+    # LLM-generated scenarios for Daily Phrases
+    scenarios = models.JSONField(
+        default=list, blank=True,
+        help_text="LLM-generated scenarios: [{'description': '...', 'tag': 'Office'}, ...]"
+    )
 
     embedding = models.JSONField(
         null=True, blank=True,
@@ -192,3 +202,39 @@ class WordLink(models.Model):
             'user', 'source_type', 'source_id',
             'target_type', 'target_id', 'relation'
         )
+
+
+class DailyPracticeLog(models.Model):
+    """
+    每日练习日志：追踪用户当天的 3-word session 进度和完成状态。
+    focus_minutes is derived from (updated_at - created_at), not stored.
+    """
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    date = models.DateField(default=timezone.now)
+    words_practiced = models.IntegerField(default=0)
+    word_ids = models.JSONField(
+        default=list,
+        help_text="3 WordNode IDs for today: [12, 45, 89]"
+    )
+    is_completed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'date'],
+                name='unique_daily_log'
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.user} - {self.date} ({self.words_practiced}/3)"
+
+    @property
+    def focus_minutes(self):
+        """Rough calculation: minutes between session start and last update."""
+        if self.updated_at and self.created_at:
+            delta = self.updated_at - self.created_at
+            return round(delta.total_seconds() / 60)
+        return 0

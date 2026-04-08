@@ -25,6 +25,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['node-click']);
 
+const chartRef = ref<any>(null);
 const searchQuery = ref('');
 const selectedBoxLevel = ref<number | null>(null);
 
@@ -119,6 +120,7 @@ const chartOptions = computed(() => {
           return nodeIds.has(String(link.source)) && nodeIds.has(String(link.target));
         }),
         roam: true,
+        draggable: true,
         force: {
           repulsion: 1500,
           edgeLength: 120,
@@ -145,11 +147,42 @@ const onChartClick = (params: any) => {
     emit('node-click', params.data);
   }
 };
+
+const focusNode = (nodeId: number) => {
+  if (chartRef.value) {
+    const nodes = chartOptions.value.series?.[0]?.data || [];
+    const index = nodes.findIndex((n: any) => n.id === nodeId);
+    
+    if (index !== -1) {
+      // Clears previous focus if any
+      chartRef.value.dispatchAction({
+        type: 'downplay',
+        seriesId: 'main-graph'
+      });
+      
+      // Highlights the target node and its direct neighbors
+      chartRef.value.dispatchAction({
+        type: 'focusNodeAdjacency',
+        seriesId: 'main-graph',
+        dataIndex: index
+      });
+      
+      // Forces the tooltip to pop up on that node
+      chartRef.value.dispatchAction({
+        type: 'showTip',
+        seriesIndex: 0,
+        dataIndex: index
+      });
+    }
+  }
+};
+
+defineExpose({ focusNode });
 </script>
 
 <template>
   <div class="graph-container">
-    <v-chart class="chart" :option="chartOptions" @click="onChartClick" autoresize />
+    <v-chart ref="chartRef" class="chart" :option="chartOptions" @click="onChartClick" autoresize />
     
     <!-- Filter & Search Controls (Commented out) -->
     <!--

@@ -31,8 +31,14 @@ class ScenarioViewSet(viewsets.ModelViewSet):
     pagination_class = None
 
     def get_queryset(self):
+        from django.db.models import Count, Q
         return Scenario.objects.filter(
             Q(is_preset=True) | Q(user=self.request.user)
+        ).annotate(
+            dialogue_rounds=Count(
+                'conversation__messages', 
+                filter=Q(conversation__messages__role='user')
+            )
         ).order_by('-is_preset', '-created_at')
 
     def perform_create(self, serializer):

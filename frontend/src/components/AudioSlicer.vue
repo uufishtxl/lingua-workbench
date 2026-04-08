@@ -5,7 +5,7 @@
             <p class="text-xs text-gray-400 mb-1">
                 Source: {{ props.title }}
                 <span v-if="props.totalChunks" class="ml-1">
-                    Chunk {{ (props.currentIndex ?? 0) + 1 }} / {{ props.totalChunks }}
+                    Chunk {{ (props.currentIndex ?? 0) }} / {{ props.totalChunks }}
                 </span>
             </p>
             <BaseWaveSurfer ref="baseWaveSurferRef" :url="props.url" @play="isPlaying = true" @pause="isPlaying = false"

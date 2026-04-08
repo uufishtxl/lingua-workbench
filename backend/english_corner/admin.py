@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     Scenario, Conversation, PracticeMessage,
-    PracticeFlashcard, WordNode, WordLink,
+    PracticeFlashcard, WordNode, WordLink, DailyPracticeLog
 )
 
 
@@ -46,3 +46,8 @@ class WordNodeAdmin(admin.ModelAdmin):
 @admin.register(WordLink)
 class WordLinkAdmin(admin.ModelAdmin):
     list_display = ('user', 'source_type', 'source_id', 'target_id', 'relation')
+
+@admin.register(DailyPracticeLog)
+class DailyPracticeLogAdmin(admin.ModelAdmin):
+    list_display = ('user', 'word_ids', 'is_completed', 'words_practiced', 'created_at')
+    

@@ -36,7 +36,7 @@
         <!-- Content -->
         <div class="flex-1 min-w-0">
           <div class="flex items-start justify-between gap-3">
-            <div class="flex-1">
+            <div @dblclick="toggleLocalLang" class="flex-1">
               <!-- Both Mode: Show EN and ZH -->
               <template v-if="displayLang === 'both'">
                 <span v-if="line.text_zh" class="text-gray-500 text-sm leading-relaxed block mt-0.5">
@@ -168,6 +168,8 @@ const toggleLocalLang = () => {
     // Subsequent toggles: flip or clear
     localLangOverride.value = localLangOverride.value === 'zh' ? 'en' : 'zh'
   }
+  // Clear selection to prevent double-click from selecting text
+  window.getSelection()?.removeAllRanges()
 }
 
 // Speaker color mapping (Friends characters)

@@ -243,7 +243,7 @@ LLM_CONFIG = {
     "english_corner": {
         "provider": "deepseek",
         "model_name": "deepseek-chat",
-        "temperature": 0.7,
+        "temperature": 0.9,
         "api_key": os.getenv("DEEPSEEK_API_KEY"),
         "base_url": os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),
     },

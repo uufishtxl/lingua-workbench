@@ -121,11 +121,36 @@ const router = createRouter({
     },
     // Dev routes (开发专用)
     {
+      path: '/dev/some-page',
+      name: 'dev-some-page',
+      component: () => import('@/views/SomePage.vue'),
+      meta: {
+        requiresAuth: false
+      }
+    },
+    {
+      path: '/dev/diff-trial',
+      name: 'dev-diff-trial',
+      component: () => import('@/views/DiffTrial.vue'),
+      meta: {
+        requiresAuth: false
+      }
+    },
+    {
       path: '/dev/highlight-editor',
       name: 'dev-highlight-editor',
       component: () => import('@/views/dev/HighlightEditorDev.vue'),
       meta: {
         requiresAuth: false
+      }
+    },
+    {
+      path: '/daily-phrases',
+      name: 'daily-phrases',
+      component: () => import('@/views/DailyPhrases.vue'),
+      meta: {
+        layout: 'AppLayout',
+        requiresAuth: true
       }
     },
     {

@@ -2,7 +2,7 @@
 import { ref, watch, nextTick, onMounted, onUnmounted } from 'vue';
 import { englishCornerApi, type Scenario, type PracticeMessage, type WordNode } from '@/api/englishCornerApi';
 
-const emit = defineEmits(['vocab-extracted', 'extract-vocab']);
+const emit = defineEmits(['vocab-extracted', 'extract-vocab', 'click-vocab']);
 
 const props = defineProps<{
   scenarioId?: number;
@@ -379,6 +379,7 @@ watch(inputText, () => {
                   :text="msg.character_reply.content" 
                   :vocabs="vocabs"
                   @select-text="handleTextSelection($event, msg.id)"
+                  @click-vocab="emit('click-vocab', $event)"
                 />
                 <button 
                   v-if="msg.character_reply.audio_url" 
@@ -396,6 +397,7 @@ watch(inputText, () => {
                   :text="msg.user_content" 
                   :vocabs="vocabs"
                   @select-text="handleTextSelection($event, msg.id)"
+                  @click-vocab="emit('click-vocab', $event)"
                 />
                 
                 <!-- Refactored Tutor Feedback -->
@@ -409,6 +411,7 @@ watch(inputText, () => {
                         :text="msg.tutor_feedback.polished_text" 
                         :vocabs="vocabs"
                         @select-text="handleTextSelection($event, msg.id)"
+                        @click-vocab="emit('click-vocab', $event)"
                       />
                     </div>
                     <div class="explanation">

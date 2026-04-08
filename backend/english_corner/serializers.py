@@ -6,11 +6,14 @@ from .models import (
 
 
 class ScenarioSerializer(serializers.ModelSerializer):
+    dialogue_rounds = serializers.IntegerField(read_only=True, default=0)
+
     class Meta:
         model = Scenario
         fields = [
             'id', 'title', 'description', 'icon',
             'system_prompt', 'is_preset', 'created_at',
+            'dialogue_rounds'
         ]
         read_only_fields = ['system_prompt', 'created_at']
 
@@ -114,3 +117,9 @@ class WordLinkSerializer(serializers.ModelSerializer):
             'source_type', 'source_id',
             'target_type', 'target_id', 'relation',
         ]
+
+
+class DailyPhrasesVerifySerializer(serializers.Serializer):
+    word_id = serializers.IntegerField()
+    user_sentence = serializers.CharField(trim_whitespace=True)
+    active_bonus_words = serializers.ListField(child=serializers.DictField(), required=False)
