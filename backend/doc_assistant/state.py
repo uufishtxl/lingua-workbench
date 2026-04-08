@@ -19,6 +19,6 @@ class AgentState(TypedDict):
         sources: Source documents from vector search
     """
     messages: Annotated[list, add_messages]
-    next: Literal["doc_qa", "script_editor", "general"]
+    next: Literal["doc_qa", "script_editor", "reader_editor", "general"]
     context: str
     sources: list[dict]

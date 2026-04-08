@@ -72,9 +72,12 @@
       </div>
     </Transition>
 
-    <!-- Review Mode: Complete & Continue Bar -->
-    <ChunkCompleteBar v-if="reviewMode" :chunk-id="chunkId" :next-chunk-id="nextChunkId" :is-last-chunk="!nextChunkId && (totalChunks ?? 0) > 0 && currentIndex === (totalChunks ?? 0) - 1"
-      :current-index="currentIndex" :total-chunks="totalChunks" @trigger-save="$emit('trigger-save')" />
+    <!-- Bottom Safe Area: Reserves space so floating elements like ChatWidget don't overlap action buttons -->
+    <div class="shrink-0 min-h-[80px] w-full flex items-end">
+      <!-- Review Mode: Complete & Continue Bar -->
+      <ChunkCompleteBar v-if="reviewMode" class="w-full mb-2" :chunk-id="chunkId" :next-chunk-id="nextChunkId" :is-last-chunk="!nextChunkId && (totalChunks ?? 0) > 0 && currentIndex === (totalChunks ?? 0) - 1"
+        :current-index="currentIndex" :total-chunks="totalChunks" @trigger-save="$emit('trigger-save')" />
+    </div>
 
     <!-- Slice Search Dialog -->
     <el-dialog
@@ -134,6 +137,9 @@ import {
   type SliceMatch,
 } from '@/api/scriptApi'
 import { ElMessage } from 'element-plus'
+import { useChatStore } from '@/stores/chatStore'
+
+const chatStore = useChatStore()
 
 const props = defineProps<{
   chunkId: number
@@ -302,6 +308,12 @@ const handleLineUpdated = (updatedLine: ScriptLine) => {
 watch(() => props.chunkId, () => {
   loadLines()
 }, { immediate: true })
+
+watch(() => chatStore.refreshScriptTrigger, () => {
+  if (props.chunkId) {
+    loadLines()
+  }
+})
 
 onMounted(() => {
   if (props.chunkId) {

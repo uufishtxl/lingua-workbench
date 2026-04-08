@@ -21,7 +21,7 @@ from django.conf import settings
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnablePassthrough
 from pydantic import BaseModel, Field
-from ai_analysis.services import _get_llm
+from ai_analysis.services import get_llm as _get_llm
 
 logger = logging.getLogger(__name__)
 

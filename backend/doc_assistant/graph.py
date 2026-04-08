@@ -12,42 +12,14 @@ from langgraph.prebuilt import ToolNode
 from .state import AgentState
 from .tools import (
     get_surrounding_lines, insert_script_line, edit_script_line, split_script_line, delete_script_line,
+    move_script_line, merge_script_lines,
     get_reader_context, edit_reader_paragraph, edit_reader_annotation, delete_reader_annotation
 )
 
-
-from django.conf import settings
-from langchain_openai import ChatOpenAI
-
-# ── LLM Instances ──────────────────────────────────────────────
-def _get_llm(feature="default", **kwargs):
-    """Create an LLM instance based on settings.LLM_CONFIG for a specific feature."""
-    # Try formatted feature key, fallback to default (SETTINGS.PY DOES NOT PROVIDE DOC_QA-SPECIFIC LLM CONFIG FOR NOW. SIMPLY USE DEFAULT)
-    config = settings.LLM_CONFIG.get(feature, settings.LLM_CONFIG["default"])
-    
-    provider = config.get("provider", "deepseek")
-    
-    # Base defaults from settings
-    defaults = {
-        "model": config.get("model_name"),
-        "temperature": config.get("temperature", 0.3),
-    }
-    
-    # Override with per-call kwargs (e.g. temperature=0)
-    defaults.update(kwargs)
-    
-    if provider == "deepseek":
-        return ChatOpenAI(
-            api_key=config.get("api_key"),
-            base_url=config.get("base_url"),
-            **defaults
-        )
-    else:
-        # Default to Gemini
-        return ChatGoogleGenerativeAI(
-            google_api_key=config.get("api_key"),
-            **defaults
-        )
+from ai_analysis.services import get_llm as _get_llm
+# ── Constants ──────────────────────────────────────────────────
+# Global context window for LLM nodes to focus attention and save tokens
+AGENT_HISTORY_WINDOW = 10
 
 
 # ── Router Node ────────────────────────────────────────────────
@@ -143,10 +115,12 @@ def doc_qa_node(state: AgentState) -> dict:
     context = _format_context(search_results) # 将检索到的文档片段格式化为 Markdown 风格的字符串，包含标题、内容和来源信息
     sources = _extract_sources(search_results) # 将检索到的文档片段格式化为列表，包含标题、路径和主题类型
     
-    # Generate answer
+    # Generate answer (Focus on the last AGENT_HISTORY_WINDOW messages)
+    recent_messages = state["messages"][-AGENT_HISTORY_WINDOW:]
+    
     response = llm.invoke([
         SystemMessage(content=DOC_QA_SYSTEM_PROMPT.format(context=context)),
-        *state["messages"],
+        *recent_messages,
     ])
     
     return {
@@ -166,8 +140,10 @@ Available tools:
 ALWAYS call this FIRST before inserting or editing.
 2. insert_script_line — Insert a new line before/after a reference line.
 3. edit_script_line — Edit fields of an existing line (speaker, text, etc.)
-4. split_script_line — Split a long line: keep first part, move the rest to another chunk.
+4. split_script_line — Split a line into two parts: keep one part in the current line, move the other to a target chunk.
 5. delete_script_line — Delete an existing script line completely.
+6. move_script_line — Move an existing line before or after a reference line (great for reordering).
+7. merge_script_lines — Merge two lines into one (great for stitching text).
 
 ## CRITICAL RULES (MUST FOLLOW):
 
@@ -200,10 +176,10 @@ based on the modified English text and surrounding context.
 get_surrounding_lines.
 - When inserting a line, try to infer the speaker from previous lines if not provided.
 
-### Rule 5: Language & Tone
+### Rule 5: Language & Refresh
 - Answer in the same language as the user's message.
-- After performing the action, confirm what you did with a brief summary \
-showing before/after changes.
+- After performing the action, confirm what you did with a brief summary (STRICTLY 2-3 sentences) showing before/after changes.
+- IMPORTANT: If you successfully modify the database (insert, edit, split, move, or merge), you MUST include the exact string `[REFRESH_SCRIPT]` at the very end of your final response so the frontend knows to reload the viewer. Do not omit this if the database was changed!
 
 ### Rule 6: Splitting long lines
 When the user says a line is too long and asks to move part of it to another chunk:
@@ -213,11 +189,18 @@ When the user says a line is too long and asks to move part of it to another chu
 - The user will specify or imply the target_chunk_id (e.g., "previous chunk" or "next chunk"). \
 Carefully determine whether to move the text to the preceding or succeeding chunk based on context. \
 Read the exact chunk_id from the context provided by get_surrounding_lines.
-- Always generate text_zh translations for both parts."""
+- Always generate text_zh translations for both parts.
+
+### Rule 7: Reordering and Merging
+- If the user wants to change the order of lines, use `move_script_line` to place it before or after another line.
+- If the user wants to stitch or combine texts, use `merge_script_lines`. This deletes one line and appends/prepends its text into another."""
 
 
 # Bind tools to the LLM
-SCRIPT_TOOLS = [get_surrounding_lines, insert_script_line, edit_script_line, split_script_line, delete_script_line]
+SCRIPT_TOOLS = [
+    get_surrounding_lines, insert_script_line, edit_script_line, 
+    split_script_line, delete_script_line, move_script_line, merge_script_lines
+]
 
 
 def script_editor_node(state: AgentState) -> dict:
@@ -225,9 +208,12 @@ def script_editor_node(state: AgentState) -> dict:
     llm = _get_llm(feature="script_editor", temperature=0)
     llm_with_tools = llm.bind_tools(SCRIPT_TOOLS)
     
+    # Focus on the last AGENT_HISTORY_WINDOW messages for tool-calling
+    recent_messages = state["messages"][-AGENT_HISTORY_WINDOW:]
+    
     response = llm_with_tools.invoke([
         SystemMessage(content=SCRIPT_EDITOR_SYSTEM_PROMPT),
-        *state["messages"],
+        *recent_messages,
     ])
     
     return {"messages": [response]}
@@ -268,9 +254,12 @@ def reader_editor_node(state: AgentState) -> dict:
     llm = _get_llm(feature="reader_editor", temperature=0)
     llm_with_tools = llm.bind_tools(READER_TOOLS)
     
+    # Focus on the last AGENT_HISTORY_WINDOW messages for tool-calling
+    recent_messages = state["messages"][-AGENT_HISTORY_WINDOW:]
+    
     response = llm_with_tools.invoke([
         SystemMessage(content=READER_EDITOR_SYSTEM_PROMPT),
-        *state["messages"],
+        *recent_messages,
     ])
     
     return {"messages": [response]}
@@ -298,9 +287,12 @@ def general_node(state: AgentState) -> dict:
     """Handle general conversation."""
     llm = _get_llm(feature="general", temperature=0.7)
     
+    # General chat also benefits from history trimming
+    recent_messages = state["messages"][-AGENT_HISTORY_WINDOW:]
+    
     response = llm.invoke([
         SystemMessage(content=GENERAL_SYSTEM_PROMPT),
-        *state["messages"],
+        *recent_messages,
     ])
     
     return {"messages": [response]}
@@ -389,17 +381,13 @@ def build_graph() -> StateGraph:
         )
     
     # After tool execution → route back to the agent that called the tool. 
-    # But wait, ToolNode default edge goes back to the calling node? 
-    # In basic ToolNode, you might need to use standard edges, but LangGraph natively 
-    # requires explicit routing back. Let's write a simple router for going back from tools.
-    def tools_condition_back(state: AgentState) -> str:
-        # Check messages to see which agent made the tool_calls
-        last_msg = state["messages"][-2] # -1 is ToolMessage, -2 is AIMessage with tool_calls
-        # A simple hack is to rely on tools route_decision, or better, we can just look 
-        # at state['next'] which route_decision sets. So we route back to state['next']!
+    def route_after_tools(state: AgentState) -> str:
+        # Since 'next' stores the original routing choice (e.g., 'script_editor' or 'reader_editor'),
+        # we can safely use it as the return trip ticket from the shared tools node.
+        # Fallback to "general" if missing to prevent getting stranded.
         return state.get("next", "general")
 
-    graph.add_conditional_edges("tools", tools_condition_back)
+    graph.add_conditional_edges("tools", route_after_tools)
     
     return graph.compile()
 

@@ -31,6 +31,9 @@ export interface BlitzFilters {
     character: string
     page: number
     limit: number
+    drama_id?: number | string | null
+    season?: number | null
+    episode?: number | null
 }
 
 export interface BlitzResponse {
@@ -48,8 +51,10 @@ export function fetchBlitzCards(params: BlitzFilters) {
 }
 
 // Fetch Stats (for Dock)
-export function fetchBlitzStats() {
-    return service.get<BlitzStats[]>('/scripts/blitz-cards/stats/')
+export function fetchBlitzStats(params?: Partial<BlitzFilters>) {
+    return service.get<BlitzStats[]>('/scripts/blitz-cards/stats/', {
+        params
+    })
 }
 
 // Update Card Status

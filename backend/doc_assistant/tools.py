@@ -117,8 +117,12 @@ def insert_script_line(
     except ScriptLine.DoesNotExist:
         return f"Error: ScriptLine with id={reference_line_id} not found."
     
+    
+    # Auto-heal database: if existing lines have order=0.0 (the default), align them to their index
+    from django.db.models import F
+    ScriptLine.objects.filter(chunk_id=chunk_id, order=0.0).exclude(index=-1).update(order=F('index'))
+    
     # Get ordered siblings in the same chunk
-    # Ordering fallback: if order is 0.0, use index as the baseline for the calculation to prevent stacking
     siblings = list(
         ScriptLine.objects.filter(chunk=ref_line.chunk)
         .order_by('order', 'index')
@@ -133,24 +137,20 @@ def insert_script_line(
     
     if ref_idx is None:
         return f"Error: Could not locate reference line {reference_line_id} in its chunk."
-    
-    def get_effective_order(s_order, s_index):
-        # If order was never set (is 0.0), assume its index as the starting effective order.
-        return float(s_index) if s_order == 0.0 else float(s_order)
 
-    ref_order = get_effective_order(siblings[ref_idx][1], siblings[ref_idx][2])
+    ref_order = float(siblings[ref_idx][1])
     
     if position == 'before':
         if ref_idx == 0:
             new_order = ref_order - 1.0
         else:
-            prev_order = get_effective_order(siblings[ref_idx - 1][1], siblings[ref_idx - 1][2])
+            prev_order = float(siblings[ref_idx - 1][1])
             new_order = (prev_order + ref_order) / 2.0
     else:  # after
         if ref_idx == len(siblings) - 1:
             new_order = ref_order + 1.0
         else:
-            next_order = get_effective_order(siblings[ref_idx + 1][1], siblings[ref_idx + 1][2])
+            next_order = float(siblings[ref_idx + 1][1])
             new_order = (ref_order + next_order) / 2.0
     
     # Build raw_text in canonical format
@@ -323,12 +323,11 @@ def split_script_line(
     line.raw_text = f"{speaker_str}: {keep_text}" if speaker_str else keep_text
     line.save()
 
-    def get_effective_order(s_order, s_index):
-        return float(s_index) if s_order == 0.0 else float(s_order)
-
     # 2. Calculate order for the new line in the target chunk
-    #    Auto-detect direction: if moving backward → append at end;
-    #    if moving forward → prepend at beginning
+    # Auto-heal database for the local chunk
+    from django.db.models import F
+    ScriptLine.objects.filter(chunk_id=target_chunk.id, order=0.0).exclude(index=-1).update(order=F('index'))
+    
     if target_chunk.chunk_index < line.chunk.chunk_index:
         # Moving to PREVIOUS chunk → insert at END
         last_in_target = (
@@ -338,8 +337,7 @@ def split_script_line(
             .first()
         )
         if last_in_target:
-            last_order = get_effective_order(last_in_target[0], last_in_target[1])
-            new_order = last_order + 1.0
+            new_order = float(last_in_target[0]) + 1.0
         else:
             new_order = 0.0
     else:
@@ -351,8 +349,7 @@ def split_script_line(
             .first()
         )
         if first_in_target:
-            first_order = get_effective_order(first_in_target[0], first_in_target[1])
-            new_order = first_order - 1.0
+            new_order = float(first_in_target[0]) - 1.0
         else:
             new_order = 0.0
 
@@ -376,6 +373,124 @@ def split_script_line(
         f"  New line #{new_line.id} in chunk #{target_chunk_id}: '{remaining_text[:60]}...'\n"
         f"  New order: {new_order}"
     )
+
+
+@tool
+def move_script_line(
+    line_id: int,
+    reference_line_id: int,
+    position: str = "after",
+    target_chunk_id: Optional[int] = None,
+) -> str:
+    """Move an existing script line to a new position relative to a reference line.
+    
+    Args:
+        line_id: The ID of the ScriptLine to move.
+        reference_line_id: The ID of the reference ScriptLine.
+        position: 'before' or 'after' the reference line.
+        target_chunk_id: Optional chunk ID if moving to a different chunk. If None, uses the reference line's chunk ID.
+    """
+    from scripts.models import ScriptLine
+    
+    if position not in ('before', 'after'):
+        return "Error: position must be 'before' or 'after'."
+        
+    try:
+        line = ScriptLine.objects.get(id=line_id)
+        ref_line = ScriptLine.objects.get(id=reference_line_id)
+    except ScriptLine.DoesNotExist:
+        return f"Error: Could not find one or both lines."
+        
+    chunk_id = target_chunk_id if target_chunk_id is not None else ref_line.chunk_id
+    
+    # Auto-heal database for calculation safety
+    from django.db.models import F
+    ScriptLine.objects.filter(chunk_id=chunk_id, order=0.0).exclude(index=-1).update(order=F('index'))
+    
+    siblings = list(
+        ScriptLine.objects.filter(chunk_id=chunk_id)
+        .exclude(id=line_id)
+        .order_by('order', 'index')
+        .values_list('id', 'order', 'index')
+    )
+    
+    ref_idx = None
+    for i, (sid, sorder, sidx) in enumerate(siblings):
+        if sid == ref_line.id:
+            ref_idx = i
+            break
+            
+    if ref_idx is None:
+        return f"Error: Could not locate reference line {reference_line_id} in chunk {chunk_id}."
+
+    ref_order = float(siblings[ref_idx][1])
+    
+    if position == 'before':
+        if ref_idx == 0:
+            new_order = ref_order - 1.0
+        else:
+            prev_order = float(siblings[ref_idx - 1][1])
+            new_order = (prev_order + ref_order) / 2.0
+    else:  # after
+        if ref_idx == len(siblings) - 1:
+            new_order = ref_order + 1.0
+        else:
+            next_order = float(siblings[ref_idx + 1][1])
+            new_order = (ref_order + next_order) / 2.0
+            
+    line.chunk_id = chunk_id
+    line.order = new_order
+    line.index = -1
+    line.save()
+    
+    return f"Successfully moved line #{line_id} {position} line #{reference_line_id}. New order: {new_order} in chunk #{chunk_id}."
+
+
+@tool
+def merge_script_lines(
+    target_line_id: int,
+    source_line_id: int,
+    merge_direction: str = "append",
+    text_zh: str = "",
+) -> str:
+    """Merge source_line into target_line, then delete source_line.
+    
+    If merge_direction == "append": target's text becomes "target_text source_text"
+    If merge_direction == "prepend": target's text becomes "source_text target_text"
+    
+    Args:
+        target_line_id: The ID of the ScriptLine to keep.
+        source_line_id: The ID of the ScriptLine to merge and delete.
+        merge_direction: 'append' (default) or 'prepend' the source to the target.
+        text_zh: The combined Chinese translation for the merged text (generate one).
+    """
+    from scripts.models import ScriptLine
+    
+    try:
+        target = ScriptLine.objects.get(id=target_line_id)
+        source = ScriptLine.objects.get(id=source_line_id)
+    except ScriptLine.DoesNotExist:
+        return f"Error: Could not find one of the lines to merge."
+        
+    s_text = source.text or ""
+    t_text = target.text or ""
+    
+    if merge_direction == "prepend":
+        merged_text = f"{s_text} {t_text}".strip()
+    else:
+        merged_text = f"{t_text} {s_text}".strip()
+        
+    target.text = merged_text
+    if text_zh:
+        target.text_zh = text_zh
+    
+    speaker_str = target.speaker or ""
+    target.raw_text = f"{speaker_str}: {merged_text}" if speaker_str else merged_text
+    
+    source.delete()
+    target.save()
+    
+    return f"Successfully merged line #{source_line_id} into line #{target_line_id}. New text: '{merged_text[:60]}...'"
 
 
 # ── Reader Management Tools ────────────────────────────────────

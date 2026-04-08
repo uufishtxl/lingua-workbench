@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, reactive, watch, nextTick } from 'vue'
 import { storeToRefs } from 'pinia'
+import { ElMessage, type ElSelect } from 'element-plus'
+import api from '@/api/axios'
 import FluentEmojiFlatMilitaryMedal from '~icons/fluent-emoji-flat/military-medal'
 import { fetchBlitzCards, fetchBlitzStats, type BlitzCard, type BlitzFilters, type BlitzStats } from '@/api/blitzApi'
 import FlipCard from '@/components/blitz/FlipCard.vue'
@@ -20,18 +22,136 @@ const filters = ref<BlitzFilters>({
   status: 'learning',
   character: 'All',
   page: 1,
-  limit: 12
+  limit: 12,
+  drama_id: null,
+  season: null,
+  episode: null
 })
+
+// --- Source Selection State ---
+const dramas = ref<{ id: number; name: string }[]>([])
+const seasons = ref<number[]>([])
+const episodes = ref<number[]>([])
+
+const serverDramas = ref<{ id: number; name: string }[]>([])
+const serverSeasons = ref<number[]>([])
+
+const isLoadingDramas = ref(false)
+const isLoadingSeasons = ref(false)
+const isLoadingEpisodes = ref(false)
+
+const dramaSelectRef = ref<InstanceType<typeof ElSelect> | null>(null);
+const seasonSelectRef = ref<InstanceType<typeof ElSelect> | null>(null);
+const episodeSelectRef = ref<InstanceType<typeof ElSelect> | null>(null);
 const hasNext = ref(true)
 
 // DOM Refs
 const sentinelRef = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
 
+// --- Source API Functions ---
+const fetchDramas = async () => {
+  isLoadingDramas.value = true
+  try {
+    const response = await api.get('/v1/dramas/')
+    dramas.value = response.data.results
+    serverDramas.value = JSON.parse(JSON.stringify(response.data.results))
+  } catch (error) {
+    ElMessage.error('Failed to fetch dramas.')
+    console.error(error)
+  } finally {
+    isLoadingDramas.value = false
+  }
+}
+
+const fetchSeasons = async (dramaId: number) => {
+  isLoadingSeasons.value = true
+  try {
+    const response = await api.get(`/v1/dramas/${dramaId}/seasons/`)
+    seasons.value = response.data
+    serverSeasons.value = [...response.data]
+  } catch (error) {
+    console.error('Failed to fetch seasons', error)
+  } finally {
+    isLoadingSeasons.value = false
+  }
+}
+
+const fetchEpisodes = async (dramaId: number | string, season: number) => {
+  isLoadingEpisodes.value = true
+  try {
+    const response = await api.get('/v1/audios/episodes/', {
+      params: { drama_id: dramaId, season: season }
+    })
+    episodes.value = response.data
+  } catch (error) {
+    console.error('Failed to fetch episodes', error)
+  } finally {
+    isLoadingEpisodes.value = false
+  }
+}
+
+const handleDramaChange = (val: string | number) => {
+  if (dramaSelectRef.value) dramaSelectRef.value.blur();
+}
+
+const handleSeasonChange = (val: string | number) => {
+  if (seasonSelectRef.value) seasonSelectRef.value.blur();
+}
+
+const handleEpisodeChange = (val: string | number) => {
+  if (episodeSelectRef.value) episodeSelectRef.value.blur();
+}
+
+// Watchers for linked selects
+watch(
+  () => filters.value.drama_id,
+  (newDramaId) => {
+    filters.value.season = null
+    filters.value.episode = null
+    seasons.value = []
+    serverSeasons.value = []
+    episodes.value = []
+    if (newDramaId) {
+      const isRealDrama = typeof newDramaId === 'number' && serverDramas.value.some(d => d.id === newDramaId);
+      if (isRealDrama) {
+        fetchSeasons(newDramaId);
+      }
+    }
+    loadStats()
+    loadCards(true)
+  }
+)
+
+watch(
+  () => filters.value.season,
+  (newSeason) => {
+    filters.value.episode = null
+    episodes.value = []
+    if (filters.value.drama_id && newSeason) {
+      const isRealDrama = typeof filters.value.drama_id === 'number' && filters.value.drama_id > 0;
+      const isRealSeason = typeof newSeason === 'number' && serverSeasons.value.includes(newSeason);
+      if (isRealDrama && isRealSeason) {
+        fetchEpisodes(filters.value.drama_id, newSeason);
+      }
+    }
+    loadStats()
+    loadCards(true)
+  }
+)
+
+watch(
+  () => filters.value.episode,
+  () => {
+    loadStats()
+    loadCards(true)
+  }
+)
+
 // Fetch Stats for Dock
 const loadStats = async () => {
   try {
-    const res = await fetchBlitzStats()
+    const res = await fetchBlitzStats(filters.value)
     stats.value = res.data
     dashboardStore.fetchStats()
   } catch (e) {
@@ -97,7 +217,23 @@ const setupObserver = () => {
   if (sentinelRef.value && observer) observer.observe(sentinelRef.value)
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await fetchDramas()
+  
+  // Set defaults: Friends Season 10
+  const friends = dramas.value.find(d => d.name.toLowerCase().includes('friends'))
+  if (friends) {
+    filters.value.drama_id = friends.id
+    // Wait for the drama watcher to (partially) run or just manually trigger season fetch
+    await fetchSeasons(friends.id)
+    if (seasons.value.includes(10)) {
+      filters.value.season = 10
+    }
+  }
+
+  // If no defaults were set or after they are set, load the cards
+  // Note: the watchers might have already triggered loadCards(true), 
+  // but calling it here ensures we have data if no defaults matched.
   loadStats()
   loadCards(true)
   setTimeout(setupObserver, 500)
@@ -149,39 +285,61 @@ onUnmounted(() => {
       </div>
     </header>
 
-    <!-- Sticky Avatar Dock -->
-    <div class="sticky top-14 z-10 h-20 flex-none flex items-center gap-1 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm overflow-x-auto overflow-y-hidden px-4 py-2 border-b border-gray-200 dark:border-gray-800 dock-container">
-      <!-- All -->
-      <button 
-        class="group relative w-12 h-12 rounded-full flex items-center justify-center text-[10px] font-bold shadow-sm transition-all duration-200 ease-out hover:-translate-y-2 hover:mx-2 hover:scale-125 hover:shadow-lg z-10 p-0.5"
-        :class="filters.character === 'All' ? 'bg-primary-600 shadow-md scale-110 ring-2 ring-primary-300 ring-offset-2 dark:ring-offset-gray-900' : 'bg-white dark:bg-gray-700'"
-        @click="setCharacter('All')"
-      >
-        <img :src="getSpeakerAttributes('All').avatarUrl" alt="All" class="w-full h-full object-cover rounded-full" />
-      </button>
+    <!-- Sticky Avatar Dock & Source Selector -->
+    <div class="sticky top-14 z-10 h-20 flex-none flex items-center justify-between bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
+      
+      <!-- Avatars (Scrollable) -->
+      <div class="flex-1 flex items-center gap-1 px-4 py-2 overflow-x-auto overflow-y-hidden dock-container pretty-scrollbar">
+        <!-- All -->
+        <button 
+          class="group relative w-12 h-12 rounded-full flex-none flex items-center justify-center text-[10px] font-bold shadow-sm transition-all duration-200 ease-out hover:-translate-y-2 hover:mx-2 hover:scale-125 hover:shadow-lg z-10 p-0.5"
+          :class="filters.character === 'All' ? 'bg-primary-600 shadow-md scale-110 ring-2 ring-primary-300 ring-offset-2 dark:ring-offset-gray-900' : 'bg-white dark:bg-gray-700'"
+          @click="setCharacter('All')"
+        >
+          <img :src="getSpeakerAttributes('All').avatarUrl" alt="All" class="w-full h-full object-cover rounded-full" />
+        </button>
 
-      <!-- Characters -->
-      <button 
-        v-for="stat in stats" 
-        :key="stat.speaker || 'unknown'"
-        class="group relative w-12 h-12 rounded-full bg-white dark:bg-gray-700 transition-all duration-200 ease-out hover:-translate-y-2 hover:mx-2 hover:scale-125 hover:shadow-lg overflow-visible border-2 z-10 p-0.5"
-        :class="filters.character === stat.speaker 
-          ? 'border-primary-500 scale-110 shadow-md ring-2 ring-primary-500/20 z-0' 
-          : 'border-white dark:border-gray-600 hover:border-primary-300'"
-        @click="setCharacter(stat.speaker || '')"
-      >
-        <!-- Avatar Img -->
-        <div class="w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-gray-50 dark:bg-gray-800">
-          <img :src="getSpeakerAttributes(stat.speaker).avatarUrl" :alt="stat.speaker" class="w-full h-full object-cover" />
-        </div>
+        <!-- Characters -->
+        <button 
+          v-for="stat in stats" 
+          :key="stat.speaker || 'unknown'"
+          class="group relative w-12 h-12 rounded-full flex-none bg-white dark:bg-gray-700 transition-all duration-200 ease-out hover:-translate-y-2 hover:mx-2 hover:scale-125 hover:shadow-lg overflow-visible border-2 z-10 p-0.5"
+          :class="filters.character === stat.speaker 
+            ? 'border-primary-500 scale-110 shadow-md ring-2 ring-primary-500/20 z-0' 
+            : 'border-white dark:border-gray-600 hover:border-primary-300'"
+          @click="setCharacter(stat.speaker || '')"
+        >
+          <!-- Avatar Img -->
+          <div class="w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-gray-50 dark:bg-gray-800">
+            <img :src="getSpeakerAttributes(stat.speaker).avatarUrl" :alt="stat.speaker" class="w-full h-full object-cover" />
+          </div>
+          
+          <!-- Count badge -->
+          <span class="absolute -top-1 -right-1 min-w-[1.25rem] h-5 rounded-full bg-gray-800 text-white text-[10px] flex items-center justify-center border-2 border-white dark:border-gray-800 z-20 shadow-sm pointer-events-none">
+            {{ stat.count > 99 ? '99+' : stat.count }}
+          </span>
+        </button>
+      </div>
+
+      <!-- Source Filters -->
+      <div class="flex-none flex items-center gap-2 px-4 py-2 border-l border-gray-100 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50">
+        <el-select ref="dramaSelectRef" v-model="filters.drama_id" placeholder="Drama" filterable
+          clearable :loading="isLoadingDramas" size="small" class="!w-32" @change="handleDramaChange">
+          <el-option v-for="item in dramas" :key="item.id" :label="item.name" :value="item.id" />
+        </el-select>
         
-        <!-- Count badge -->
-        <span class="absolute -top-1 -right-1 min-w-[1.25rem] h-5 rounded-full bg-gray-800 text-white text-[10px] flex items-center justify-center border-2 border-white dark:border-gray-800 z-20 shadow-sm pointer-events-none">
-          {{ stat.count > 99 ? '99+' : stat.count }}
-        </span>
-
-
-      </button>
+        <el-select ref="seasonSelectRef" v-model="filters.season" placeholder="S"
+          filterable clearable default-first-option :disabled="!filters.drama_id" :loading="isLoadingSeasons"
+          size="small" class="!w-20" @change="handleSeasonChange">
+          <el-option v-for="item in seasons" :key="item" :label="`S ${item}`" :value="item" />
+        </el-select>
+        
+        <el-select ref="episodeSelectRef" v-model="filters.episode" placeholder="E"
+          filterable clearable default-first-option :disabled="!filters.season" :loading="isLoadingEpisodes"
+          size="small" class="!w-20" @change="handleEpisodeChange">
+          <el-option v-for="item in episodes" :key="item" :label="`E ${item}`" :value="item" />
+        </el-select>
+      </div>
     </div>
 
     <!-- Main Grid (Scrollable) -->

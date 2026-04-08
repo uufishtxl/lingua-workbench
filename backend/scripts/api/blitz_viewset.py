@@ -20,10 +20,24 @@ class BlitzCardViewSet(viewsets.GenericViewSet):
     MAIN_CAST = ['Ross', 'Rachel', 'Joe', 'Joey', 'Phoebe', 'Monica', 'Chandler']
 
     def get_queryset(self):
-        # Base queryset: Return all script lines for the user's active source audio
-        return ScriptLine.objects.filter(
+        # Base queryset: Return all script lines for the user
+        queryset = ScriptLine.objects.filter(
             chunk__source_audio__user=self.request.user
         ).select_related('slice', 'slice__audio_chunk', 'chunk')
+
+        # Filter by Source if provided
+        drama_id = self.request.query_params.get('drama_id')
+        season = self.request.query_params.get('season')
+        episode = self.request.query_params.get('episode')
+
+        if drama_id:
+            queryset = queryset.filter(chunk__source_audio__drama_id=drama_id)
+        if season:
+            queryset = queryset.filter(chunk__source_audio__season=season)
+        if episode:
+            queryset = queryset.filter(chunk__source_audio__episode=episode)
+
+        return queryset
 
     def list(self, request):
         """
@@ -32,6 +46,7 @@ class BlitzCardViewSet(viewsets.GenericViewSet):
         - mode: 'shuffle' | 'normal'
         - status: 'hard' | 'review' | 'all'
         - character: 'All' | 'Chandler' ...
+        - drama_id, season, episode: source filters
         - page/limit: handled by pagination
         """
         queryset = self.get_queryset()
@@ -47,10 +62,7 @@ class BlitzCardViewSet(viewsets.GenericViewSet):
         elif status_filter == 'all':
             pass # No filter
 
-        print(f'status_filter: {status_filter}')
-
         # 2. Filter by Character
-        print(f'character: {request.query_params.get("character", "All")}')
         character = request.query_params.get('character', 'All')
         if character and character != 'All':
             if character == 'Misc':

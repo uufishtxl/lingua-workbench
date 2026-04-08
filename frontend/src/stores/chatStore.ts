@@ -14,6 +14,11 @@ export const useChatStore = defineStore('chat', () => {
         refreshReaderTrigger.value++
     }
 
+    const refreshScriptTrigger = ref(0)
+    function triggerScriptRefresh() {
+        refreshScriptTrigger.value++
+    }
+
     function open() {
         isExpanded.value = true
     }
@@ -67,6 +72,7 @@ export const useChatStore = defineStore('chat', () => {
         selectionCoordinates,
         position,
         refreshReaderTrigger,
+        refreshScriptTrigger,
         toggle,
         open,
         close,
@@ -76,7 +82,8 @@ export const useChatStore = defineStore('chat', () => {
         clearActiveSelection,
         setSelectionCoordinates,
         togglePosition,
-        triggerReaderRefresh
+        triggerReaderRefresh,
+        triggerScriptRefresh
     }
 })
 

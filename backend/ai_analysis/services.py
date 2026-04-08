@@ -24,7 +24,9 @@ from .prompts import (
 
 # ============ LLM Factories ============
 
-def _get_llm(feature="default", **kwargs):
+# ============ LLM Factories ============
+
+def get_llm(feature="default", **kwargs):
     """Create an LLM instance based on settings.LLM_CONFIG for a specific feature."""
     config = settings.LLM_CONFIG.get(feature, settings.LLM_CONFIG["default"])
     
@@ -63,7 +65,7 @@ def get_sound_script_chain():
     """
     global _sound_script_chain
     if _sound_script_chain is None:
-        llm = _get_llm(feature="sound_script")
+        llm = get_llm(feature="sound_script")
         structured_llm = llm.with_structured_output(
             SoundScriptResponse, 
             method="function_calling"
@@ -99,7 +101,7 @@ def get_dictionary_chain():
     """
     global _dictionary_chain
     if _dictionary_chain is None:
-        llm = _get_llm(feature="dictionary")
+        llm = get_llm(feature="dictionary")
         structured_llm = llm.with_structured_output(
             DictionaryResponse,
             method="function_calling" # DeepSeek supports tool calling? If not, might need JSON mode.
@@ -141,7 +143,7 @@ _refresh_example_chain = None
 def get_refresh_example_chain():
     global _refresh_example_chain
     if _refresh_example_chain is None:
-        llm = _get_llm(feature="refresh_example")
+        llm = get_llm(feature="refresh_example")
         structured_llm = llm.with_structured_output(
             RefreshExampleResponse,
             method="function_calling"
@@ -179,7 +181,7 @@ def get_batch_translation_chain():
     """
     global _batch_translation_chain
     if _batch_translation_chain is None:
-        llm = _get_llm(feature="translation")
+        llm = get_llm(feature="translation")
         
         # Simple Prompt
         prompt = ChatPromptTemplate.from_messages([

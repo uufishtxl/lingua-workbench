@@ -106,6 +106,10 @@ async function sendMessage() {
              assistantMessage.content = assistantMessage.content.replace('[REFRESH_READER]', '').trim();
              chatStore.triggerReaderRefresh();
           }
+          if (assistantMessage.content.includes('[REFRESH_SCRIPT]')) {
+             assistantMessage.content = assistantMessage.content.replace('[REFRESH_SCRIPT]', '').trim();
+             chatStore.triggerScriptRefresh();
+          }
           assistantMessage.isStreaming = false;
           isLoading.value = false;
         },

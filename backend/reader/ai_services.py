@@ -1,5 +1,5 @@
 from langchain_core.prompts import ChatPromptTemplate
-from ai_analysis.services import _get_llm
+from ai_analysis.services import get_llm as _get_llm
 from .schemas import ArticleMetaResponse, CopilotResponse, AnnotationContext
 
 # ============ Article Background Analysis (Gemini) ============
