@@ -204,12 +204,7 @@ CORS_ALLOW_CREDENTIALS = True
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
-# Huey Task Queue Configuration
-from huey import SqliteHuey
-HUEY = SqliteHuey(
-    filename=str(BASE_DIR / 'db' / 'huey.db'),
-    immediate_use_memory=False,
-)
+# (Removed redundant Huey Task Queue Configuration)
 
 # LLM Configuration
 # Per-feature model selection. 
@@ -287,7 +282,7 @@ HUEY = {
     'name': 'lingua_huey',
     'results': True,  # Store return values of tasks
     'store_none': False,
-    'immediate': True,  # True means run tasks synchronously (in-band)
+    'immediate': False,  # Changed to False so the consumer (worker) can run
     'connection': {
         'filename': os.path.join(BASE_DIR, 'huey.sqlite3'),
     },
