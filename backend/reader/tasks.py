@@ -6,7 +6,7 @@ from ai_analysis.services import batch_translate_texts
 
 logger = logging.getLogger(__name__)
 
-@db_task()
+@db_task(retries=3, retry_delay=10)
 def process_article_meta_task(article_id: int):
     logger.info(f"Starting meta analysis task for Article {article_id}")
     try:
@@ -48,11 +48,5 @@ def process_article_meta_task(article_id: int):
         logger.info(f"Successfully processed Article {article_id}")
     except Article.DoesNotExist:
         logger.error(f"Article {article_id} not found.")
-    except Exception as e:
-        logger.exception(f"Exception during article analysis: {e}")
-        try:
-            article = Article.objects.get(id=article_id)
-            article.status = 'failed'
-            article.save()
-        except:
-            pass
+    # Removed the catch-all Exception block to allow Huey retries to function.
+    # Huey will only mark the task as failed (and stop retrying) after 3 attempts.

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     Scenario, Conversation, PracticeMessage,
-    PracticeFlashcard, WordNode, WordLink, DailyPracticeLog
+    PracticeFlashcard, WordNode, WordOccurrence, WordLink, DailyPracticeLog
 )
 
 
@@ -38,14 +38,18 @@ class PracticeFlashcardAdmin(admin.ModelAdmin):
 
 @admin.register(WordNode)
 class WordNodeAdmin(admin.ModelAdmin):
-    list_display = ('label', 'node_type', 'status', 'user', 'mastery', 'box_level')
+    list_display = ('label', 'tag', 'node_type', 'status', 'user', 'mastery', 'box_level')
     search_fields = ('label', 'explanation')
-    list_filter = ('node_type', 'status', 'box_level')
+    list_filter = ('tag', 'node_type', 'status', 'box_level')
 
+
+@admin.register(WordOccurrence)
+class WordOccurrenceAdmin(admin.ModelAdmin):
+    list_display = ('word', 'exact_sentence', 'content_type', 'object_id')
 
 @admin.register(WordLink)
 class WordLinkAdmin(admin.ModelAdmin):
-    list_display = ('user', 'source_type', 'source_id', 'target_id', 'relation')
+    list_display = ('user', 'source_word', 'target_word', 'relation')
 
 @admin.register(DailyPracticeLog)
 class DailyPracticeLogAdmin(admin.ModelAdmin):

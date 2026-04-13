@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 
 class Scenario(models.Model):
@@ -137,6 +139,14 @@ class WordNode(models.Model):
         SUCCESS = 'SUCCESS', 'Success'
         FAILED = 'FAILED', 'Failed'
 
+    class WordTag(models.TextChoices):
+        EXPLAINER = 'explainer', '解说员/串联词'
+        INDUSTRY = 'industry', '行业/职场'
+        CASUAL = 'casual', '生活通用'
+        VIBE = 'vibe', '网络社区/慎用'
+        LITERARY = 'literary', '文学/低频'
+        MISC = 'misc', '杂项/待定'
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     phrase_log = models.OneToOneField(
         'phrase_log.PhraseLog', on_delete=models.CASCADE,
@@ -146,6 +156,10 @@ class WordNode(models.Model):
     label = models.CharField(max_length=200)
     node_type = models.CharField(
         max_length=20, choices=NodeType.choices, default=NodeType.KEYWORD
+    )
+    tag = models.CharField(
+        max_length=20, choices=WordTag.choices, default=WordTag.MISC,
+        help_text="Custom tagging for filtering/practice priority"
     )
     explanation = models.TextField(blank=True, default='')
     example = models.TextField(blank=True, default='')
@@ -179,29 +193,70 @@ class WordNode(models.Model):
         return self.label
 
 
-class WordLink(models.Model):
+
+
+class WordOccurrence(models.Model):
     """
-    知识图谱连线：存储词汇间的关联关系。
+    划词/语境记录表：记录这个词在哪个具体的句子或文章中被遇到过
     """
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    
+    # 核心：被划的词是谁
+    word = models.ForeignKey('WordNode', on_delete=models.CASCADE, related_name='occurrences')
+    
+    # 语境切片：只存包含该词的那一小句话（这是供前端直接展示的“黄金资产”）
+    exact_sentence = models.TextField(help_text="划词时所在的具体上下文句子")
 
-    source_type = models.CharField(max_length=20, help_text="e.g., 'scenario' or 'vocab'")
-    source_id = models.CharField(max_length=50)
-    target_type = models.CharField(max_length=20, help_text="e.g., 'vocab'")
-    target_id = models.CharField(max_length=50)
+    # --- 万能溯源锚点 (Generic Relation) ---
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.CharField(max_length=50) 
+    source_object = GenericForeignKey('content_type', 'object_id')
+    # ---------------------------------------------------------
 
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Found '{self.word.label}' in {self.content_type.model}"
+
+
+class WordLink(models.Model):
+    """
+    纯粹的词汇关系表：专门存储词与词之间的关系（变形、同义、反义等）
+    """
+    class RelationType(models.TextChoices):
+        VARIANT = 'variant', '变形/派生'       # e.g., run -> running
+        SYNONYM = 'synonym', '同义/近义表达' # e.g., smoke and mirrors -> vaporware
+        ANTONYM = 'antonym', '反义表达'      # e.g., high -> low
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    
+    # 1. 本词 (源头)
+    source_word = models.ForeignKey(
+        'WordNode', on_delete=models.CASCADE, related_name='outgoing_links'
+    )
+    
+    # 2. 变形词/同义词 (目标)
+    target_word = models.ForeignKey(
+        'WordNode', on_delete=models.CASCADE, related_name='incoming_links'
+    )
+    
+    # 3. 关系类型
     relation = models.CharField(
-        max_length=50, default="context",
-        help_text="e.g., 'context', 'synonym', 'contrast'"
+        max_length=20, choices=RelationType.choices, default=RelationType.SYNONYM
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = (
-            'user', 'source_type', 'source_id',
-            'target_type', 'target_id', 'relation'
-        )
+        db_table = 'english_corner_wordlink_v2'
+        # 确保不会重复建立相同的连线
+        unique_together = ('user', 'source_word', 'target_word', 'relation')
+
+    def __str__(self):
+        return f"{self.source_word.label} -[{self.relation}]-> {self.target_word.label}"
 
 
 class DailyPracticeLog(models.Model):

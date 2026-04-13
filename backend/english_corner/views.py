@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from .models import (
     Scenario, Conversation, PracticeMessage,
-    PracticeFlashcard, WordNode, WordLink,
+    PracticeFlashcard, WordNode, WordOccurrence, WordLink,
 )
 from .serializers import (
     ScenarioSerializer, ConversationSerializer, ConversationDetailSerializer,
@@ -16,6 +16,49 @@ from .serializers import (
 from .ai_services import generate_scenario_prompt, generate_flashcard
 from .tasks import process_user_message, process_initial_greeting, enrich_word_node
 from phrase_log.models import PhraseLog
+import re
+
+def extract_best_sentence(sources, target_text):
+    """
+    Helper to find the best sentence context from multiple text sources.
+    sources: list of strings
+    target_text: the word/phrase to find
+    """
+    best_sentence = ""
+    best_score = -1
+    target_phrase = target_text.lower()
+    
+    # Pre-calculate core words for fuzzy matching
+    target_words = set(re.findall(r'\w+', target_phrase))
+    stop_words = {'a', 'an', 'the', 'to', 'in', 'on', 'at', 'of', 'for', 'with'}
+    target_core = target_words - stop_words
+
+    for full_text in sources:
+        if not full_text: continue
+        # Split and keep the punctuation to avoid look-behind issues with variable width
+        parts = re.split(r'([.!?。！？][\"\'”’]*)(?:\s+|$)', full_text.strip())
+        sentences = []
+        for i in range(0, len(parts) - 1, 2):
+            if parts[i] or parts[i+1]:
+                sentences.append((parts[i] or "") + (parts[i+1] or ""))
+        if len(parts) % 2 != 0 and parts[-1]:
+            sentences.append(parts[-1])
+        
+        for sentence in sentences:
+            sentence_lower = sentence.lower()
+            # 1. Exact substring match (highest priority)
+            if target_phrase in sentence_lower:
+                return sentence.strip()
+                
+            # 2. Fuzzy overlap match (fallback)
+            if target_core:
+                sentence_words = set(re.findall(r'\w+', sentence_lower))
+                overlap = len(target_core & sentence_words)
+                if overlap > best_score and overlap > 0:
+                    best_score = overlap
+                    best_sentence = sentence.strip()
+                    
+    return best_sentence
 
 
 # ================================================================
@@ -355,23 +398,41 @@ class ExtractVocabView(views.APIView):
 
         # 3. Create link to scenario or message if provided
         if message_id:
-            WordLink.objects.get_or_create(
-                user=user,
-                source_type='message',
-                source_id=str(message_id),
-                target_type='vocab',
-                target_id=str(node.id),
-                relation='context',
-            )
+            try:
+                from django.contrib.contenttypes.models import ContentType
+                msg_obj = PracticeMessage.objects.get(id=message_id)
+                ctype = ContentType.objects.get_for_model(PracticeMessage)
+                # sources to look into
+                sources = [
+                    msg_obj.character_content,
+                    msg_obj.user_content,
+                    msg_obj.tutor_polished_text
+                ]
+                exact_sentence = extract_best_sentence(sources, text) or text.strip()
+
+                WordOccurrence.objects.get_or_create(
+                    user=user,
+                    word=node,
+                    content_type=ctype,
+                    object_id=str(message_id),
+                    defaults={'exact_sentence': exact_sentence}
+                )
+            except PracticeMessage.DoesNotExist:
+                pass
         elif scenario_id:
-            WordLink.objects.get_or_create(
-                user=user,
-                source_type='scenario',
-                source_id=str(scenario_id),
-                target_type='vocab',
-                target_id=str(node.id),
-                relation='context',
-            )
+            try:
+                from django.contrib.contenttypes.models import ContentType
+                scenario_obj = Scenario.objects.get(id=scenario_id)
+                ctype = ContentType.objects.get_for_model(Scenario)
+                WordOccurrence.objects.get_or_create(
+                    user=user,
+                    word=node,
+                    content_type=ctype,
+                    object_id=str(scenario_id),
+                    defaults={'exact_sentence': scenario_obj.description or scenario_obj.title or ""}
+                )
+            except Scenario.DoesNotExist:
+                pass
 
         # 4. Dispatch async enrichment (only if newly created)
         if node_created:
@@ -397,29 +458,29 @@ class KnowledgeGraphView(views.APIView):
         scenario_id = request.query_params.get('scenario_id')
 
         nodes = WordNode.objects.filter(user=user).order_by('created_at')
-        links = WordLink.objects.filter(user=user, target_type='vocab', source_type='message').order_by('created_at')
+        from django.contrib.contenttypes.models import ContentType
+        msg_ctype = ContentType.objects.get_for_model(PracticeMessage)
+        occurrences = WordOccurrence.objects.filter(user=user, content_type=msg_ctype).order_by('created_at')
 
         if scenario_id:
             # Only show nodes and links for messages in this specific scenario
-            from .models import PracticeMessage
             message_ids = PracticeMessage.objects.filter(
                 conversation__scenario_id=scenario_id
             ).values_list('id', flat=True)
             
-            # Convert to strings since WordLink.source_id is a CharField
+            # Filter occurrences for these messages
             message_ids_str = [str(mid) for mid in message_ids]
+            occurrences = occurrences.filter(object_id__in=message_ids_str)
             
-            links = links.filter(source_id__in=message_ids_str)
-            
-            # Filter nodes to only those connected via the filtered links
-            connected_node_ids = links.values_list('target_id', flat=True).distinct()
+            # Filter nodes to only those connected via the filtered occurrences
+            connected_node_ids = occurrences.values_list('word_id', flat=True).distinct()
             nodes = nodes.filter(id__in=connected_node_ids)
 
         # Group words by message
         from collections import defaultdict
         message_words = defaultdict(list)
-        for link in links:
-            message_words[link.source_id].append(link.target_id)
+        for occ in occurrences:
+            message_words[occ.object_id].append(occ.word_id)
 
         word_links = []
         node_messages = defaultdict(list)

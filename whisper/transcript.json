@@ -1,0 +1,3522 @@
+[
+  {
+    "text": "Welcome to syntax today we got a pop lock episodes as where you bring the questions we bring the answers got some really good questions today why does AI suck so much at CSS how are we supposed to get good clean repeatable design out of using lm some questions around vibe rules skills versus rules versus agents should",
+    "start": 0.0,
+    "end": 19.0
+  },
+  {
+    "text": "these rules be shipped with a package or should you just reach out to the internet to grab them interviewing with AI a genius genius use of using a dumb model from Brendan Falk.",
+    "start": 19.93,
+    "end": 32.61
+  },
+  {
+    "text": "We're going to describe his thoughts on that which I thought it was so so genius.",
+    "start": 32.61,
+    "end": 37.25
+  },
+  {
+    "text": "How did you find and debug performance issues in your application?",
+    "start": 37.25,
+    "end": 41.09
+  },
+  {
+    "text": "There's so many different spots where your app can start to feel slow.",
+    "start": 41.09,
+    "end": 43.89
+  },
+  {
+    "text": "from someone says, why isn't stuff we're getting better and faster with AI?",
+    "start": 45.191,
+    "end": 50.191
+  },
+  {
+    "text": "Isn't that what we were promised?",
+    "start": 50.191,
+    "end": 52.191
+  },
+  {
+    "text": "Let's get into it.",
+    "start": 52.191,
+    "end": 53.191
+  },
+  {
+    "text": "What's up, Scott?",
+    "start": 53.191,
+    "end": 54.191
+  },
+  {
+    "text": "You want to hit us with the first question?",
+    "start": 54.191,
+    "end": 55.591
+  },
+  {
+    "text": "Yeah, first question from Yergen.",
+    "start": 55.591,
+    "end": 57.991
+  },
+  {
+    "text": "Do you have any workflows suggestions for design and CSS when working with AI agentic coding?",
+    "start": 57.991,
+    "end": 65.631
+  },
+  {
+    "text": "I'm currently experimenting with open spec plus cloud code and targeted system prompts for roles and it's great at functionality, but the design looks terrible.",
+    "start": 65.631,
+    "end": 77.391
+  },
+  {
+    "text": "I have started a new experiment with new system prompts for UX design and opinionated front-end dev persona, but I'm wondering how other people are tackling this.",
+    "start": 77.391,
+    "end": 88.991
+  },
+  {
+    "text": "Is CSS without a rigid design system just too difficult for LLMs?",
+    "start": 88.991,
+    "end": 94.291
+  },
+  {
+    "text": "I will say this, Yergen, even with a rigid design system.",
+    "start": 94.291,
+    "end": 99.191
+  },
+  {
+    "text": "AI sucks at CSS.",
+    "start": 100.088,
+    "end": 103.288
+  },
+  {
+    "text": "It's a perfect storm, if you will, of things that AI does poorly.",
+    "start": 103.288,
+    "end": 108.008
+  },
+  {
+    "text": "AI loves to just solve a problem locally, instead of solving a problem globally.",
+    "start": 108.008,
+    "end": 114.928
+  },
+  {
+    "text": "It just likes to patch and throw things in there even when you explicitly tell it not to.",
+    "start": 115.461,
+    "end": 120.861
+  },
+  {
+    "text": "And with CSS, that often means just throwing just a bunch of bloated additional one-off classes or styled components or anything that you could be possibly in tailwind too.",
+    "start": 120.861,
+    "end": 134.661
+  },
+  {
+    "text": "It does the same thing with tailwind.",
+    "start": 134.661,
+    "end": 136.741
+  },
+  {
+    "text": "It could just throw a bunch of extra stuff.",
+    "start": 136.741,
+    "end": 140.581
+  },
+  {
+    "text": "Yeah.",
+    "start": 140.581,
+    "end": 141.581
+  },
+  {
+    "text": "Just jump pull up, jump, jump, and even like modern CSS as well.",
+    "start": 141.581,
+    "end": 146.421
+  },
+  {
+    "text": "Like yesterday I was working on it and I was",
+    "start": 146.421,
+    "end": 148.421
+  },
+  {
+    "text": "like use nesting and like it didn't use nesting at all.",
+    "start": 149.782,
+    "end": 152.862
+  },
+  {
+    "text": "And then it used the old version of nesting, you know, before we had like the, you don't have to put the ampersand in there.",
+    "start": 152.862,
+    "end": 158.102
+  },
+  {
+    "text": "And then like switched to bam at one point and then it doesn't know how to use any of the new features that are out there.",
+    "start": 158.102,
+    "end": 164.182
+  },
+  {
+    "text": "And I know that these things can be solved with the right amount of prompting, but man.",
+    "start": 164.182,
+    "end": 169.382
+  },
+  {
+    "text": "And like that's not even what this guy is asking about, right?",
+    "start": 170.0,
+    "end": 172.54
+  },
+  {
+    "text": "Like, like, yeah, the CSS that it kicks out is that.",
+    "start": 172.54,
+    "end": 175.9
+  },
+  {
+    "text": "But also it also just",
+    "start": 175.9,
+    "end": 177.54
+  },
+  {
+    "text": "I don't wanna say awful, because like the like table stakes that like a cloud code will do kick out is like.",
+    "start": 178.332,
+    "end": 185.332
+  },
+  {
+    "text": "like a black background, gray borders around a thing.",
+    "start": 186.023,
+    "end": 189.263
+  },
+  {
+    "text": "And it neatly puts them on the page and it looks decent, you know?",
+    "start": 189.263,
+    "end": 193.503
+  },
+  {
+    "text": "Like it doesn't look awful, but it doesn't look good in my opinion.",
+    "start": 193.503,
+    "end": 197.303
+  },
+  {
+    "text": "It's the layout, the information, architecture kind of sucks on it.",
+    "start": 197.303,
+    "end": 201.343
+  },
+  {
+    "text": "Quite a big task.",
+    "start": 201.343,
+    "end": 202.663
+  },
+  {
+    "text": "And I think a lot of people are trying to crack that nut right now.",
+    "start": 202.663,
+    "end": 205.783
+  },
+  {
+    "text": "Like Google released what stitch, Google Stitch the other day, where you can like basically it will come up with designs for you that are supposed to look way better than it.",
+    "start": 205.783,
+    "end": 216.743
+  },
+  {
+    "text": "I'm pretty sure they just have like 20 different templates.",
+    "start": 216.743,
+    "end": 219.823
+  },
+  {
+    "text": "Yeah, yeah.",
+    "start": 219.823,
+    "end": 220.663
+  },
+  {
+    "text": "That's how this works.",
+    "start": 220.663,
+    "end": 221.503
+  },
+  {
+    "text": "18 different variables.",
+    "start": 221.503,
+    "end": 222.543
+  },
+  {
+    "text": "I think they're just simply feeding it.",
+    "start": 222.543,
+    "end": 224.063
+  },
+  {
+    "text": "A bunch of rules like always use this line spacing and whatnot, things that are known to look good as well as a bunch of like pre-made templates.",
+    "start": 224.063,
+    "end": 231.783
+  },
+  {
+    "text": "Because I'd like, I ran it a few times myself and then I was looking at what everybody else was generating on the internet.",
+    "start": 231.783,
+    "end": 237.383
+  },
+  {
+    "text": "And they all look...",
+    "start": 237.383,
+    "end": 238.383
+  },
+  {
+    "text": "similarly similar, which is also the tragedy of the columns with a lot of the stuff is it looks good Until everybody does it and then it starts to look like",
+    "start": 238.845,
+    "end": 245.765
+  },
+  {
+    "text": "Yeah, and I think some of it is system-pronzed stuff.",
+    "start": 246.614,
+    "end": 249.614
+  },
+  {
+    "text": "I would-",
+    "start": 249.614,
+    "end": 250.614
+  },
+  {
+    "text": "I got into it with my AI the other day where I was just...",
+    "start": 250.651,
+    "end": 254.851
+  },
+  {
+    "text": "yelling at it being like, why are you adding gradients here?",
+    "start": 255.61,
+    "end": 260.61
+  },
+  {
+    "text": "Why are you adding backroom?",
+    "start": 260.61,
+    "end": 262.21
+  },
+  {
+    "text": "Why are you doing this in that?",
+    "start": 262.21,
+    "end": 263.97
+  },
+  {
+    "text": "And it was like, you called me too.",
+    "start": 263.97,
+    "end": 265.53
+  },
+  {
+    "text": "And I said, I definitely did not tell you to.",
+    "start": 266.229,
+    "end": 268.429
+  },
+  {
+    "text": "I told you explicitly not to.",
+    "start": 268.429,
+    "end": 270.109
+  },
+  {
+    "text": "And it was like right here.",
+    "start": 270.109,
+    "end": 271.589
+  },
+  {
+    "text": "Here's where you told me to.",
+    "start": 271.589,
+    "end": 273.789
+  },
+  {
+    "text": "And it was a line of text I'd never seen before that I didn't write.",
+    "start": 273.789,
+    "end": 277.509
+  },
+  {
+    "text": "It wasn't in my agent's file.",
+    "start": 277.509,
+    "end": 279.149
+  },
+  {
+    "text": "So I googled that line of text and found it.",
+    "start": 279.149,
+    "end": 281.909
+  },
+  {
+    "text": "the open code.",
+    "start": 282.437,
+    "end": 285.437
+  },
+  {
+    "text": "So the codex header for open code says typography, use expressive purposeful fonts, and then it lists interroboto aerial.",
+    "start": 284.902,
+    "end": 294.902
+  },
+  {
+    "text": "Color and look, choose a clear visual define, avoid purple on white defaults, no purple bias.",
+    "start": 294.902,
+    "end": 300.902
+  },
+  {
+    "text": "The most egregious one here is don't rely on flat single color backgrounds, use gradients, shapes, patterns to build atmosphere.",
+    "start": 300.902,
+    "end": 309.902
+  },
+  {
+    "text": "And so I tweeted out, I said, I love open code, but this is not something.",
+    "start": 311.502,
+    "end": 317.142
+  },
+  {
+    "text": "harness like this should be deciding for me, right? These types of stylistic choices.",
+    "start": 318.063,
+    "end": 323.663
+  },
+  {
+    "text": "DAX responded saying that that is the system prompt from the Codex CLI and they just keep it as it.",
+    "start": 323.663,
+    "end": 333.623
+  },
+  {
+    "text": "That's why I think I'm moving a lot of stuff to pie because there's no system prompt stuff.",
+    "start": 332.732,
+    "end": 338.072
+  },
+  {
+    "text": "getting in the way. But even if there is this header text that gets put into all of your prompts.",
+    "start": 338.661,
+    "end": 344.661
+  },
+  {
+    "text": "It's also at a model level, these things are definitely biased into certain designs and certain styles, and they're trained on a bunch of garbage CSS.",
+    "start": 345.626,
+    "end": 354.386
+  },
+  {
+    "text": "I've tried to beat the purple out of these things and they've done a fairly good job of like beating the purple out of the model and like getting rid of it via prompts.",
+    "start": 355.295,
+    "end": 364.135
+  },
+  {
+    "text": "But now we're just sort of swinging so hard the other way where everything looks exactly the same as well.",
+    "start": 364.135,
+    "end": 369.735
+  },
+  {
+    "text": "You know, rounded corners, border on one side of a card.",
+    "start": 369.735,
+    "end": 372.935
+  },
+  {
+    "text": "I think they're also optimizing for normies that when they use it, it just looks good and they go, oh, AI is so good because amazing look good.",
+    "start": 373.747,
+    "end": 381.827
+  },
+  {
+    "text": "Instead of like, if you want practitioners with full control over it, now suddenly these things are gonna get in the way.",
+    "start": 381.827,
+    "end": 388.587
+  },
+  {
+    "text": "Man, yeah, it's a problem beyond like the design part of things and the actual implementation.",
+    "start": 388.587,
+    "end": 395.227
+  },
+  {
+    "text": "I'm trying to figure that part out West with my graffiti library.",
+    "start": 395.227,
+    "end": 399.747
+  },
+  {
+    "text": "This whole thing is built for the idea of like, here are templates, here is the customization.",
+    "start": 399.747,
+    "end": 405.507
+  },
+  {
+    "text": "Here's the things that you like.",
+    "start": 405.507,
+    "end": 407.587
+  },
+  {
+    "text": "Here is the structure and here's how it should work, but then you also, this is how you customize it and you don't add, you don't add one-off classes to do this thing, you use the classes for the structure and then you build on top of that systemically.",
+    "start": 407.587,
+    "end": 421.027
+  },
+  {
+    "text": "And I've like built a best practices skill.",
+    "start": 421.027,
+    "end": 423.667
+  },
+  {
+    "text": "I've tuned the docs now, the docs return, mark down, we'll talk about that later, but like I've just been grinding on this specific problem for a while now because I hate this thing, yeah.",
+    "start": 423.667,
+    "end": 436.187
+  },
+  {
+    "text": "I hate this.",
+    "start": 436.187,
+    "end": 437.027
+  },
+  {
+    "text": "It's honestly a very hard problem to solve because like in many other cases, you probably will want to step outside of some sort of design system because you just know.",
+    "start": 437.027,
+    "end": 445.187
+  },
+  {
+    "text": "And I think the answer, at least right now, to a lot of the stuff is like, you still need humans with talent and good taste, right?",
+    "start": 445.187,
+    "end": 452.827
+  },
+  {
+    "text": "I know everyone hates the word taste right now, but...",
+    "start": 452.827,
+    "end": 455.107
+  },
+  {
+    "text": "a lot of",
+    "start": 455.969,
+    "end": 457.969
+  },
+  {
+    "text": "doing good design and like laying things out so it makes sense and not just adding buttons absolutely everywhere.",
+    "start": 457.521,
+    "end": 464.021
+  },
+  {
+    "text": "which just comes down to somebody that actually knows what they're doing and can be powerful with these tools, right?",
+    "start": 464.995,
+    "end": 471.075
+  },
+  {
+    "text": "Yeah, totally.",
+    "start": 471.075,
+    "end": 472.075
+  },
+  {
+    "text": "I don't think anybody, like I've sort of try and low for this type of stuff.",
+    "start": 472.075,
+    "end": 477.115
+  },
+  {
+    "text": "And unless you have...",
+    "start": 477.115,
+    "end": 479.115
+  },
+  {
+    "text": "I think if you have a very rigid, well-documented design system, that certainly helps quite a bit.",
+    "start": 479.866,
+    "end": 486.666
+  },
+  {
+    "text": "But still, I don't know anybody that has certainly nailed this just yet.",
+    "start": 486.666,
+    "end": 490.426
+  },
+  {
+    "text": "Same.",
+    "start": 490.426,
+    "end": 490.586
+  },
+  {
+    "text": "And like the people...",
+    "start": 492.011,
+    "end": 494.011
+  },
+  {
+    "text": "I got into it with some knucklehead on Twitter the other day where like he just says like",
+    "start": 493.714,
+    "end": 499.354
+  },
+  {
+    "text": "I was amazing at design all you need is a screenshot and he says great artists make or great artist steel whatever that quote is You know and then I like just like screenshot at his website It's like you're you're spouting this BS off in your own website looks like something clawed just",
+    "start": 500.401,
+    "end": 516.861
+  },
+  {
+    "text": "it out in like 12 seconds. And you think it looks good because you got an taste. Yeah. No, but that's the thing that aside from that, the guy was selling like an accessibility tool for checking color contrast and literally his own website didn't use the tool and didn't what didn't have the contrast in it.",
+    "start": 517.526,
+    "end": 537.086
+  },
+  {
+    "text": "That drives me nuts because people are probably in the comments already to this one being like, oh, I can do X, Y, and Z. And I have a great thing. And it's like, no, your website looks like the same vibe coded app that everybody else came out with. You know, I've never never been impressed or enjoyed using design of one of these vibe coded things. It certainly is better than a lot of the crap people were",
+    "start": 538.171,
+    "end": 560.651
+  },
+  {
+    "text": "like just like cludging together themselves, which is good, means like the baseline for like decent experiences is much higher now, but I don't think that you can simply just screenshot a good design of some other app and say, oh, mine now looks amazing as well.",
+    "start": 561.646,
+    "end": 577.526
+  },
+  {
+    "text": "Yeah, I think this all comes back, I had a tweet that was, it's crazy how AI is really good at the stuff I don't know anything about and total dogs at the stuff I do.",
+    "start": 577.526,
+    "end": 587.446
+  },
+  {
+    "text": "Because the moment that you have an eye for CSS and eye for design and eye for anything, the slop looks like slop.",
+    "start": 587.446,
+    "end": 595.646
+  },
+  {
+    "text": "And there's a reason why I think my AI code for backend stuff is great, because I don't, I'm not as good at that stuff, I'm good at backend, but I'm not like an expert.",
+    "start": 595.646,
+    "end": 606.246
+  },
+  {
+    "text": "So, hey, it works, it works, but when I look at anything closely, especially front end code, the stuff that I'm good at, the design stuff I just,",
+    "start": 606.246,
+    "end": 615.006
+  },
+  {
+    "text": "I see how terrible it can be.",
+    "start": 615.582,
+    "end": 617.462
+  },
+  {
+    "text": "So yeah.",
+    "start": 617.462,
+    "end": 618.462
+  },
+  {
+    "text": "Yeah.",
+    "start": 618.462,
+    "end": 619.302
+  },
+  {
+    "text": "I think that I certainly much better at backend code, which is very deterministic, very programmatic, following patterns.",
+    "start": 619.302,
+    "end": 626.142
+  },
+  {
+    "text": "And then when there's something that's a lot more visual and has to come into life.",
+    "start": 626.142,
+    "end": 630.422
+  },
+  {
+    "text": "the taste that you have.",
+    "start": 630.401,
+    "end": 631.401
+  },
+  {
+    "text": "It's much harder.",
+    "start": 631.401,
+    "end": 632.401
+  },
+  {
+    "text": "Not to say, I think we probably will crack this.",
+    "start": 632.401,
+    "end": 635.361
+  },
+  {
+    "text": "I think somebody that actually knows it.",
+    "start": 635.361,
+    "end": 636.521
+  },
+  {
+    "text": "I know Tailwind guys are working on UI to SH right now, and I've seen some decent stuff.",
+    "start": 636.521,
+    "end": 641.681
+  },
+  {
+    "text": "They've been cranking out.",
+    "start": 641.681,
+    "end": 642.801
+  },
+  {
+    "text": "A lot of smart people working on this right now, and I bet we'll probably see it solved in the next six months or so.",
+    "start": 642.801,
+    "end": 649.521
+  },
+  {
+    "text": "Lewis says, I'm getting back into hands of web development after years of working in product roles.",
+    "start": 650.221,
+    "end": 656.501
+  },
+  {
+    "text": "I want to get my hands dirty again.",
+    "start": 656.501,
+    "end": 658.021
+  },
+  {
+    "text": "So I'm doing a React app to prove also to myself that I can still do it.",
+    "start": 658.021,
+    "end": 662.781
+  },
+  {
+    "text": "But it is so much easier to get ahead to write most of the code myself.",
+    "start": 662.781,
+    "end": 667.781
+  },
+  {
+    "text": "This is a dilemma for me and I am also learning.",
+    "start": 667.781,
+    "end": 670.741
+  },
+  {
+    "text": "Since I am also a teacher, I know I am learning less when I use AI, but then again, maybe some of the skills I am missing out on here are redundant and I'm better off learning how to code with AI on my second screen.",
+    "start": 670.741,
+    "end": 683.381
+  },
+  {
+    "text": "He goes on to say, I do know the fundamentals of coding with React.",
+    "start": 683.381,
+    "end": 687.061
+  },
+  {
+    "text": "I just haven't been writing lots of code myself the last couple of years.",
+    "start": 687.061,
+    "end": 690.541
+  },
+  {
+    "text": "What are your takes on this?",
+    "start": 690.541,
+    "end": 691.981
+  },
+  {
+    "text": "Yes.",
+    "start": 691.981,
+    "end": 692.821
+  },
+  {
+    "text": "This is kind of an interesting one.",
+    "start": 693.458,
+    "end": 695.618
+  },
+  {
+    "text": "And I think as much as people...",
+    "start": 695.618,
+    "end": 698.098
+  },
+  {
+    "text": "I don't know, it's a delicate balance here.",
+    "start": 698.762,
+    "end": 700.762
+  },
+  {
+    "text": "I certainly think you still do need to understand how the ins and outs of a lot of this stuff work, but I don't think you need to know the ins and outs of it as much as you previously did.",
+    "start": 701.529,
+    "end": 712.769
+  },
+  {
+    "text": "I think that people that are building the lower level stuff of this certainly need to know how this works, but that they'll be then turning that into libraries and whatever that we can sort of sit on top of.",
+    "start": 712.769,
+    "end": 723.689
+  },
+  {
+    "text": "And then the people that do know how a lot of this bad stuff happens, like whether it's performance or optimizations, they will be creating skills that can be modeled out and you can apply it to your own code base.",
+    "start": 723.689,
+    "end": 735.889
+  },
+  {
+    "text": "So like what's my take on like do you still need to know how all of the stuff works?",
+    "start": 735.889,
+    "end": 741.209
+  },
+  {
+    "text": "I think the people that are getting the most out of",
+    "start": 741.209,
+    "end": 743.929
+  },
+  {
+    "text": "this AI right now are the people that actually understand.",
+    "start": 744.841,
+    "end": 748.441
+  },
+  {
+    "text": "how to tackle large projects, how technology works, how these things all work together.",
+    "start": 749.39,
+    "end": 754.85
+  },
+  {
+    "text": "You see Toby.",
+    "start": 754.85,
+    "end": 756.01
+  },
+  {
+    "text": "from Shopify, obviously creator of Shopify.",
+    "start": 756.539,
+    "end": 759.379
+  },
+  {
+    "text": "That guy hasn't slung code in many, many years and then all of a sudden he's just...",
+    "start": 759.379,
+    "end": 764.379
+  },
+  {
+    "text": "these really interesting projects, you know, QMD and auto research, pi and whatnot.",
+    "start": 764.596,
+    "end": 771.596
+  },
+  {
+    "text": "And that's because...",
+    "start": 771.596,
+    "end": 772.596
+  },
+  {
+    "text": "of the type of person he is.",
+    "start": 773.676,
+    "end": 775.676
+  },
+  {
+    "text": "He's a thinker, he's a technologist, he understands planning products, he understands sort of the bigger picture of a lot of this stuff.",
+    "start": 775.676,
+    "end": 783.396
+  },
+  {
+    "text": "And you're starting to see a lot of like, really reputable project managers, I know that term gets, not to say Toby's a project manager, but you're seeing a lot of people who previously were sort of hands off with the code and much more of a skip sheer error.",
+    "start": 783.396,
+    "end": 798.916
+  },
+  {
+    "text": "Ship steerer, now they're sort of getting back into the code.",
+    "start": 798.916,
+    "end": 802.036
+  },
+  {
+    "text": "And the stuff they're building is good because they...",
+    "start": 802.036,
+    "end": 804.036
+  },
+  {
+    "text": "they understand how all of this stuff works.",
+    "start": 805.288,
+    "end": 807.648
+  },
+  {
+    "text": "So that's my take there is that.",
+    "start": 807.648,
+    "end": 809.588
+  },
+  {
+    "text": "The people that are going to do the best on this are not just the people that can type in the box and produce a bunch of garbage, but the people that really know how to think about a project and apply, solve problems, you know, all of the things that were at the end of the day were using this code for.",
+    "start": 810.139,
+    "end": 826.339
+  },
+  {
+    "text": "From a ship, steerer to stirr.",
+    "start": 826.339,
+    "end": 830.379
+  },
+  {
+    "text": "I, you know what?",
+    "start": 830.379,
+    "end": 832.339
+  },
+  {
+    "text": "It's so funny, Wes.",
+    "start": 832.339,
+    "end": 833.339
+  },
+  {
+    "text": "I agree.",
+    "start": 833.339,
+    "end": 834.339
+  },
+  {
+    "text": "I think one thing that could help here is just the idea of",
+    "start": 834.339,
+    "end": 839.039
+  },
+  {
+    "text": "slowing down a little bit and reading the code.",
+    "start": 839.808,
+    "end": 843.248
+  },
+  {
+    "text": "I know it's when you're learning something, there's a little bit of a difference there because you're not going to be able to recognize bad patterns, but with the amount that AI does write kind of...",
+    "start": 843.248,
+    "end": 854.048
+  },
+  {
+    "text": "lot of patterns. If you can read the code that it's writing and identify where the problems are, or even ask it to review its code and see possibly if it has ideas for where these sloppy things are, I think there is a loop there in which you're able to pick things up that you wouldn't have picked up before by really having a deep eye for reviewing the code rather than if you're enjoying having the eye right the code. But being able to have an eye for what is good and what is bad, I know that's tough to do without...",
+    "start": 854.434,
+    "end": 891.834
+  },
+  {
+    "text": "really writing the code for a long time, many of the patterns that I can recognize as being bad, I only recognize as being bad because I wrote them poorly myself at some point and then refactored.",
+    "start": 893.178,
+    "end": 905.978
+  },
+  {
+    "text": "Well, I'll give you another example of where it matters about the code, but so much more the actual implementation.",
+    "start": 908.41,
+    "end": 916.27
+  },
+  {
+    "text": "So I have this one Photoshop that's called texture anything.",
+    "start": 916.27,
+    "end": 920.47
+  },
+  {
+    "text": "It's a Photoshop plugin called texture anything.",
+    "start": 920.47,
+    "end": 922.49
+  },
+  {
+    "text": "And the way it works is that you",
+    "start": 922.49,
+    "end": 924.13
+  },
+  {
+    "text": "you drag this plugin in and it has a list of, I don't know, like 30 or 40 Photoshop actions that it applies to it and then it will sort of give like a logo, like a texture, grunge look to anything.",
+    "start": 925.026,
+    "end": 938.286
+  },
+  {
+    "text": "We'll put some screenshots up if you're watching the video right now.",
+    "start": 938.286,
+    "end": 941.386
+  },
+  {
+    "text": "And I love that plugin, but I just like, I hate having to open Photoshop for it or it takes like a long time and I was like, I would love for this to be programmatic.",
+    "start": 941.386,
+    "end": 948.906
+  },
+  {
+    "text": "So I got Claude, I dropped it in Claude, I said convert this to using JavaScript, right?",
+    "start": 949.644,
+    "end": 955.044
+  },
+  {
+    "text": "And then it went through it.",
+    "start": 955.044,
+    "end": 956.344
+  },
+  {
+    "text": "It surprisingly was able to read the Photoshop action, figured out what each action was doing, and then out the other end, boom, it gave me the entire effect done in, I think it was in sharp, and it did a great job.",
+    "start": 956.344,
+    "end": 970.124
+  },
+  {
+    "text": "Like it looked exactly what I wanted, right?",
+    "start": 970.124,
+    "end": 972.184
+  },
+  {
+    "text": "It re-implemented all of the blurs, all of the, every single thing that Photoshop would do, it now did it programmatically in code.",
+    "start": 972.184,
+    "end": 978.884
+  },
+  {
+    "text": "But the problem was it was slow, right?",
+    "start": 978.884,
+    "end": 980.684
+  },
+  {
+    "text": "Like if I uploaded it to 500 by 500 pixel syntax logo, it would take 10 seconds to apply it.",
+    "start": 980.684,
+    "end": 987.684
+  },
+  {
+    "text": "And I was like, I would like for this to be much faster because there's knobs I would like to turn.",
+    "start": 987.684,
+    "end": 991.044
+  },
+  {
+    "text": "You know what happens when you turn the green level up, and you got to wait 10 seconds.",
+    "start": 991.044,
+    "end": 995.844
+  },
+  {
+    "text": "So I like.",
+    "start": 995.844,
+    "end": 996.164
+  },
+  {
+    "text": "like my programmer brain and I was like, how are you doing this?",
+    "start": 996.999,
+    "end": 1001.999
+  },
+  {
+    "text": "You know, what technologies are you using?",
+    "start": 1002.039,
+    "end": 1004.279
+  },
+  {
+    "text": "And over the course of maybe two hours, I sort of went back and forth and said, why don't we use wasm for this?",
+    "start": 1004.279,
+    "end": 1010.519
+  },
+  {
+    "text": "And then, okay, oh, good idea, you're so smart.",
+    "start": 1010.519,
+    "end": 1012.639
+  },
+  {
+    "text": "I know, I think, you know?",
+    "start": 1012.639,
+    "end": 1014.879
+  },
+  {
+    "text": "Let me move this over to wasm and then I was like, we'll like,",
+    "start": 1014.879,
+    "end": 1017.799
+  },
+  {
+    "text": "how long each step takes, right?",
+    "start": 1017.862,
+    "end": 1019.902
+  },
+  {
+    "text": "And then I would look at it and say, oh, this step is taking much longer.",
+    "start": 1019.902,
+    "end": 1024.422
+  },
+  {
+    "text": "Like, what are you doing with this?",
+    "start": 1024.422,
+    "end": 1025.782
+  },
+  {
+    "text": "Oh, I'm looping it through every pixel, but we don't really need to be looping over through every pixel.",
+    "start": 1025.782,
+    "end": 1030.582
+  },
+  {
+    "text": "We just need to be, maybe we can filter four pixels that have a color first, you know?",
+    "start": 1030.582,
+    "end": 1034.822
+  },
+  {
+    "text": "And then I got it down to like 200 milliseconds, you know?",
+    "start": 1034.822,
+    "end": 1038.302
+  },
+  {
+    "text": "10 seconds to 200 milliseconds, all because I knew how like graphics processing and canvas works, I knew how web assembly works.",
+    "start": 1038.302,
+    "end": 1046.782
+  },
+  {
+    "text": "I knew how to parallelize things in web assembly.",
+    "start": 1046.782,
+    "end": 1051.222
+  },
+  {
+    "text": "And I didn't write any of the code myself, but like, that was a major.",
+    "start": 1051.222,
+    "end": 1054.862
+  },
+  {
+    "text": "If I was just to type it, like make it faster, maybe it could figure it out.",
+    "start": 1054.862,
+    "end": 1058.902
+  },
+  {
+    "text": "And maybe that's something for I could use like a auto research plugin for, but...",
+    "start": 1058.902,
+    "end": 1062.862
+  },
+  {
+    "text": "I think most people would have been like, check this out, I made this amazing.",
+    "start": 1063.717,
+    "end": 1068.357
+  },
+  {
+    "text": "Photoshop to JavaScript converter and it works at the end of the day and it's like well",
+    "start": 1068.99,
+    "end": 1073.49
+  },
+  {
+    "text": "Yeah, it works, but it's not really that great of an implementation.",
+    "start": 1074.444,
+    "end": 1078.244
+  },
+  {
+    "text": "And I think the code that I kicked out at the end of the day was really good and it's way faster.",
+    "start": 1078.244,
+    "end": 1083.884
+  },
+  {
+    "text": "We have an episode that I want to work on.",
+    "start": 1084.044,
+    "end": 1086.644
+  },
+  {
+    "text": "Well, I've already wrote most of the episode, but",
+    "start": 1086.644,
+    "end": 1088.764
+  },
+  {
+    "text": "using more deterministic methods for improving the AI output, whether that is quality checks or speed checks or those types of things, where it's not just telling the AI, hey, go make it faster, because it will take shortcuts or cheap out or a lie or do all kinds of stuff for you.",
+    "start": 1089.565,
+    "end": 1108.565
+  },
+  {
+    "text": "So I think there's a lot here in terms of being able to understand where the problems are being knowledgeable enough to direct the AI and away to fix these problems. Again, I think those are all interesting questions.",
+    "start": 1108.565,
+    "end": 1121.565
+  },
+  {
+    "text": "Alright, next question here is from Alex to preface my question on the network engineer and don't have much web developer background, oddly enough.",
+    "start": 1121.565,
+    "end": 1129.565
+  },
+  {
+    "text": "I enjoy the syntax podcast despite having very little context to keep up with some of the episode.",
+    "start": 1129.565,
+    "end": 1134.565
+  },
+  {
+    "text": "With that said, I've been a part of a fair share of company website performance investigations, where I typically turn to the browser developer tools network tab and confirm supporting infrastructure is operating normally to contribute.",
+    "start": 1135.649,
+    "end": 1151.849
+  },
+  {
+    "text": "I'm looking for other ways to bring greater value to these investigations from an IT operations infrastructure perspective, what insights tools or practices would be helpful to web teams during performance troubleshooting.",
+    "start": 1151.849,
+    "end": 1166.729
+  },
+  {
+    "text": "Yeah.",
+    "start": 1167.637,
+    "end": 1168.137
+  },
+  {
+    "text": "Yeah, so Alex, this is great.",
+    "start": 1168.836,
+    "end": 1171.036
+  },
+  {
+    "text": "One thing I will say here is make sure that the teams you're supporting with this stuff.",
+    "start": 1171.036,
+    "end": 1176.036
+  },
+  {
+    "text": "would like your support.",
+    "start": 1176.465,
+    "end": 1178.065
+  },
+  {
+    "text": "Not because, not because that you're not being helpful, but sometimes it can be not helpful when somebody who isn't having like the full picture is giving.",
+    "start": 1178.065,
+    "end": 1189.265
+  },
+  {
+    "text": "be back on stuff, you know, sometimes it might even be better to be more helpful to say like...",
+    "start": 1189.807,
+    "end": 1195.407
+  },
+  {
+    "text": "I'm noticing these pages are slower whatever rather than trying to give a deep",
+    "start": 1196.114,
+    "end": 1200.974
+  },
+  {
+    "text": "like technical explanation as to why the worst thing is, is that when somebody doesn't know what they're talking about, but also...",
+    "start": 1201.803,
+    "end": 1208.403
+  },
+  {
+    "text": "punches something into Claude or chat you be T and then paste the reply to you.",
+    "start": 1209.057,
+    "end": 1213.537
+  },
+  {
+    "text": "Yeah.",
+    "start": 1213.537,
+    "end": 1214.537
+  },
+  {
+    "text": "That's so disrespectful to me, because like, you're not suggesting anything.",
+    "start": 1215.376,
+    "end": 1219.056
+  },
+  {
+    "text": "I could have punched that in myself as well.",
+    "start": 1219.056,
+    "end": 1221.336
+  },
+  {
+    "text": "And it's your way, see my time, making me read this now, as if you came up with...",
+    "start": 1221.336,
+    "end": 1225.496
+  },
+  {
+    "text": "Anyways, continue.",
+    "start": 1225.754,
+    "end": 1226.594
+  },
+  {
+    "text": "No, yeah, no, I think that's right along the lines of it.",
+    "start": 1226.594,
+    "end": 1230.634
+  },
+  {
+    "text": "We're like, I think it is helpful, Alex, if they find what you're doing to be helpful.",
+    "start": 1230.634,
+    "end": 1235.634
+  },
+  {
+    "text": "That said, we do have a number of episodes where we've talked about this in Go deep in depth.",
+    "start": 1235.634,
+    "end": 1239.794
+  },
+  {
+    "text": "Episode 585, fundamentals, what makes a website slow?",
+    "start": 1239.794,
+    "end": 1244.514
+  },
+  {
+    "text": "We also talk about it in 8.74, fast apps, easy perf wins.",
+    "start": 1244.514,
+    "end": 1249.514
+  },
+  {
+    "text": "We talk about an 8.97, making your apps feel faster, then it really is.",
+    "start": 1249.914,
+    "end": 1255.074
+  },
+  {
+    "text": "And 9.72, these things make your app feel like crap on mobile.",
+    "start": 1255.074,
+    "end": 1259.794
+  },
+  {
+    "text": "These episodes are all a great place to get dive into a little bit of what exactly you should be looking for.",
+    "start": 1259.794,
+    "end": 1266.274
+  },
+  {
+    "text": "But again, most websites, I will say, you know, maybe it's a little bit different in the modern era, but fundamentals are still here.",
+    "start": 1266.274,
+    "end": 1274.754
+  },
+  {
+    "text": "Most apps are slow because they're loading heavy resources.",
+    "start": 1274.754,
+    "end": 1279.394
+  },
+  {
+    "text": "The Network tab is a great place to see what is taking a long time.",
+    "start": 1279.394,
+    "end": 1284.594
+  },
+  {
+    "text": "Like you said, it can identify if the server response to slow, is it loading some giant images or something where it shouldn't be?",
+    "start": 1284.594,
+    "end": 1292.874
+  },
+  {
+    "text": "There's a number of things you can certainly learn from the Network tab there as well.",
+    "start": 1292.874,
+    "end": 1298.154
+  },
+  {
+    "text": "Yeah.",
+    "start": 1298.154,
+    "end": 1298.994
+  },
+  {
+    "text": "He was saying like, he's a Network Engineer and he knows how to open the Network tab.",
+    "start": 1298.994,
+    "end": 1304.234
+  },
+  {
+    "text": "And that's a pretty good spot to start.",
+    "start": 1304.234,
+    "end": 1307.194
+  },
+  {
+    "text": "But like, there's so many other.",
+    "start": 1307.194,
+    "end": 1308.754
+  },
+  {
+    "text": "spots in the like from a website being a baby to actually be delivered to your your browser like that can Introduce latency or or slowness ones right like if you if you the network engineer realize oh",
+    "start": 1309.629,
+    "end": 1322.529
+  },
+  {
+    "text": "400, 800 milliseconds is taking for this page to actually respond from the server, even just to get the HTML.",
+    "start": 1323.509,
+    "end": 1330.789
+  },
+  {
+    "text": "At that point,",
+    "start": 1330.789,
+    "end": 1331.269
+  },
+  {
+    "text": "You're just like well that slow but like like but why you know and at that point you probably have to do",
+    "start": 1332.226,
+    "end": 1337.026
+  },
+  {
+    "text": "start to figure out how the app actually works.",
+    "start": 1338.127,
+    "end": 1342.527
+  },
+  {
+    "text": "And as a network engineer, you probably have some good insights into life.",
+    "start": 1342.527,
+    "end": 1346.687
+  },
+  {
+    "text": "how to make this thing faster.",
+    "start": 1347.656,
+    "end": 1349.636
+  },
+  {
+    "text": "And you get some observability in there.",
+    "start": 1349.636,
+    "end": 1352.256
+  },
+  {
+    "text": "You get the metric.",
+    "start": 1352.256,
+    "end": 1353.096
+  },
+  {
+    "text": "So what's actually taking, is it database?",
+    "start": 1353.096,
+    "end": 1355.896
+  },
+  {
+    "text": "Is there something like weird thing that we're waiting for?",
+    "start": 1355.896,
+    "end": 1358.576
+  },
+  {
+    "text": "The tweets to load before we send the whole thing out.",
+    "start": 1358.576,
+    "end": 1361.216
+  },
+  {
+    "text": "And that's taking 400 milliseconds and holding the page.",
+    "start": 1361.216,
+    "end": 1365.176
+  },
+  {
+    "text": "Pass that, understand caching, look into StaleWare, Revalidate.",
+    "start": 1365.176,
+    "end": 1368.976
+  },
+  {
+    "text": "Those things can certainly help quite a bit.",
+    "start": 1368.976,
+    "end": 1371.256
+  },
+  {
+    "text": "Also, like we said, there's a lot you can do on the UI layer to make your website feel faster.",
+    "start": 1371.256,
+    "end": 1377.496
+  },
+  {
+    "text": "In some cases, the actual rendering is slow, and that could be...",
+    "start": 1377.496,
+    "end": 1382.456
+  },
+  {
+    "text": "how your resources are being loaded in, or it also could just be like, you are re-rendering these things way too often.",
+    "start": 1382.896,
+    "end": 1389.336
+  },
+  {
+    "text": "That can sometimes happen in React applications.",
+    "start": 1389.336,
+    "end": 1392.696
+  },
+  {
+    "text": "So just like kind of go through all four of those episodes and just understand where slowness can be introduced.",
+    "start": 1392.696,
+    "end": 1400.056
+  },
+  {
+    "text": "And when you're on the website, does it feel slow?",
+    "start": 1400.416,
+    "end": 1403.256
+  },
+  {
+    "text": "Is it actually slow?",
+    "start": 1403.256,
+    "end": 1404.656
+  },
+  {
+    "text": "Understanding all of these tools.",
+    "start": 1404.656,
+    "end": 1406.056
+  },
+  {
+    "text": "And like the network tab is not just the only one you can go into like the rendering tab, the flame graphs, understand all of that stuff.",
+    "start": 1406.056,
+    "end": 1412.096
+  },
+  {
+    "text": "I think that's a...",
+    "start": 1412.096,
+    "end": 1413.256
+  },
+  {
+    "text": "That's going to be very...",
+    "start": 1413.652,
+    "end": 1415.652
+  },
+  {
+    "text": "good skill to have, I think, in the next little while as everybody's just cranking out these websites where they don't necessarily know what the code looks like.",
+    "start": 1415.842,
+    "end": 1425.162
+  },
+  {
+    "text": "Being able to just dive in and figure out, all right, well, we have this thing, but like, how can we improve it?",
+    "start": 1425.162,
+    "end": 1431.282
+  },
+  {
+    "text": "Where is it actually going slow?",
+    "start": 1431.282,
+    "end": 1432.802
+  },
+  {
+    "text": "Yeah, I will say here's an opportunity to plug Century SEMTRY.io.",
+    "start": 1432.802,
+    "end": 1439.042
+  },
+  {
+    "text": "One of the coolest things that Century does is they have tools that can identify what your slowest routes are or potentially what your slowest DB queries are, those types of things.",
+    "start": 1439.042,
+    "end": 1452.282
+  },
+  {
+    "text": "They can make it really easy to find exactly where the slowdowns are in any of your applications.",
+    "start": 1452.282,
+    "end": 1458.242
+  },
+  {
+    "text": "Man, we use this so, so much when we built the current version of the syntax site.",
+    "start": 1458.242,
+    "end": 1463.642
+  },
+  {
+    "text": "I'm sure we'll use it just as much when we finally finished the next iteration of the syntax website.",
+    "start": 1463.642,
+    "end": 1470.682
+  },
+  {
+    "text": "But it can really give you a misery score and stuff for how...",
+    "start": 1470.682,
+    "end": 1476.042
+  },
+  {
+    "text": "frequently this page is hit versus how slow it is.",
+    "start": 1476.891,
+    "end": 1480.051
+  },
+  {
+    "text": "There's a lot of great stuff in Century for tracking these down as well as really getting into where these slow downs might be.",
+    "start": 1480.051,
+    "end": 1488.051
+  },
+  {
+    "text": "Yeah, the front end has like the web vitals, performance scores, all that kind of stuff.",
+    "start": 1488.051,
+    "end": 1493.691
+  },
+  {
+    "text": "The database one we had, we've told a story many times, but I think it's hilarious, is that CentriSent is an email one day, like as an alert, being like your database queries are climbing and they're at a point where they're too slow now.",
+    "start": 1494.345,
+    "end": 1506.665
+  },
+  {
+    "text": "And it turned out we didn't have an index on our shows page.",
+    "start": 1506.665,
+    "end": 1509.665
+  },
+  {
+    "text": "So every time we added another show,",
+    "start": 1509.665,
+    "end": 1511.585
+  },
+  {
+    "text": "it just increased the size of the database.",
+    "start": 1512.143,
+    "end": 1514.343
+  },
+  {
+    "text": "And when we were querying based on, I think we were querying based on the show number or something like that.",
+    "start": 1514.343,
+    "end": 1519.583
+  },
+  {
+    "text": "And there was no index.",
+    "start": 1519.583,
+    "end": 1520.943
+  },
+  {
+    "text": "So it had to loop through every single show in the database and look for it or looking for the, I think the slug, something like that.",
+    "start": 1520.943,
+    "end": 1528.263
+  },
+  {
+    "text": "And like,",
+    "start": 1528.263,
+    "end": 1529.103
+  },
+  {
+    "text": "I don't know that we would have noticed that because it got just a couple of milliseconds slower every single time we pushed a show, right?",
+    "start": 1529.271,
+    "end": 1536.111
+  },
+  {
+    "text": "And that's not significant.",
+    "start": 1536.111,
+    "end": 1538.071
+  },
+  {
+    "text": "But over adding 400 shows since we built it.",
+    "start": 1538.071,
+    "end": 1541.351
+  },
+  {
+    "text": "It got way slower and then we're like, oh, pop an index on that.",
+    "start": 1541.985,
+    "end": 1546.985
+  },
+  {
+    "text": "And then we were good to go, which is hilarious.",
+    "start": 1547.065,
+    "end": 1549.865
+  },
+  {
+    "text": "Yeah. Well, you know what?",
+    "start": 1549.865,
+    "end": 1551.185
+  },
+  {
+    "text": "I'm seeing right now that SinHax is getting some not great scores for web vitals.",
+    "start": 1551.185,
+    "end": 1558.025
+  },
+  {
+    "text": "I'm wondering why.",
+    "start": 1558.025,
+    "end": 1559.265
+  },
+  {
+    "text": "So I need to dive into that.",
+    "start": 1559.265,
+    "end": 1560.705
+  },
+  {
+    "text": "Considering it is using the very fast zero sync and in practice, it feels fairly fast, but I'm sure there's some stuff to learn here about why we're getting slow performance scores on here.",
+    "start": 1560.705,
+    "end": 1570.185
+  },
+  {
+    "text": "interesting. So check it out, century scntry.py.io, ford's lesson tech, sign up, use the coupon code, tctrilur, case all one word. These are some great tools.",
+    "start": 1570.924,
+    "end": 1579.524
+  },
+  {
+    "text": "And I think very relevant to this question. Sorry, I didn't mean to turn your your question into an ad Alex. It just happened to work that way.",
+    "start": 1579.524,
+    "end": 1586.124
+  },
+  {
+    "text": "Mike says, hi guys for Sephormus, I want to say thanks and keep your flowers.",
+    "start": 1587.121,
+    "end": 1593.281
+  },
+  {
+    "text": "I was able to move into a developer role because of the podcast in both of your tutorials.",
+    "start": 1593.281,
+    "end": 1597.881
+  },
+  {
+    "text": "Well you're welcome.",
+    "start": 1597.881,
+    "end": 1598.641
+  },
+  {
+    "text": "I want to get into fixing electronics as a hobby, Wes.",
+    "start": 1598.641,
+    "end": 1602.601
+  },
+  {
+    "text": "What do you recommend as a good setup?",
+    "start": 1602.601,
+    "end": 1604.281
+  },
+  {
+    "text": "or a soldering station for a beginner.",
+    "start": 1605.173,
+    "end": 1607.173
+  },
+  {
+    "text": "Yes, man, I've got, I've got thoughts on this.",
+    "start": 1607.173,
+    "end": 1610.613
+  },
+  {
+    "text": "S soldering iron, you can, you can pretty much just get like anything, but if you want to get something like decent and cheap, I have the RyoB.",
+    "start": 1610.613,
+    "end": 1618.853
+  },
+  {
+    "text": "battery-powered soldering iron.",
+    "start": 1619.598,
+    "end": 1622.378
+  },
+  {
+    "text": "And then I also have the little, I think it's called like a T100.",
+    "start": 1622.378,
+    "end": 1626.238
+  },
+  {
+    "text": "It's like a USB little pen shape soldering iron.",
+    "start": 1626.238,
+    "end": 1629.858
+  },
+  {
+    "text": "And I do reach for the Ryobi one much more often because when I reach for the USB-C one, I can never find the frickin power cord that is 100 watts or I can't find like a, something to plug into the wall.",
+    "start": 1629.858,
+    "end": 1644.438
+  },
+  {
+    "text": "And I much rather just have the thing on my desk.",
+    "start": 1644.438,
+    "end": 1648.518
+  },
+  {
+    "text": "So I can solder with it.",
+    "start": 1649.438,
+    "end": 1650.838
+  },
+  {
+    "text": "So big fan of those, it doesn't have to be the Ryobi one, can be literally any battery powered one.",
+    "start": 1650.838,
+    "end": 1657.238
+  },
+  {
+    "text": "So whatever tool brand you have, I think even Adam Savage.",
+    "start": 1657.238,
+    "end": 1660.118
+  },
+  {
+    "text": "has a self-build one where he took a DeWalt battery and he plugged one of those little the barrel adapter ones right into it.",
+    "start": 1660.626,
+    "end": 1667.266
+  },
+  {
+    "text": "So that's my recommendation for there.",
+    "start": 1668.053,
+    "end": 1670.913
+  },
+  {
+    "text": "Along with that, I would probably recommend getting just a whole bunch of little connectors and clips and whatnot, or even just take apart.",
+    "start": 1670.913,
+    "end": 1680.913
+  },
+  {
+    "text": "I figure it's called like a solder sucker where you push it in and you let go and go",
+    "start": 1680.913,
+    "end": 1684.133
+  },
+  {
+    "text": "and that what that does is it sucks the solder out.",
+    "start": 1685.056,
+    "end": 1688.536
+  },
+  {
+    "text": "I'm trying to see if I have it on my desk right now.",
+    "start": 1688.536,
+    "end": 1690.416
+  },
+  {
+    "text": "Now I cleaned up my desk.",
+    "start": 1690.416,
+    "end": 1692.136
+  },
+  {
+    "text": "A little bit of flux in like a little syringe.",
+    "start": 1692.136,
+    "end": 1695.456
+  },
+  {
+    "text": "Flux is really messy.",
+    "start": 1695.456,
+    "end": 1697.176
+  },
+  {
+    "text": "And you need it when you're soldering or desodering components.",
+    "start": 1697.176,
+    "end": 1700.296
+  },
+  {
+    "text": "So I always recommend getting one in like a little squeezy pen.",
+    "start": 1700.296,
+    "end": 1703.576
+  },
+  {
+    "text": "So you don't just get flux, make a mess.",
+    "start": 1703.576,
+    "end": 1705.536
+  },
+  {
+    "text": "Flux is, when you're heating up your solder, it doesn't want to nicely flow into it.",
+    "start": 1705.915,
+    "end": 1712.395
+  },
+  {
+    "text": "So a lot of times you see people that are like, oh, I suck at soldering, look at it.",
+    "start": 1712.395,
+    "end": 1715.595
+  },
+  {
+    "text": "And it's just like this like ball of crustiness.",
+    "start": 1715.595,
+    "end": 1718.355
+  },
+  {
+    "text": "That's me.",
+    "start": 1718.355,
+    "end": 1719.195
+  },
+  {
+    "text": "And that's, yeah, well, it's probably because you don't have flux.",
+    "start": 1719.195,
+    "end": 1721.875
+  },
+  {
+    "text": "And it flux is like this like gooey paste that you put on top of it.",
+    "start": 1721.875,
+    "end": 1727.035
+  },
+  {
+    "text": "And when you apply heat to it, it's like,",
+    "start": 1727.035,
+    "end": 1730.075
+  },
+  {
+    "text": "does something to, I don't even know how it works, but it basically makes your solder just kind of flow out.",
+    "start": 1729.982,
+    "end": 1736.822
+  },
+  {
+    "text": "And you need that when you want it to like flow into a joint that you're soldering, or the opposite, if you want to like suck up the solder with like a copper wick or something, you need to put a little bit of flux on top of it.",
+    "start": 1736.822,
+    "end": 1750.302
+  },
+  {
+    "text": "So I need some flux and some solder.",
+    "start": 1750.626,
+    "end": 1752.266
+  },
+  {
+    "text": "Yes, absolutely.",
+    "start": 1753.259,
+    "end": 1754.379
+  },
+  {
+    "text": "And like a little, what's it called?",
+    "start": 1754.379,
+    "end": 1756.019
+  },
+  {
+    "text": "Like a braid?",
+    "start": 1756.019,
+    "end": 1756.859
+  },
+  {
+    "text": "I don't know the names of any of these things, but you just Google it.",
+    "start": 1756.859,
+    "end": 1759.219
+  },
+  {
+    "text": "finds us at GoOnAllyExpress.",
+    "start": 1759.976,
+    "end": 1761.456
+  },
+  {
+    "text": "So take a look around for all the fun things that you can buy, figure out what the absolute cheapest thing is and then buy like one level up from that you'll probably be happy.",
+    "start": 1762.248,
+    "end": 1769.848
+  },
+  {
+    "text": "That's good advice.",
+    "start": 1771.072,
+    "end": 1772.072
+  },
+  {
+    "text": "Although, yeah.",
+    "start": 1772.072,
+    "end": 1773.072
+  },
+  {
+    "text": "Be careful with the light.",
+    "start": 1773.072,
+    "end": 1773.572
+  },
+  {
+    "text": "lead solder is certainly a thing in China, which a lot of people love lead solder because it's so much easier to work with, but also it is...",
+    "start": 1774.236,
+    "end": 1782.356
+  },
+  {
+    "text": "very harmful to your health. So if you are buying stuff off of valiExpress, be careful that you're not actually buying lead if you're going to be huffing it in.",
+    "start": 1783.052,
+    "end": 1791.932
+  },
+  {
+    "text": "Yes.",
+    "start": 1791.89,
+    "end": 1792.89
+  },
+  {
+    "text": "Yes.",
+    "start": 1792.89,
+    "end": 1793.89
+  },
+  {
+    "text": "Important.",
+    "start": 1793.89,
+    "end": 1794.89
+  },
+  {
+    "text": "All right, next question from Kaelin.",
+    "start": 1794.89,
+    "end": 1795.89
+  },
+  {
+    "text": "Hi, Syntax.",
+    "start": 1795.89,
+    "end": 1796.89
+  },
+  {
+    "text": "How do we balance prepping for NOAAI interviews while job descriptions demand AI profitions?",
+    "start": 1796.89,
+    "end": 1804.69
+  },
+  {
+    "text": "Honestly, after getting spoiled by tab completion and instant AI answers, manual coding feels like going backward.",
+    "start": 1805.455,
+    "end": 1812.575
+  },
+  {
+    "text": "is old school prep still the only way to prove experience in 2026.",
+    "start": 1813.384,
+    "end": 1820.384
+  },
+  {
+    "text": "Well, yeah, that's an interesting thing to have a job that demand...",
+    "start": 1820.479,
+    "end": 1824.199
+  },
+  {
+    "text": "AI proficiency, but doesn't allow you to use AI in interviews feels like...",
+    "start": 1825.161,
+    "end": 1830.841
+  },
+  {
+    "text": "bad structure for an interview if you're asking me.",
+    "start": 1831.831,
+    "end": 1834.631
+  },
+  {
+    "text": "Like, this job demands jackhammer proficiency, but guess what?",
+    "start": 1834.631,
+    "end": 1840.231
+  },
+  {
+    "text": "You gotta just use a chisel.",
+    "start": 1840.231,
+    "end": 1842.071
+  },
+  {
+    "text": "Like, okay, what are you testing me here?",
+    "start": 1842.071,
+    "end": 1844.631
+  },
+  {
+    "text": "I think some of this too is like really just kind of dialing in your...",
+    "start": 1845.25,
+    "end": 1849.09
+  },
+  {
+    "text": "your understanding of things because many times, like the code we write is like less important than understanding the concepts of writing good code.",
+    "start": 1850.049,
+    "end": 1864.009
+  },
+  {
+    "text": "So a lot of this too.",
+    "start": 1864.009,
+    "end": 1865.489
+  },
+  {
+    "text": "is less about the code you end up writing and more about like being able to express the understanding of systems to express the understanding of best practices.",
+    "start": 1866.979,
+    "end": 1879.179
+  },
+  {
+    "text": "So even if you're used to the tab completion style of things, if you can prove to them that you understand the core concepts, you understand why you're doing things and what these best practices are, I feel like those are the things that are going to always keep you ahead of somebody who's just like, I don't know, I just hit the button and it works.",
+    "start": 1879.179,
+    "end": 1903.179
+  },
+  {
+    "text": "Or I'm putting this component in.",
+    "start": 1903.179,
+    "end": 1905.099
+  },
+  {
+    "text": "Why am I putting this component in?",
+    "start": 1905.099,
+    "end": 1906.659
+  },
+  {
+    "text": "I don't know, it's just how I've always done it.",
+    "start": 1906.659,
+    "end": 1908.859
+  },
+  {
+    "text": "You're being able to express yourself and show your work in those types of ways.",
+    "start": 1908.859,
+    "end": 1913.379
+  },
+  {
+    "text": "To me, I think lands better.",
+    "start": 1913.379,
+    "end": 1915.699
+  },
+  {
+    "text": "But it is interesting that they wouldn't allow you to use AI in a tool that demands, or a job interview that demands AI proficiency.",
+    "start": 1915.699,
+    "end": 1923.939
+  },
+  {
+    "text": "I saw this from Brendan Falk on Twitter the other day and I thought this was genius.",
+    "start": 1923.939,
+    "end": 1928.539
+  },
+  {
+    "text": "He says, I believe we have found the best AI native coding interview.",
+    "start": 1928.539,
+    "end": 1932.299
+  },
+  {
+    "text": "We call it the Composer One interview.",
+    "start": 1932.299,
+    "end": 1934.459
+  },
+  {
+    "text": "Composer One was like the very first model from cursor.",
+    "start": 1934.459,
+    "end": 1937.699
+  },
+  {
+    "text": "And...",
+    "start": 1937.699,
+    "end": 1938.539
+  },
+  {
+    "text": "He says candidates get one hour to build a real medium-sized project live.",
+    "start": 1938.873,
+    "end": 1943.553
+  },
+  {
+    "text": "The only constraint is they must use Kirscher's Composer One Model.",
+    "start": 1943.553,
+    "end": 1946.913
+  },
+  {
+    "text": "Why Composer One?",
+    "start": 1946.913,
+    "end": 1948.153
+  },
+  {
+    "text": "It's extremely fast.",
+    "start": 1948.153,
+    "end": 1949.433
+  },
+  {
+    "text": "Candidates can accomplish a lot in one hour.",
+    "start": 1949.433,
+    "end": 1952.313
+  },
+  {
+    "text": "More prompts and more code equals more surface area to assess.",
+    "start": 1952.313,
+    "end": 1955.793
+  },
+  {
+    "text": "And two, it's perfectly mediocre.",
+    "start": 1955.793,
+    "end": 1958.113
+  },
+  {
+    "text": "I love this.",
+    "start": 1958.113,
+    "end": 1958.633
+  },
+  {
+    "text": "Composer One is good enough.",
+    "start": 1958.633,
+    "end": 1960.353
+  },
+  {
+    "text": "The output is decent, but not good enough that it does everything perfectly.",
+    "start": 1960.353,
+    "end": 1964.753
+  },
+  {
+    "text": "Candidates can't rely on the model.",
+    "start": 1964.753,
+    "end": 1966.753
+  },
+  {
+    "text": "They have to be good engineers themselves.",
+    "start": 1966.753,
+    "end": 1968.953
+  },
+  {
+    "text": "We candidates use one agent, write bad prompts, and accept the code they don't understand, and end up with poorly structured codebase.",
+    "start": 1968.953,
+    "end": 1976.593
+  },
+  {
+    "text": "Exceptional candidates run parallel agent.",
+    "start": 1976.593,
+    "end": 1979.273
+  },
+  {
+    "text": "right detailed prompts and enforce very high coding centers.",
+    "start": 1980.017,
+    "end": 1984.017
+  },
+  {
+    "text": "I saw this, I was like, this is genius.",
+    "start": 1984.876,
+    "end": 1986.956
+  },
+  {
+    "text": "Like.",
+    "start": 1986.956,
+    "end": 1987.796
+  },
+  {
+    "text": "Give them something that's not that good, but is fast.",
+    "start": 1988.053,
+    "end": 1992.013
+  },
+  {
+    "text": "And see how they easy, so this is not really answering your question about like, how do you prep for a no AI interview, but I thought it was just so smart.",
+    "start": 1992.013,
+    "end": 2001.013
+  },
+  {
+    "text": "Oh, yeah, this really separates people who understand how these systems work, how they can plan, how they can tackle things versus like people are just like, I don't, I just pushed the button.",
+    "start": 2001.013,
+    "end": 2011.613
+  },
+  {
+    "text": "I typed in the box what you told me to build.",
+    "start": 2011.613,
+    "end": 2013.373
+  },
+  {
+    "text": "And I'm gonna accept everything that comes in.",
+    "start": 2013.373,
+    "end": 2015.853
+  },
+  {
+    "text": "And that goes along with what I was saying is because if the, even if it's tab completion and not like prompts and agents, even if it's just tab completion, and the tab completion is giving you something that is bad, you learn a lot from watching somebody modify the tab completion or choosing not to use the chosen tab completion because of why it's, why it's been.",
+    "start": 2015.853,
+    "end": 2037.613
+  },
+  {
+    "text": "or learned a lot by watching you not accept your tab completions as well. That's how, for sure, that's how they trained all their new model, their composer too. They have all this data on, they have all this data on what people have accepted, right? They're sitting on this gold mine of we have done two billion whatever requests and we propose this code. Here's the cases where people just deleted the whole thing. Here are the cases where people change these things. That's pretty good.",
+    "start": 2038.256,
+    "end": 2067.056
+  },
+  {
+    "text": "The cursor rolled out their composer too a couple days ago and it actually is pretty good. But you saw the drama around that, right? Yeah, yeah. So they took what they took Kimmy, 2.5 and then trained on top of that. But they didn't say that that's what it was. So there's all this drama around.",
+    "start": 2067.056,
+    "end": 2085.056
+  },
+  {
+    "text": "people thought they just took the, the Kemi 2.5 slap their name on it and called it a day, which is a bit of a PR crisis for them.",
+    "start": 2086.613,
+    "end": 2095.173
+  },
+  {
+    "text": "Yeah, a little bit.",
+    "start": 2095.173,
+    "end": 2096.173
+  },
+  {
+    "text": "Yeah.",
+    "start": 2096.173,
+    "end": 2097.013
+  },
+  {
+    "text": "But that said, it's actually really good.",
+    "start": 2097.013,
+    "end": 2099.293
+  },
+  {
+    "text": "I used it for like a week in it.",
+    "start": 2099.293,
+    "end": 2100.893
+  },
+  {
+    "text": "I was like, this is actually pretty good.",
+    "start": 2100.893,
+    "end": 2102.093
+  },
+  {
+    "text": "It's not as good as, as like Opus or Codex or any of that, whatever the latest Open AI one is, but...",
+    "start": 2102.093,
+    "end": 2109.893
+  },
+  {
+    "text": "Pretty good, I would say.",
+    "start": 2109.869,
+    "end": 2111.869
+  },
+  {
+    "text": "Pretty good and you can use it with Zed.",
+    "start": 2112.807,
+    "end": 2114.807
+  },
+  {
+    "text": "I didn't think you could but you can.",
+    "start": 2114.807,
+    "end": 2116.647
+  },
+  {
+    "text": "Air.",
+    "start": 2116.647,
+    "end": 2117.487
+  },
+  {
+    "text": "He says, have you tried Figma?",
+    "start": 2117.524,
+    "end": 2119.244
+  },
+  {
+    "text": "What do you think about their Dev Mode?",
+    "start": 2119.244,
+    "end": 2120.844
+  },
+  {
+    "text": "So yeah, I thought this was an interesting question since we're talking about design and how to approach these types of things.",
+    "start": 2120.844,
+    "end": 2128.604
+  },
+  {
+    "text": "I've never used Dev Mode in Figma.",
+    "start": 2128.604,
+    "end": 2130.804
+  },
+  {
+    "text": "Have you used God?",
+    "start": 2130.804,
+    "end": 2131.644
+  },
+  {
+    "text": "No, no.",
+    "start": 2131.644,
+    "end": 2132.484
+  },
+  {
+    "text": "Get that out of the way first.",
+    "start": 2132.484,
+    "end": 2133.844
+  },
+  {
+    "text": "No, I've been, I've looked at it, but I've never considered using it for any serious anything.",
+    "start": 2133.844,
+    "end": 2140.124
+  },
+  {
+    "text": "Yeah.",
+    "start": 2140.124,
+    "end": 2140.964
+  },
+  {
+    "text": "Yeah, I always look at these types of things and I'm like, I don't really want.",
+    "start": 2140.964,
+    "end": 2145.244
+  },
+  {
+    "text": "my design tool writing code for me.",
+    "start": 2146.223,
+    "end": 2149.703
+  },
+  {
+    "text": "And now we're at a spot where...",
+    "start": 2149.703,
+    "end": 2151.823
+  },
+  {
+    "text": "you can just screenshot the thing, to show it out to one of the last thing and just have the thing coded for you.",
+    "start": 2152.973,
+    "end": 2160.613
+  },
+  {
+    "text": "I don't know that ways necessarily need that.",
+    "start": 2160.613,
+    "end": 2162.613
+  },
+  {
+    "text": "I will tell you that what we do need, we still need an app.",
+    "start": 2162.613,
+    "end": 2166.313
+  },
+  {
+    "text": "that is like Figma to actually design these things.",
+    "start": 2166.966,
+    "end": 2170.086
+  },
+  {
+    "text": "And whether you're doing that via prompting and it's just kicking out code, which is what a lot of like I know paper and then I think there's another one called pencil, there's several of these apps people are working on, which is just like...",
+    "start": 2170.086,
+    "end": 2183.046
+  },
+  {
+    "text": "You have to pick mypot instead of...",
+    "start": 2183.338,
+    "end": 2190.338
+  },
+  {
+    "text": "instead of it rendering out like WebGL or whatever Figma is using, it's literally just rendering out HTML elements to the thing.",
+    "start": 2186.0,
+    "end": 2193.88
+  },
+  {
+    "text": "We certainly still do need apps like this that are going to help us figure out what the design looks like.",
+    "start": 2193.88,
+    "end": 2199.76
+  },
+  {
+    "text": "And some sort of interface, whether that's clicking around and dragging things or whether that's inputting values into boxes or whether that's simply just typing into a prompt box and saying, space these things out 20 pixels a little bit more and seeing what the result is.",
+    "start": 2199.76,
+    "end": 2213.6
+  },
+  {
+    "text": "I think we still need those apps because the alternative",
+    "start": 2213.6,
+    "end": 2217.4
+  },
+  {
+    "text": "just yolowing it and having, this is what we talked about earlier, did the alternative of just yolowing it and having Claude kick out a design for you is not working out.",
+    "start": 2218.53,
+    "end": 2228.81
+  },
+  {
+    "text": "And it's making some pretty brutal interfaces.",
+    "start": 2228.81,
+    "end": 2231.49
+  },
+  {
+    "text": "I've been actually going into Figma lately to design instead of designing in browser, but not using the code mode or code output, or even giving, I'm not even giving screenshots of it to AI.",
+    "start": 2232.299,
+    "end": 2244.219
+  },
+  {
+    "text": "I've just been really liking Figma lately for just straight up designing instead of, I primarily design in browser, but as Wes knows more than anybody, what happens with me is I start from such a systemized point of view that when I design in browser, my designs feel soulless because I don't get chance to play, I build the system, and then okay, it looks fine.",
+    "start": 2244.219,
+    "end": 2269.659
+  },
+  {
+    "text": "I'm bored, let's move on.",
+    "start": 2269.659,
+    "end": 2271.339
+  },
+  {
+    "text": "Where if I go into Figma, I can really get Arty with it and throw stuff at the wall.",
+    "start": 2271.339,
+    "end": 2276.059
+  },
+  {
+    "text": "I actually really like some of the auto layout stuff in Figma, but they're dev mode, they're code stuff, I personally wouldn't touch it, because I don't trust somebody else's code.",
+    "start": 2276.059,
+    "end": 2286.499
+  },
+  {
+    "text": "Except for a clock.",
+    "start": 2286.499,
+    "end": 2288.499
+  },
+  {
+    "text": "I don't trust Clod's code, I'll tell you that.",
+    "start": 2289.305,
+    "end": 2291.025
+  },
+  {
+    "text": "Okay.",
+    "start": 2291.025,
+    "end": 2292.025
+  },
+  {
+    "text": "Yeah.",
+    "start": 2292.025,
+    "end": 2292.865
+  },
+  {
+    "text": "I did test, what was it?",
+    "start": 2292.865,
+    "end": 2294.505
+  },
+  {
+    "text": "Paper the other day, where the idea is that paper is like a canvas where you can like feed it.",
+    "start": 2294.505,
+    "end": 2300.945
+  },
+  {
+    "text": "website or like a component and then it will recreate that component in",
+    "start": 2301.943,
+    "end": 2306.943
+  },
+  {
+    "text": "paper and then you have this like inner tape",
+    "start": 2307.946,
+    "end": 2311.946
+  },
+  {
+    "text": "which you can either click and drag and around, like visually, or you can also just prompt with an MCP server to change things.",
+    "start": 2311.115,
+    "end": 2320.355
+  },
+  {
+    "text": "And then the idea is that you then, once you're happy with it, you put it back into code.",
+    "start": 2320.355,
+    "end": 2324.635
+  },
+  {
+    "text": "And your code base is sort of the source of truth.",
+    "start": 2324.635,
+    "end": 2327.355
+  },
+  {
+    "text": "Only when you need to like work on a design, you sort of take a piece of the website, out of the website into this, like what do you call it, like Canvas, you work on it with your designers and whatnot.",
+    "start": 2327.355,
+    "end": 2338.715
+  },
+  {
+    "text": "And then once you're happy with it, you stick it back into the website.",
+    "start": 2338.715,
+    "end": 2341.435
+  },
+  {
+    "text": "So that was kind of interesting way to go about it.",
+    "start": 2341.435,
+    "end": 2345.275
+  },
+  {
+    "text": "So you don't have this like designs, and then you have your actual implementation of your website where they start to drift from each other.",
+    "start": 2345.275,
+    "end": 2352.955
+  },
+  {
+    "text": "Yeah, so again, I don't know that we know what the answer to all of this stuff is, but certainly a lot of people are trying to figure out what that looks like.",
+    "start": 2352.955,
+    "end": 2360.475
+  },
+  {
+    "text": "Next one here from Bosch, not really a question, but West, your sick pick the other day was ICE, which is inactive and you should use law instead.",
+    "start": 2360.475,
+    "end": 2367.875
+  },
+  {
+    "text": "Yeah.",
+    "start": 2367.875,
+    "end": 2368.875
+  },
+  {
+    "text": "You thought we'll link up the thoughts, the modern version of thought of ice, which is a menu bar manager in Mac OS and thought is pretty much a straightforward that's being maintained of ice.",
+    "start": 2368.868,
+    "end": 2382.508
+  },
+  {
+    "text": "And I gotta say, I've been using thought for a bit.",
+    "start": 2382.508,
+    "end": 2384.988
+  },
+  {
+    "text": "And, hey.",
+    "start": 2384.988,
+    "end": 2385.828
+  },
+  {
+    "text": "That looks good.",
+    "start": 2387.281,
+    "end": 2388.121
+  },
+  {
+    "text": "I have had zero issues with my ice, but I didn't even realize it was un-maintained.",
+    "start": 2388.121,
+    "end": 2392.521
+  },
+  {
+    "text": "I, you will, I'll tell you, you'll have issues when you upgrade to the latest version of macOS because I'm on the betas and it doesn't work.",
+    "start": 2392.521,
+    "end": 2399.561
+  },
+  {
+    "text": "And then I install Baw and it works just fine.",
+    "start": 2399.561,
+    "end": 2401.841
+  },
+  {
+    "text": "So, it's good.",
+    "start": 2401.841,
+    "end": 2402.841
+  },
+  {
+    "text": "Yeah, I'll tell you what it should have.",
+    "start": 2403.586,
+    "end": 2405.586
+  },
+  {
+    "text": "I have with it is I use ice to add little backgrounds to my menu bars.",
+    "start": 2406.446,
+    "end": 2411.806
+  },
+  {
+    "text": "It's kind of cool and it looks nice.",
+    "start": 2411.806,
+    "end": 2413.886
+  },
+  {
+    "text": "And they're a little bit laggy in how they draw.",
+    "start": 2414.958,
+    "end": 2418.378
+  },
+  {
+    "text": "Like if I hover over top of some of the items, you can see that they don't paint as quickly as possible.",
+    "start": 2418.378,
+    "end": 2424.538
+  },
+  {
+    "text": "So maybe that's fixed.",
+    "start": 2424.538,
+    "end": 2425.538
+  },
+  {
+    "text": "I'll give it a shot.",
+    "start": 2425.538,
+    "end": 2426.378
+  },
+  {
+    "text": "Thank you, Bob.",
+    "start": 2426.378,
+    "end": 2427.218
+  },
+  {
+    "text": "Mathman Sense says since AI has made writing code and changing so much easier, one would expect as a collective, we would drift towards more performance or more stabilized APIs.",
+    "start": 2427.917,
+    "end": 2439.437
+  },
+  {
+    "text": "For example, moving servers to go or moving front end code to web standards and web components instead.",
+    "start": 2439.437,
+    "end": 2445.917
+  },
+  {
+    "text": "But I have seen a bigger shift towards proprietary ecosystems like next JS.",
+    "start": 2445.917,
+    "end": 2452.117
+  },
+  {
+    "text": "What do you think that is if you accept my promise at all?",
+    "start": 2452.117,
+    "end": 2454.557
+  },
+  {
+    "text": "Yes, lots of things to say here.",
+    "start": 2454.557,
+    "end": 2455.797
+  },
+  {
+    "text": "First of all, we are recording an episode.",
+    "start": 2455.797,
+    "end": 2458.837
+  },
+  {
+    "text": "I think by time you're listening to probably be out a week before this one on moving systems, right?",
+    "start": 2458.837,
+    "end": 2463.437
+  },
+  {
+    "text": "Like I move my express code base, which has been bugging me for many years.",
+    "start": 2463.437,
+    "end": 2467.397
+  },
+  {
+    "text": "I moved over to Hano and we have a really good episode on like how to tackle a project like that because I don't think it's as simple as like move my server to go, and then all of a sudden it just moves absolutely everything over and it's totally fine or make everything fast as possible.",
+    "start": 2467.397,
+    "end": 2485.637
+  },
+  {
+    "text": "It don't think where they are just yet with this type of stuff.",
+    "start": 2485.637,
+    "end": 2488.597
+  },
+  {
+    "text": "And.",
+    "start": 2488.597,
+    "end": 2489.437
+  },
+  {
+    "text": "The question here is, I've seen a bigger shift towards proprietary ecosystems like next JS.",
+    "start": 2489.846,
+    "end": 2494.366
+  },
+  {
+    "text": "Sure, by time you listen to this announcement on the next JS stuff will go live.",
+    "start": 2495.343,
+    "end": 2499.503
+  },
+  {
+    "text": "They are rolling out a whole bunch of...",
+    "start": 2499.503,
+    "end": 2501.063
+  },
+  {
+    "text": "stuff about hosting elsewhere and adapters, which is pretty cool.",
+    "start": 2502.119,
+    "end": 2506.839
+  },
+  {
+    "text": "So we're going to be talking to them about that as well.",
+    "start": 2506.839,
+    "end": 2509.399
+  },
+  {
+    "text": "What do you think that is?",
+    "start": 2509.399,
+    "end": 2510.399
+  },
+  {
+    "text": "I don't know.",
+    "start": 2510.399,
+    "end": 2511.239
+  },
+  {
+    "text": "I wouldn't say these things are proprietary.",
+    "start": 2511.239,
+    "end": 2513.839
+  },
+  {
+    "text": "If anything, like a lot of these like...",
+    "start": 2513.839,
+    "end": 2516.159
+  },
+  {
+    "text": "That's how Linktree the other day had jacked their price up by three X or something stupid like that.",
+    "start": 2517.053,
+    "end": 2524.333
+  },
+  {
+    "text": "I'm like, yeah, that's because you shouldn't pay somebody.",
+    "start": 2524.333,
+    "end": 2526.173
+  },
+  {
+    "text": "or a page that has a six links on it.",
+    "start": 2527.096,
+    "end": 2530.216
+  },
+  {
+    "text": "You know, that's ridiculous that you are even doing that in the first place.",
+    "start": 2530.216,
+    "end": 2535.456
+  },
+  {
+    "text": "and...",
+    "start": 2536.271,
+    "end": 2538.271
+  },
+  {
+    "text": "people are realizing, oh, I don't need to pay $300 for a link tree.",
+    "start": 2537.336,
+    "end": 2541.256
+  },
+  {
+    "text": "I can simply just make my own.",
+    "start": 2541.256,
+    "end": 2542.696
+  },
+  {
+    "text": "So I wouldn't say we're moving towards proprietary stuff, not at all. I think we're moving much more standard space much more",
+    "start": 2543.781,
+    "end": 2551.461
+  },
+  {
+    "text": "of this stuff that is being built today. If you look at what the Claude code stack is, you know, it's all very much based on web requests, web response, fetch, streaming, all that good stuff.",
+    "start": 2552.942,
+    "end": 2562.942
+  },
+  {
+    "text": "Yeah.",
+    "start": 2563.939,
+    "end": 2564.439
+  },
+  {
+    "text": "I do think there is this like default AI stack that if you tell it you're building a web app at leans on all this stuff that you don't...",
+    "start": 2565.057,
+    "end": 2572.657
+  },
+  {
+    "text": "need often times.",
+    "start": 2573.444,
+    "end": 2575.284
+  },
+  {
+    "text": "Yeah, I wonder the same thing, Moth, man.",
+    "start": 2575.284,
+    "end": 2577.844
+  },
+  {
+    "text": "I've been doing some rust with AI, and it's really nice.",
+    "start": 2577.844,
+    "end": 2580.884
+  },
+  {
+    "text": "I've been doing all kinds of stuff that, again, I'm not like, yeah.",
+    "start": 2580.884,
+    "end": 2586.084
+  },
+  {
+    "text": "I'm sorry, I don't have a formed opinion on this even though I've just been thinking really hard about it And I would think it really hard on I feel like I got an eloquent answer here And then it comes out like that Uh, Mothnet I think it's just what it's trained on and what it's like really steered towards We looked at that in the state of JS where it's like this is the stuff that AI is gonna suggest the most And I have a hard time with that because it's always suggesting a bunch of stuff",
+    "start": 2586.886,
+    "end": 2613.286
+  },
+  {
+    "text": "like I don't want it to use, it's never, I never had it ever once suggest to me to use web components, even though there are times when a web component would be the right call there.",
+    "start": 2614.076,
+    "end": 2623.036
+  },
+  {
+    "text": "Yeah, I think some of it is all comes down to, we're gonna say it again, personal taste.",
+    "start": 2624.021,
+    "end": 2629.141
+  },
+  {
+    "text": "And you have to know what you want.",
+    "start": 2629.141,
+    "end": 2630.981
+  },
+  {
+    "text": "There's your competitive advantage.",
+    "start": 2630.981,
+    "end": 2633.021
+  },
+  {
+    "text": "Yeah, like knowing what you want.",
+    "start": 2633.021,
+    "end": 2635.821
+  },
+  {
+    "text": "I don't know, the people that are complaining about AI not-",
+    "start": 2636.319,
+    "end": 2639.319
+  },
+  {
+    "text": "suggesting what they want.",
+    "start": 2640.586,
+    "end": 2642.226
+  },
+  {
+    "text": "Like, are we that lazy?",
+    "start": 2642.226,
+    "end": 2643.946
+  },
+  {
+    "text": "that you can't spend three minutes.",
+    "start": 2644.584,
+    "end": 2646.664
+  },
+  {
+    "text": "figuring out what framework you want to use and you're just you're winding and like not not directly at you moth man Yeah, like man you won't man you're cool. You're one of us, but like come on are we that lazy that like we have to like worry about this type of stuff like let the people I guess like if those are your competitors that are not using go as a server And it's it's really gonna slow you it slow them down so much then then type up a new one, you know competitor making new",
+    "start": 2647.339,
+    "end": 2675.779
+  },
+  {
+    "text": "I'm a lot for something.",
+    "start": 2677.141,
+    "end": 2678.341
+  },
+  {
+    "text": "Yeah.",
+    "start": 2678.341,
+    "end": 2679.181
+  },
+  {
+    "text": "Yeah.",
+    "start": 2679.181,
+    "end": 2680.181
+  },
+  {
+    "text": "A lot there.",
+    "start": 2680.181,
+    "end": 2681.681
+  },
+  {
+    "text": "I don't know.",
+    "start": 2681.681,
+    "end": 2682.681
+  },
+  {
+    "text": "I think the whole theme of this episode is like, you still have to think.",
+    "start": 2682.681,
+    "end": 2686.981
+  },
+  {
+    "text": "Please, please, but like you still have to, you can't be an idiot yet.",
+    "start": 2686.981,
+    "end": 2690.381
+  },
+  {
+    "text": "You can't, yeah.",
+    "start": 2690.381,
+    "end": 2692.101
+  },
+  {
+    "text": "Use your brain.",
+    "start": 2692.101,
+    "end": 2693.101
+  },
+  {
+    "text": "Yeah.",
+    "start": 2693.101,
+    "end": 2694.101
+  },
+  {
+    "text": "Use your brain, folks.",
+    "start": 2694.101,
+    "end": 2695.101
+  },
+  {
+    "text": "All right.",
+    "start": 2695.101,
+    "end": 2696.101
+  },
+  {
+    "text": "Jim Carrey clone says, hey, Wes and Scott, while referring to tan stack router docs, I mentioned something called vibe rules.",
+    "start": 2696.101,
+    "end": 2702.661
+  },
+  {
+    "text": "And after digging, it seems like an NPM package, NPM packages, example, tan stack, forward slash record, or now ships an LLM folder inside the disk of the node modules, which can be installed with vibe rules.",
+    "start": 2702.661,
+    "end": 2716.021
+  },
+  {
+    "text": "Is this replacement for Context 7 or Agent Skills or at least Docs have you used it?",
+    "start": 2717.327,
+    "end": 2723.187
+  },
+  {
+    "text": "Personally, Scott, have you used Vib rules?",
+    "start": 2724.335,
+    "end": 2727.095
+  },
+  {
+    "text": "Yeah, so Vib rules is a package and what it does is allows you to manage rules file.",
+    "start": 2727.095,
+    "end": 2736.575
+  },
+  {
+    "text": "So whether that's like cursor rules or those types of things.",
+    "start": 2737.726,
+    "end": 2741.206
+  },
+  {
+    "text": "Now, the way that this works is through a CLI where you would run vibe rules install and you can point it to things.",
+    "start": 2741.206,
+    "end": 2750.166
+  },
+  {
+    "text": "And the idea would be that you are shipping the MD with the library.",
+    "start": 2750.166,
+    "end": 2754.846
+  },
+  {
+    "text": "So that way you could install the vibe rules into your whatever it is you're using just via this CLI because it's been shipped.",
+    "start": 2754.846,
+    "end": 2764.686
+  },
+  {
+    "text": "I don't really use the style of like rules files.",
+    "start": 2764.686,
+    "end": 2769.246
+  },
+  {
+    "text": "Now it could put it into it looks like it could put it into the agents dot MD file.",
+    "start": 2769.246,
+    "end": 2774.766
+  },
+  {
+    "text": "It can put it into a claw dot MD.",
+    "start": 2774.766,
+    "end": 2777.926
+  },
+  {
+    "text": "There's some of this that I can understand existing, but I would much rather it ship like at this point personally, I would rather it ship a skill.",
+    "start": 2777.926,
+    "end": 2790.726
+  },
+  {
+    "text": "and then just have that skill available rather than having it be a rules file or, I don't know, I hadn't seen vibe rules before we got this question in, and it doesn't necessarily feel.",
+    "start": 2791.5,
+    "end": 2804.58
+  },
+  {
+    "text": "like something that I'm personally going to be, like going nuts to use, but it does, like the one thing I do on a plot, the tan stick folks here is taking ownership of that part of things because too often times we are just pointing the AI at llms.txt or we're crafting our own custom skill or our own custom agents file.",
+    "start": 2805.152,
+    "end": 2829.192
+  },
+  {
+    "text": "So if the library can tune one up specifically, then that's great.",
+    "start": 2829.695,
+    "end": 2834.695
+  },
+  {
+    "text": "I've been working a little bit this I mentioned before that I have like a graffiti best practices skill that is like trying to do that ownership of that, right?",
+    "start": 2834.695,
+    "end": 2842.255
+  },
+  {
+    "text": "So for my library, I'm trying to take that ownership over well, just doing it in a different way.",
+    "start": 2842.255,
+    "end": 2847.615
+  },
+  {
+    "text": "I do want to point you to a blog post that David Kramer wrote called optimizing content for agents, which I found to be really interesting.",
+    "start": 2847.615,
+    "end": 2855.615
+  },
+  {
+    "text": "And he was talking about the century documentation and how the century docs are written in markdown.",
+    "start": 2855.615,
+    "end": 2863.815
+  },
+  {
+    "text": "And the web uses the markdown to render the web, but instead of using this old school, old school, which is like what like six months ago, an LLM.TXT style of duplication of the docs.",
+    "start": 2863.815,
+    "end": 2876.815
+  },
+  {
+    "text": "What this is doing is is that when an AI agent hits the century docs, the century docs are returning markdown to the agent, not a web.",
+    "start": 2876.815,
+    "end": 2887.695
+  },
+  {
+    "text": "So that way it's not getting a whole bunch of the DOM stuff, right?",
+    "start": 2887.695,
+    "end": 2892.055
+  },
+  {
+    "text": "It's just getting the markdown when an AI agent hits it.",
+    "start": 2892.055,
+    "end": 2895.615
+  },
+  {
+    "text": "I think this to me is a, I don't want to say better approach, but an approach to the same type of problem is like we're trying to optimize how when agents tackle a problem, where can they go to get that correct information?",
+    "start": 2895.615,
+    "end": 2911.815
+  },
+  {
+    "text": "It's tricky because part of me likes this idea of like shipping your",
+    "start": 2912.726,
+    "end": 2916.866
+  },
+  {
+    "text": "docs with your package, meaning that if you are on version four and version six is already out, then it's simply just pulling it from that exact version of it.",
+    "start": 2917.899,
+    "end": 2930.019
+  },
+  {
+    "text": "But like you said, that's not to say that it can't just reach out to the web.",
+    "start": 2930.019,
+    "end": 2933.299
+  },
+  {
+    "text": "And I certainly don't need more text in my node modules folder.",
+    "start": 2933.299,
+    "end": 2937.739
+  },
+  {
+    "text": "You know, like we have an episode on like, why is node modules so big and spoiler alert, it's a lot of text.",
+    "start": 2937.739,
+    "end": 2944.379
+  },
+  {
+    "text": "And if everyone starts adding these variables, it's going to get significantly bigger.",
+    "start": 2944.379,
+    "end": 2949.339
+  },
+  {
+    "text": "But I do like this, I do like this tool.",
+    "start": 2949.339,
+    "end": 2951.299
+  },
+  {
+    "text": "So there's, there's kind of two big tools out there for doing this type of stuff.",
+    "start": 2951.299,
+    "end": 2954.819
+  },
+  {
+    "text": "There's obviously, variables and then their versels, versel has something called skills.",
+    "start": 2954.819,
+    "end": 2959.459
+  },
+  {
+    "text": "And both of these are just CLI tools for installing agents.md or rules or whatever, whatever have you instructions on how to use the thing via the CLI.",
+    "start": 2959.459,
+    "end": 2970.339
+  },
+  {
+    "text": "And then unfortunately right now, all of the different.",
+    "start": 2970.339,
+    "end": 2972.899
+  },
+  {
+    "text": "out there, you know, clawdusesclaw.md.",
+    "start": 2973.805,
+    "end": 2976.925
+  },
+  {
+    "text": "A lot of them have standardized on using skills, which is really good.",
+    "start": 2976.925,
+    "end": 2979.965
+  },
+  {
+    "text": "And I think we're probably gonna get there.",
+    "start": 2979.965,
+    "end": 2982.085
+  },
+  {
+    "text": "We're still figuring it out.",
+    "start": 2982.085,
+    "end": 2983.045
+  },
+  {
+    "text": "We might, we might decide to change that entirely in the future, but it certainly is a replacement for like an MCP like Context 7.",
+    "start": 2983.045,
+    "end": 2992.805
+  },
+  {
+    "text": "If these packages are just shipping their own rules and you can use Vibrals to bring them in.",
+    "start": 2992.805,
+    "end": 2998.805
+  },
+  {
+    "text": "I think it's just cool. It doesn't seem as",
+    "start": 2999.711,
+    "end": 3002.431
+  },
+  {
+    "text": "popular as",
+    "start": 3003.478,
+    "end": 3005.478
+  },
+  {
+    "text": "Simply just升 unemployment ratio .",
+    "start": 3005.751,
+    "end": 3008.651
+  },
+  {
+    "text": "having the agent go to the web and fetch it.",
+    "start": 3006.926,
+    "end": 3010.046
+  },
+  {
+    "text": "I think a lot of this stuff where you have to like, config and set it up.",
+    "start": 3010.046,
+    "end": 3013.166
+  },
+  {
+    "text": "will not be a thing in the long run with a lot of this.",
+    "start": 3013.875,
+    "end": 3016.475
+  },
+  {
+    "text": "I think the agent will just know where to go and how to find the proper docs and whatnot for what it needs, but stopgap for now at least.",
+    "start": 3016.475,
+    "end": 3025.835
+  },
+  {
+    "text": "Yeah, I would say even be careful with skills.sh.",
+    "start": 3025.835,
+    "end": 3029.395
+  },
+  {
+    "text": "What I do is I find the skills on skills.sh.",
+    "start": 3029.395,
+    "end": 3033.035
+  },
+  {
+    "text": "I go to their GitHub.",
+    "start": 3033.035,
+    "end": 3034.115
+  },
+  {
+    "text": "and then I either just downloaded straight from GitHub or I copy and paste it.",
+    "start": 3034.58,
+    "end": 3038.7
+  },
+  {
+    "text": "Why should you be careful Scott?",
+    "start": 3038.7,
+    "end": 3040.54
+  },
+  {
+    "text": "I personally worry about, I've heard people describe skills.sh as being malware, although I don't necessarily.",
+    "start": 3040.54,
+    "end": 3048.82
+  },
+  {
+    "text": "Subscribe to that.",
+    "start": 3049.872,
+    "end": 3050.872
+  },
+  {
+    "text": "I don't want a tool managing my skills, because at the end of the day...",
+    "start": 3051.345,
+    "end": 3056.905
+  },
+  {
+    "text": "your skills, adjust some text files inside of a folder on your computer.",
+    "start": 3057.632,
+    "end": 3063.632
+  },
+  {
+    "text": "It's not the type of thing that, like, yes, sure.",
+    "start": 3064.331,
+    "end": 3067.251
+  },
+  {
+    "text": "Maybe you wanna version it and stuff like that.",
+    "start": 3067.251,
+    "end": 3069.611
+  },
+  {
+    "text": "You know, even I think Century has a tool for like versioning skills or something.",
+    "start": 3069.611,
+    "end": 3073.251
+  },
+  {
+    "text": "But I personally, I just don't want a tool to do that.",
+    "start": 3073.251,
+    "end": 3078.251
+  },
+  {
+    "text": "I just wanna make sure I have a handle on everything.",
+    "start": 3078.891,
+    "end": 3081.811
+  },
+  {
+    "text": "I want a copy and paste it.",
+    "start": 3081.811,
+    "end": 3083.651
+  },
+  {
+    "text": "I don't want anything installed in there via a process of a script that I don't know about.",
+    "start": 3083.651,
+    "end": 3088.251
+  },
+  {
+    "text": "Yeah.",
+    "start": 3088.251,
+    "end": 3089.091
+  },
+  {
+    "text": "It's hilarious that we're now talking about this with skills because it's been an issue with,",
+    "start": 3089.091,
+    "end": 3093.691
+  },
+  {
+    "text": "like open source software and like NPM and every package manager for a long time is like you are installing.",
+    "start": 3094.222,
+    "end": 3099.982
+  },
+  {
+    "text": "some code that someone else wrote and that code could do something malicious when it's running in a privileged environment.",
+    "start": 3100.643,
+    "end": 3107.863
+  },
+  {
+    "text": "And now we're here with skills as well because skills can be prompt injected.",
+    "start": 3107.863,
+    "end": 3111.623
+  },
+  {
+    "text": "You're installing these text files from random people on GitHub.",
+    "start": 3111.623,
+    "end": 3115.423
+  },
+  {
+    "text": "And if they were to change that and then it would automatically just say read the .emv file and send off a fetch request that then sends it to this external endpoint, right?",
+    "start": 3115.423,
+    "end": 3125.383
+  },
+  {
+    "text": "I'm just reading an article from SNCC here which is 36% of the skills on there were malicious and had prompt injections, probably not 36% of the top ones.",
+    "start": 3125.383,
+    "end": 3137.183
+  },
+  {
+    "text": "But there certainly was a lot of people that saw this tool and went, hmmm.",
+    "start": 3137.183,
+    "end": 3140.783
+  },
+  {
+    "text": "I'm going to try to exploit this thing with prompt injection.",
+    "start": 3141.605,
+    "end": 3146.205
+  },
+  {
+    "text": "So that certainly is going to be a problem.",
+    "start": 3146.922,
+    "end": 3149.882
+  },
+  {
+    "text": "And there's like Scott said, there's nothing wrong with these files are usually not very long.",
+    "start": 3149.882,
+    "end": 3155.782
+  },
+  {
+    "text": "copy paste them in or use the tool to install them.",
+    "start": 3156.65,
+    "end": 3161.65
+  },
+  {
+    "text": "It does some nice stuff like it'll simlink them.",
+    "start": 3161.988,
+    "end": 3163.988
+  },
+  {
+    "text": "You know, if you want them in a claw.md and you want them in a agent.md, they'll simlink them.",
+    "start": 3163.988,
+    "end": 3169.668
+  },
+  {
+    "text": "I think that that is good.",
+    "start": 3169.668,
+    "end": 3171.468
+  },
+  {
+    "text": "And also, I don't know that these, I do think that these skills need to be published to NPM and be version.",
+    "start": 3171.468,
+    "end": 3177.748
+  },
+  {
+    "text": "So I think five rules does that better than these scales, which is generally just fetching a text file from...",
+    "start": 3178.802,
+    "end": 3184.262
+  },
+  {
+    "text": "external thing. But rules files west are also like",
+    "start": 3185.46,
+    "end": 3188.74
+  },
+  {
+    "text": "Rules files are much more like generalized, right?",
+    "start": 3189.634,
+    "end": 3192.594
+  },
+  {
+    "text": "Where skills are a little bit more targeted.",
+    "start": 3192.594,
+    "end": 3194.594
+  },
+  {
+    "text": "You're using a skill where a rules file is just applied, you know?",
+    "start": 3194.594,
+    "end": 3199.354
+  },
+  {
+    "text": "Yeah, yeah, you're right.",
+    "start": 3199.354,
+    "end": 3200.514
+  },
+  {
+    "text": "but I think those two things will be...",
+    "start": 3201.063,
+    "end": 3203.063
+  },
+  {
+    "text": "merged eventually.",
+    "start": 3203.491,
+    "end": 3205.491
+  },
+  {
+    "text": "Like we had a whole episode on it and like even us, we couldn't like do a really good explanation of where you would want to use one versus the other.",
+    "start": 3205.73,
+    "end": 3214.61
+  },
+  {
+    "text": "I'm getting into it a little bit more because I started using pi.",
+    "start": 3215.504,
+    "end": 3219.184
+  },
+  {
+    "text": "And pi doesn't have a lot of concepts that many of these other ones do, like agents and whatever.",
+    "start": 3219.184,
+    "end": 3225.584
+  },
+  {
+    "text": "And with pi, it's much more normal to just put a lot of stuff into skills or to build an extension.",
+    "start": 3225.584,
+    "end": 3232.184
+  },
+  {
+    "text": "So I've been using skills a lot more and I gotta say, yeah, they're great.",
+    "start": 3232.184,
+    "end": 3236.504
+  },
+  {
+    "text": "And you just put an agent on it and load up a skill.",
+    "start": 3236.504,
+    "end": 3239.104
+  },
+  {
+    "text": "That's pretty much, yeah.",
+    "start": 3239.104,
+    "end": 3240.504
+  },
+  {
+    "text": "That's good.",
+    "start": 3241.057,
+    "end": 3242.057
+  },
+  {
+    "text": "I honestly think in most cases, rules.",
+    "start": 3242.057,
+    "end": 3244.137
+  },
+  {
+    "text": "and skills are the same thing.",
+    "start": 3245.083,
+    "end": 3247.523
+  },
+  {
+    "text": "Even if you go to the cursor docs, they say, like the cursor rules is now the exact same thing as agents.md is just that.",
+    "start": 3247.523,
+    "end": 3255.203
+  },
+  {
+    "text": "when you're doing a specific task, you hope that the AI realizes, oh, I am doing front end web design or I am doing video generation.",
+    "start": 3255.987,
+    "end": 3266.027
+  },
+  {
+    "text": "Therefore, I should then go reach out to the specific skill in there.",
+    "start": 3266.027,
+    "end": 3272.667
+  },
+  {
+    "text": "We'll see.",
+    "start": 3272.667,
+    "end": 3273.507
+  },
+  {
+    "text": "We'll see.",
+    "start": 3273.507,
+    "end": 3274.347
+  },
+  {
+    "text": "Yeah.",
+    "start": 3274.347,
+    "end": 3275.347
+  },
+  {
+    "text": "I say these things and I'm just like, well, maybe I don't agree with that.",
+    "start": 3276.465,
+    "end": 3279.585
+  },
+  {
+    "text": "We're just trying to figure all this stuff out.",
+    "start": 3279.585,
+    "end": 3282.345
+  },
+  {
+    "text": "Let us know in the comments below what you think.",
+    "start": 3282.345,
+    "end": 3284.345
+  },
+  {
+    "text": "Cool. Well, that's it.",
+    "start": 3284.345,
+    "end": 3286.985
+  },
+  {
+    "text": "Do you want to get into sick picks, Wes?",
+    "start": 3286.985,
+    "end": 3290.785
+  },
+  {
+    "text": "Yes, I want to sick pick something I have.",
+    "start": 3290.785,
+    "end": 3293.345
+  },
+  {
+    "text": "this speaking of standards and whatnot.",
+    "start": 3294.133,
+    "end": 3297.573
+  },
+  {
+    "text": "USB cables are a very, very hard standard.",
+    "start": 3297.573,
+    "end": 3301.573
+  },
+  {
+    "text": "So I got this thing called a USB cable tester board.",
+    "start": 3301.573,
+    "end": 3306.093
+  },
+  {
+    "text": "And then I also got an additional...",
+    "start": 3306.093,
+    "end": 3309.093
+  },
+  {
+    "text": "little",
+    "start": 3309.847,
+    "end": 3311.847
+  },
+  {
+    "text": "USB feature detection one and the way that these things work the",
+    "start": 3311.694,
+    "end": 3315.634
+  },
+  {
+    "text": "The tester board itself is extremely simple.",
+    "start": 3316.528,
+    "end": 3320.028
+  },
+  {
+    "text": "Let me pull out a cable here and show you.",
+    "start": 3320.028,
+    "end": 3322.488
+  },
+  {
+    "text": "It basically is just like a continuity, if you've ever used a continuity tester, it's basically doing that and it's figuring out what wires are connected to what inside of your cable.",
+    "start": 3322.488,
+    "end": 3332.428
+  },
+  {
+    "text": "So if you ever have a cable you realize, hmm, I'm not sure if this supports.",
+    "start": 3332.428,
+    "end": 3335.868
+  },
+  {
+    "text": "USB 3 or Thunderbolt or fast charging or quick charge or any of those things.",
+    "start": 3336.779,
+    "end": 3341.779
+  },
+  {
+    "text": "The way that it works is that it simply just looks at the pins on the USB cable and it will light up which of the pins are actually connected.",
+    "start": 3342.699,
+    "end": 3351.539
+  },
+  {
+    "text": "And then by looking at those pins, you're able to figure out if USB 3 speeds are supported if fast charging power delivery, quick charge, all those things.",
+    "start": 3352.099,
+    "end": 3362.219
+  },
+  {
+    "text": "And it also has RJ45 port on it as well.",
+    "start": 3362.219,
+    "end": 3365.699
+  },
+  {
+    "text": "which is really nice if you have, if you ever have a flaky cable, like let alone like does it support this thing, but if you ever have a cable, like I have one.",
+    "start": 3366.67,
+    "end": 3374.99
+  },
+  {
+    "text": "Thunderbolt 4 cable that is",
+    "start": 3375.507,
+    "end": 3377.507
+  },
+  {
+    "text": "and...",
+    "start": 3378.379,
+    "end": 3378.879
+  },
+  {
+    "text": "It still works for charging, but it doesn't work for data.",
+    "start": 3379.521,
+    "end": 3382.321
+  },
+  {
+    "text": "And I'm able to plug it into this thing and look, okay, I see if I wiggle it, the like data one is going on and on.",
+    "start": 3382.321,
+    "end": 3389.761
+  },
+  {
+    "text": "and then I know that that cable is not good.",
+    "start": 3390.481,
+    "end": 3393.201
+  },
+  {
+    "text": "And then this one as well, this one actually has a microcontroller in it and it will, let me show you real quick.",
+    "start": 3393.201,
+    "end": 3399.841
+  },
+  {
+    "text": "So it'll show you the voltage pull.",
+    "start": 3401.025,
+    "end": 3404.385
+  },
+  {
+    "text": "And it says it'll tell you if quick charge or power delivery is available, it tells you which voltage is being used because USB can run at three different voltages.",
+    "start": 3404.385,
+    "end": 3415.585
+  },
+  {
+    "text": "And that is so handy if you have something that is dead and you don't know.",
+    "start": 3415.585,
+    "end": 3420.225
+  },
+  {
+    "text": "if it's actually charging or not, and you can just use this thing and say, oh, it's pulling current.",
+    "start": 3420.923,
+    "end": 3426.443
+  },
+  {
+    "text": "Or, oh, it pulled current immediately and then stopped, and there's probably something fried inside of it.",
+    "start": 3426.443,
+    "end": 3430.843
+  },
+  {
+    "text": "So, yeah, I got two nice little tools for debugging all of my USB gadgets.",
+    "start": 3430.843,
+    "end": 3437.323
+  },
+  {
+    "text": "I gotta give me one of those that looks cool.",
+    "start": 3437.795,
+    "end": 3440.215
+  },
+  {
+    "text": "I'm gonna sick pick a TV show that man, I watched the first season of this one this came out a while ago, which was a jury duty.",
+    "start": 3440.215,
+    "end": 3450.255
+  },
+  {
+    "text": "I think I probably sick picked it then.",
+    "start": 3450.255,
+    "end": 3452.135
+  },
+  {
+    "text": "The concept of jury duty was that",
+    "start": 3452.135,
+    "end": 3454.975
+  },
+  {
+    "text": "Everybody on a jury is an actor, except for one person who thinks they're actually on a real jury case.",
+    "start": 3455.737,
+    "end": 3463.657
+  },
+  {
+    "text": "And because of that, they are just kind of manipulating this one person with all these ridiculous comedic events.",
+    "start": 3463.657,
+    "end": 3470.937
+  },
+  {
+    "text": "And it was like the funniest show.",
+    "start": 3470.937,
+    "end": 3472.977
+  },
+  {
+    "text": "I've really, ah man, it was the funniest show.",
+    "start": 3472.977,
+    "end": 3475.897
+  },
+  {
+    "text": "I loved this show.",
+    "start": 3475.897,
+    "end": 3478.017
+  },
+  {
+    "text": "And it was such a big hit when it came out that people were like, all right, this is awesome, but they're never gonna be able to do it again because now that they have this concept, if this ever happens again, they're gonna have to find somebody that had never heard of this show, right?",
+    "start": 3478.017,
+    "end": 3492.457
+  },
+  {
+    "text": "Well.",
+    "start": 3492.457,
+    "end": 3493.297
+  },
+  {
+    "text": "Without first one came out, I forget when.",
+    "start": 3493.552,
+    "end": 3495.832
+  },
+  {
+    "text": "It looks like...",
+    "start": 3495.832,
+    "end": 3496.672
+  },
+  {
+    "text": "2023. So the second season now just came out the first three episodes at the time we're recording this and they they're doing it as a company retreat.",
+    "start": 3497.018,
+    "end": 3505.818
+  },
+  {
+    "text": "And we watched the first three episodes and I was just in tears through most of these episodes and the idea was is that they hire a temp worker to a fictional company that's a hot sauce company and with the role of they are the assistant to one of the employees at this company.",
+    "start": 3506.583,
+    "end": 3526.223
+  },
+  {
+    "text": "And their job is to keep the one guy, his everything in order on this company treat.",
+    "start": 3526.223,
+    "end": 3532.783
+  },
+  {
+    "text": "That's like a big deal.",
+    "start": 3532.783,
+    "end": 3533.863
+  },
+  {
+    "text": "But everybody at the company retreat, including the people managing the venue, as well as all of the employees are all actors.",
+    "start": 3534.353,
+    "end": 3541.393
+  },
+  {
+    "text": "And the whole thing is just meant to mess with the one guy who's being hired as a temp.",
+    "start": 3541.393,
+    "end": 3547.033
+  },
+  {
+    "text": "And again, man, it is just- What is called?",
+    "start": 3547.033,
+    "end": 3549.593
+  },
+  {
+    "text": "called jury duty.",
+    "start": 3550.408,
+    "end": 3551.728
+  },
+  {
+    "text": "And I'm like, it's on prime video.",
+    "start": 3551.728,
+    "end": 3555.248
+  },
+  {
+    "text": "I'm just been...",
+    "start": 3555.248,
+    "end": 3556.248
+  },
+  {
+    "text": "loving this season because you would not believe the stuff",
+    "start": 3556.859,
+    "end": 3561.859
+  },
+  {
+    "text": "that like they're just seeing how far they can push it.",
+    "start": 3562.834,
+    "end": 3566.714
+  },
+  {
+    "text": "And if you didn't see the first season less, the first season is well worth your time.",
+    "start": 3566.714,
+    "end": 3571.154
+  },
+  {
+    "text": "It is like, as far as comedy shows go, just...",
+    "start": 3571.154,
+    "end": 3574.794
+  },
+  {
+    "text": "extremely funny and my God, there's just some incredible moments on and both seasons of this so far.",
+    "start": 3575.424,
+    "end": 3582.144
+  },
+  {
+    "text": "So big fan of jury duty, check it out. So thank you so much for your questions. If you have any questions for us, I don't know to syntax.fm, leave your questions and our potluck question form and we'll get to them on the show.",
+    "start": 3582.144,
+    "end": 3594.304
+  },
+  {
+    "text": "If we didn't get to your question, we make it to it in the future because there's always just way too many good questions. But thank you for leaving your questions and we will catch you in the next one.",
+    "start": 3594.304,
+    "end": 3604.224
+  },
+  {
+    "text": "Shit.",
+    "start": 3605.736,
+    "end": 3609.296
+  }
+]
