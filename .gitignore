@@ -226,3 +226,6 @@ whisper/upload
 
 # Practice Playground
 backend/playground/
+
+# Audio files
+*.m4a
