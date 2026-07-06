@@ -102,6 +102,7 @@ function getTextSizePerLength(text: string) {
   if (len < 50) return 'text-lg';       // 中句：正常大号
   if (len < 80) return 'text-md';       // 长句：中号
   if (len < 200) return 'text-xs';       // 超长句：小号
+  if (len >= 200) return 'text-[12px]';
   return 'text-base';                    // 作文级别：基础字体
 }
 
@@ -176,7 +177,7 @@ const speakerAttrs = computed(() => getSpeakerAttributes(props.card.speaker))
         <!-- Bottom Half: English + Controls -->
         <div class="flex-grow  w-full bg-gray-800 flex flex-col p-5 pt-10 justify-between">
            <!-- English Text -->
-           <p :class="fontSizeEn" class="text-white font-medium leading-relaxed line-clamp-4 select-text">
+           <p :class="fontSizeEn" class="text-white font-medium leading-relaxed line-clamp-7 select-text">
              {{ card.content.text }}
            </p>
 
