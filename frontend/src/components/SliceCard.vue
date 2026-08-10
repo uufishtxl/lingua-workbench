@@ -96,7 +96,7 @@
         <div v-show="!activeHighlightId" class="bg-slate-900 flex flex-col h-[210px] p-2">
             <BaseWaveSurfer ref="wavesurferRef" :url="props.url" :height="170" :allow-selection="true"
                 :start="props.start" :end="props.end" @play="isPlaying = true" @pause="isPlaying = false"
-                @region-out="handleRegionOut" />
+                @region-out="handleRegionOut" @ready="handleWaveSurferReady" />
             <div class="flex items-center justify-between px-2">
                 <div class="flex items-center gap-2">
                     <el-button size="small" @click="wavesurferRef?.playPause()" circle class="control-button is-dark">
@@ -417,6 +417,15 @@ watch(() => currentSlice.value.text, () => {
     if (isRecording.value) stopRecording()
 })
 
+// Auto-pause on ready (to prevent auto-playing)
+const shouldAutoPause = ref(true)
+const handleWaveSurferReady = () => {
+    if (shouldAutoPause.value) {
+        wavesurferRef.value?.pause()
+        shouldAutoPause.value = false
+    }
+}
+
 // ============================================================================
 // LIFECYCLE
 // ============================================================================
@@ -448,7 +457,13 @@ onUnmounted(() => {
 // ============================================================================
 // EXPOSE
 // ============================================================================
-defineExpose({ getSliceData })
+const pause = () => {
+  if (wavesurferRef.value) {
+    wavesurferRef.value.pause()
+  }
+}
+
+defineExpose({ getSliceData, pause })
 </script>
 
 <style scoped>

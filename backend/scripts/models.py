@@ -99,3 +99,33 @@ class ScriptTask(models.Model):
 
     def __str__(self):
         return f"ScriptTask({self.source_audio}) - {self.status}"
+
+
+class RoughSliceTask(models.Model):
+    """
+    Tracks the status of a background whisper rough-slicing task (connect button).
+    Created when the user clicks "connect" on a chunk; updated by the Huey worker.
+    """
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('running', 'Running'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+    ]
+
+    chunk = models.ForeignKey(
+        'audio_slicer.AudioChunk',
+        on_delete=models.CASCADE,
+        related_name='rough_slice_tasks',
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    message = models.TextField(blank=True, default='')
+    slice_count = models.IntegerField(default=0, help_text="Number of rough slices created")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"RoughSliceTask(chunk={self.chunk_id}) - {self.status}"

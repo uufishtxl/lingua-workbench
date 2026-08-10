@@ -39,8 +39,12 @@ certifi==2025.10.5
     #   httpx
     #   kubernetes
     #   requests
+cffi==2.0.0
+    # via cryptography
 charset-normalizer==3.4.4
-    # via requests
+    # via
+    #   pdfminer-six
+    #   requests
 chromadb==1.4.1
     # via -r requirements.in
 click==8.3.1
@@ -57,6 +61,8 @@ colorama==0.4.6
     #   uvicorn
 coloredlogs==15.0.1
     # via onnxruntime
+cryptography==49.0.0
+    # via pdfminer-six
 decorator==5.2.1
     # via ipython
 distro==1.9.0
@@ -205,7 +211,9 @@ langchain-google-genai==4.2.0
 langchain-openai==1.1.6
     # via -r requirements.in
 langgraph==1.0.5
-    # via langchain
+    # via
+    #   -r requirements.in
+    #   langchain
 langgraph-checkpoint==3.0.1
     # via
     #   langgraph
@@ -230,6 +238,7 @@ mpmath==1.3.0
     # via sympy
 numpy==2.3.4
     # via
+    #   -r requirements.in
     #   chromadb
     #   onnxruntime
     #   pandas
@@ -283,8 +292,14 @@ pandas==2.3.3
     # via -r requirements.in
 parso==0.8.5
     # via jedi
-pillow==12.1.0
+pdfminer-six==20251230
+    # via pdfplumber
+pdfplumber==0.11.9
     # via -r requirements.in
+pillow==12.1.0
+    # via
+    #   -r requirements.in
+    #   pdfplumber
 posthog==5.4.0
     # via chromadb
 prompt-toolkit==3.0.52
@@ -313,6 +328,8 @@ pyasn1-modules==0.4.2
     # via google-auth
 pybase64==1.4.3
     # via chromadb
+pycparser==3.0
+    # via cffi
 pydantic==2.12.3
     # via
     #   -r requirements.in
@@ -336,6 +353,8 @@ pyjwt==2.10.1
     # via djangorestframework-simplejwt
 pyparsing==3.3.2
     # via httplib2
+pypdfium2==5.11.0
+    # via pdfplumber
 pypika==0.50.0
     # via chromadb
 pyproject-hooks==1.2.0

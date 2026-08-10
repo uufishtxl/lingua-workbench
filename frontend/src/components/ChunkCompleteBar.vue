@@ -2,11 +2,11 @@
   <div class="chunk-complete-bar">
     <!-- Normal State: Show button or completion message -->
     <div v-if="!showSuccessAnimation" class="bar-content">
-      <template v-if="isLastChunk">
-        <!-- Last chunk: show completion message -->
+      <template v-if="isLastChunk && !hasNext">
+        <!-- No more chunks: show completion message -->
         <div class="completion-message">
           <i-tabler-trophy class="text-2xl text-yellow-500" />
-          <span class="text-gray-600 font-medium">🎉 恭喜！您已完成本集的学习旅程</span>
+          <span class="text-gray-600 font-medium">🎉 恭喜！您已完成所有学习内容</span>
         </div>
       </template>
       <template v-else>
@@ -51,6 +51,8 @@ const props = defineProps<{
   isLastChunk?: boolean
   currentIndex?: number
   totalChunks?: number
+  nextEpisodeChunkId?: number | null
+  nextSeasonChunkId?: number | null
 }>()
 
 const emit = defineEmits<{
@@ -60,6 +62,11 @@ const emit = defineEmits<{
 const router = useRouter()
 const isLoading = ref(false)
 const showSuccessAnimation = ref(false)
+
+// Check if there is a next chunk/episode/season
+const hasNext = computed(() => {
+  return props.nextChunkId || props.nextEpisodeChunkId || props.nextSeasonChunkId
+})
 
 // Success sound (optional - you can add a sound file later)
 const playSuccessSound = () => {
@@ -100,11 +107,25 @@ const handleComplete = async () => {
     setTimeout(() => {
       emit('completed', result.next_chunk_id)
       
+      // Determine which chunk to navigate to
+      let targetChunkId = null
+      
       if (result.next_chunk_id) {
-        // Navigate to next chunk
+        // Next chunk in same episode
+        targetChunkId = result.next_chunk_id
+      } else if (result.next_episode_chunk_id) {
+        // First chunk in next episode (same season)
+        targetChunkId = result.next_episode_chunk_id
+      } else if (result.next_season_chunk_id) {
+        // First chunk in next season
+        targetChunkId = result.next_season_chunk_id
+      }
+      
+      if (targetChunkId) {
+        // Navigate to target chunk
         router.push({
           name: 'audio-workbench',
-          params: { id: result.next_chunk_id },
+          params: { id: targetChunkId },
           query: { mode: 'review' }
         })
       }

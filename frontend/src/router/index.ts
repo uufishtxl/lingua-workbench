@@ -154,6 +154,60 @@ const router = createRouter({
       }
     },
     {
+      path: '/corpus/extract',
+      name: 'corpus-extract',
+      component: () => import('@/views/CorpusExtract.vue'),
+      meta: {
+        layout: 'AppLayout',
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/corpus/dashboard',
+      name: 'corpus-dashboard',
+      component: () => import('@/views/CorpusDashboard.vue'),
+      meta: {
+        layout: 'AppLayout',
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/corpus/overview/:taskId',
+      name: 'corpus-overview',
+      component: () => import('@/views/CorpusOverview.vue'),
+      meta: {
+        layout: 'AppLayout',
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/corpus/preview/:taskId',
+      name: 'corpus-preview',
+      component: () => import('@/views/CorpusPreview.vue'),
+      meta: {
+        layout: 'AppLayout',
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/corpus/calibrate/:taskId',
+      name: 'corpus-calibrate',
+      component: () => import('@/views/CorpusCalibrate.vue'),
+      meta: {
+        layout: 'AppLayout',
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/corpus/learn',
+      name: 'corpus-learn',
+      component: () => import('@/views/CorpusLearn.vue'),
+      meta: {
+        layout: 'AppLayout',
+        requiresAuth: true
+      }
+    },
+    {
       path: '/english-corner',
       name: 'english-corner',
       component: () => import('@/views/EnglishCorner.vue'),
@@ -175,6 +229,15 @@ const router = createRouter({
       path: '/read/:id?',
       name: 'reader',
       component: () => import('@/views/ReaderView.vue'),
+      meta: {
+        layout: 'AppLayout',
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/transcribe',
+      name: 'transcribe',
+      component: () => import('@/views/WhisperView.vue'),
       meta: {
         layout: 'AppLayout',
         requiresAuth: true

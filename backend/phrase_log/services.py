@@ -11,7 +11,7 @@ from .types import LookupRequestData, LookupResponseItem, LLMResponse
 
 load_dotenv()
 
-is_using_deepseek = os.getenv("MODEL_NAME") == "deepseek-chat"
+is_using_deepseek = "deepseek" in os.getenv("MODEL_NAME", "")
 
 llm = None
 

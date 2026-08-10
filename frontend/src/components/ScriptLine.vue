@@ -30,7 +30,7 @@
           title="Ask about this line"
         >
         <!-- #{{ line.id + " " }} -->
-          {{ line.speaker }}
+          {{ line.speaker || '🎶' }}
         </span>
         
         <!-- Content -->
@@ -185,7 +185,7 @@ const speakerColors: Record<string, string> = {
 
 const speakerColorClass = computed(() => {
   const speaker = props.line.speaker || ''
-  return speakerColors[speaker] || 'bg-gray-400 text-white'
+  return speakerColors[speaker] || (!speaker ? 'bg-red-100 text-white' : 'bg-gray-400 text-white')
 })
 
 // Line background based on highlight

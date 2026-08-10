@@ -23,6 +23,10 @@ urlpatterns = [
     # URLs from english_corner app
     path('english_corner/', include('english_corner.urls')),
 
+    # URLs from corpus app
+    path('', include('corpus.urls')),
+
+
     # Daily Phrases (mounted at /api/v1/daily-phrases/...)
     path('daily-phrases/init/', DailyPhrasesInitView.as_view(), name='daily-phrases-init'),
     path('daily-phrases/verify/', DailyPhrasesVerifyView.as_view(), name='daily-phrases-verify'),

@@ -5,11 +5,40 @@ Uses ChromaDB with Gemini embeddings for semantic search.
 """
 from pathlib import Path
 from typing import Optional
+import time
+import logging
 import chromadb
 from chromadb.config import Settings
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from django.conf import settings
 import os
+
+logger = logging.getLogger(__name__)
+
+# Retry decorator for API calls with transient network errors
+def _retry_on_ssl_error(max_retries=3, delay=2.0):
+    """Decorator to retry on SSL/network errors."""
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            last_exception = None
+            for attempt in range(max_retries):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    last_exception = e
+                    error_str = str(e).lower()
+                    # Only retry on transient network/SSL errors
+                    if any(keyword in error_str for keyword in ['ssl', 'eof', 'connection', 'timeout', 'reset']):
+                        if attempt < max_retries - 1:
+                            wait = delay * (attempt + 1)
+                            logger.warning(f"Embedding API error (attempt {attempt + 1}/{max_retries}), retrying in {wait}s: {e}")
+                            time.sleep(wait)
+                            continue
+                    # Non-retryable error, raise immediately
+                    raise
+            raise last_exception
+        return wrapper
+    return decorator
 
 from .dita_parser import DITAChunk
 
@@ -59,6 +88,16 @@ class DITAVectorStore:
             metadata={"description": "DITA documentation chunks for RAG"}
         )
     
+    @_retry_on_ssl_error(max_retries=3, delay=2.0)
+    def _embed_documents(self, documents: list[str]) -> list:
+        """Wrapper with retry for embed_documents API call."""
+        return self.embeddings.embed_documents(documents)
+    
+    @_retry_on_ssl_error(max_retries=3, delay=2.0)
+    def _embed_query(self, query: str) -> list:
+        """Wrapper with retry for embed_query API call."""
+        return self.embeddings.embed_query(query)
+    
     def add_chunks(self, chunks: list[DITAChunk], batch_size: int = 10) -> int:
         """
         Add chunks to the vector store with embeddings.
@@ -83,9 +122,8 @@ class DITAVectorStore:
             metadatas = [chunk.to_metadata() for chunk in batch]
             
             try:
-                # Generate embeddings
-                # Note: embed_documents might batch internally, but we control the outer loop
-                embeddings = self.embeddings.embed_documents(documents)
+                # Generate embeddings (with retry for network errors)
+                embeddings = self._embed_documents(documents)
                 
                 # Upsert to collection (handles duplicates)
                 self.collection.upsert(
@@ -126,8 +164,8 @@ class DITAVectorStore:
         Returns:
             List of matching documents with metadata
         """
-        # Generate query embedding
-        query_embedding = self.embeddings.embed_query(query)
+        # Generate query embedding (with retry for network errors)
+        query_embedding = self._embed_query(query)
         
         # Build where clause for audience filtering
         # 'all' audience should match everything

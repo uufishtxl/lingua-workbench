@@ -18,6 +18,8 @@ const nextChunkId = ref<number | null>(null)
 const prevChunkId = ref<number | null>(null)
 const totalChunks = ref(0)
 const currentIndex = ref(0)
+const nextEpisodeChunkId = ref<number | null>(null)
+const nextSeasonChunkId = ref<number | null>(null)
 
 // Check if review mode is enabled via URL query
 const isReviewMode = computed(() => route.query.mode === 'review')
@@ -35,6 +37,8 @@ const fetchChunkData = async (chunkId: string | string[]) => {
   savedSlices.value = []
   nextChunkId.value = null
   prevChunkId.value = null
+  nextEpisodeChunkId.value = null
+  nextSeasonChunkId.value = null
   error.value = null
 
   isLoading.value = true
@@ -76,6 +80,65 @@ const fetchChunkData = async (chunkId: string | string[]) => {
           nextChunkId.value = chunks[currentIdx + 1].id
         } else {
           nextChunkId.value = null
+          
+          // If this is the last chunk in the episode, find next episode in same season
+          if (chunk.value?.source_audio) {
+            try {
+              const sourceAudioResponse = await api.get(`/v1/sourceaudios/${chunk.value.source_audio}/`)
+              const sourceAudio = sourceAudioResponse.data
+              
+              // Find next episode in same season
+              const nextEpisodeResponse = await api.get(`/v1/sourceaudios/`, {
+                params: {
+                  drama: sourceAudio.drama,
+                  season: sourceAudio.season,
+                  episode__gt: sourceAudio.episode
+                }
+              })
+              const nextEpisodes = nextEpisodeResponse.data.results || nextEpisodeResponse.data
+              
+              if (nextEpisodes.length > 0) {
+                // Get first chunk of next episode
+                const nextEpisode = nextEpisodes[0]
+                const firstChunkResponse = await api.get(`/v1/audiochunks/`, {
+                  params: { source_audio: nextEpisode.id }
+                })
+                const firstChunks = firstChunkResponse.data.results || firstChunkResponse.data
+                
+                if (firstChunks.length > 0) {
+                  // Sort by chunk_index and get the first one
+                  firstChunks.sort((a: AudioChunkResponse, b: AudioChunkResponse) => a.chunk_index - b.chunk_index)
+                  nextEpisodeChunkId.value = firstChunks[0].id
+                }
+              } else {
+                // If no next episode in same season, try next season
+                const nextSeasonResponse = await api.get(`/v1/sourceaudios/`, {
+                  params: {
+                    drama: sourceAudio.drama,
+                    season__gt: sourceAudio.season
+                  }
+                })
+                const nextSeasons = nextSeasonResponse.data.results || nextSeasonResponse.data
+                
+                if (nextSeasons.length > 0) {
+                  // Get first chunk of first episode in next season
+                  const nextSeason = nextSeasons[0]
+                  const firstChunkResponse = await api.get(`/v1/audiochunks/`, {
+                    params: { source_audio: nextSeason.id }
+                  })
+                  const firstChunks = firstChunkResponse.data.results || firstChunkResponse.data
+                  
+                  if (firstChunks.length > 0) {
+                    // Sort by chunk_index and get the first one
+                    firstChunks.sort((a: AudioChunkResponse, b: AudioChunkResponse) => a.chunk_index - b.chunk_index)
+                    nextSeasonChunkId.value = firstChunks[0].id
+                  }
+                }
+              }
+            } catch (err) {
+              console.error('Failed to fetch next episode/season info:', err)
+            }
+          }
         }
       } catch (err) {
         console.error('Failed to fetch chunk navigation info:', err)
@@ -100,6 +163,19 @@ watch(
     }
   }
 )
+
+const handleCompleted = (nextChunkId: number | null) => {
+  // This is handled by ChunkCompleteBar internally
+  console.log('Chunk completed, next chunk:', nextChunkId)
+}
+
+// Rough slicing 完成后重新拉取 slices（波形区域/切片卡展示新生成的 rough slices）
+const handleRoughSliced = () => {
+  const chunkId = route.params.id
+  if (chunkId) {
+    fetchChunkData(chunkId)
+  }
+}
 
 onMounted(() => {
   if (route.params.id) {
@@ -130,6 +206,10 @@ onMounted(() => {
         :next-chunk-id="nextChunkId"
         :current-index="currentIndex"
         :total-chunks="totalChunks"
+        :next-episode-chunk-id="nextEpisodeChunkId"
+        :next-season-chunk-id="nextSeasonChunkId"
+        @completed="handleCompleted"
+        @rough-sliced="handleRoughSliced"
       />
     </div>
   </div>

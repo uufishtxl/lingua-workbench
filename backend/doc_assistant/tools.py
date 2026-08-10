@@ -662,3 +662,137 @@ def delete_reader_annotation(annotation_id: int) -> str:
         return f"Annotation {annotation_id} ('{text}') deleted successfully."
     except Annotation.DoesNotExist:
         return f"Error: Annotation {annotation_id} not found."
+
+
+@tool
+def find_source_audio(
+    drama_name: str = "",
+    season: int = 0,
+    episode: int = 0,
+    chunk_id: int = 0
+) -> str:
+    """Find a SourceAudio (episode) by drama name/season/episode or by chunk_id.
+    
+    Use this to get the source_audio_id when the user refers to an episode.
+    
+    Args:
+        drama_name: Name of the drama (e.g. "Grey's Anatomy", "实习医生格蕾").
+        season: Season number (e.g. 8).
+        episode: Episode number (e.g. 4).
+        chunk_id: If you know a chunk_id from the context, use this instead.
+    """
+    from audio_slicer.models import SourceAudio, AudioChunk
+    from django.db.models import Q
+    
+    # Method 1: Find by chunk_id
+    if chunk_id:
+        try:
+            chunk = AudioChunk.objects.select_related('source_audio').get(id=chunk_id)
+            sa = chunk.source_audio
+            return (
+                f"Found SourceAudio via chunk_id={chunk_id}:\n"
+                f"  source_audio_id: {sa.id}\n"
+                f"  drama: {sa.drama.name}\n"
+                f"  season: {sa.season}, episode: {sa.episode}\n"
+                f"  title: {sa.title or 'N/A'}"
+            )
+        except AudioChunk.DoesNotExist:
+            return f"Error: AudioChunk with id={chunk_id} not found."
+    
+    # Method 2: Find by drama name + season + episode
+    if not season or not episode:
+        return "Error: Please provide (drama_name + season + episode) or chunk_id."
+    
+    queryset = SourceAudio.objects.filter(season=season, episode=episode)
+    
+    if drama_name:
+        queryset = queryset.filter(
+            Q(drama__name__icontains=drama_name) | Q(drama__name__icontains=drama_name.lower())
+        )
+    
+    if not queryset.exists():
+        return f"Error: No episode found for S{season:02d}E{episode:02d}{' (' + drama_name + ')' if drama_name else ''}."
+    
+    if queryset.count() > 1:
+        results = []
+        for sa in queryset[:5]:
+            results.append(f"  - id={sa.id}: {sa.drama.name} S{sa.season:02d}E{sa.episode:02d}")
+        return f"Multiple episodes found, please specify drama name:\n" + "\n".join(results)
+    
+    sa = queryset.first()
+    return (
+        f"Found SourceAudio:\n"
+        f"  source_audio_id: {sa.id}\n"
+        f"  drama: {sa.drama.name}\n"
+        f"  season: {sa.season}, episode: {sa.episode}\n"
+        f"  title: {sa.title or 'N/A'}"
+    )
+
+
+@tool
+def fix_missing_translations(
+    source_audio_id: int,
+    batch_size: int = 50
+) -> str:
+    """Fix missing Chinese translations for ScriptLines in a specific episode.
+    
+    This tool finds all ScriptLines that are missing Chinese translations (text_zh is null or empty)
+    and batch translates them using the AI translation service.
+    
+    Use this when the user reports missing translations or says translations are incomplete.
+    
+    Args:
+        source_audio_id: The ID of the SourceAudio (episode) to fix translations for.
+        batch_size: Number of lines to translate in each batch (default 50).
+    """
+    from scripts.models import ScriptLine
+    from audio_slicer.models import AudioChunk
+    from django.db.models import Q
+    
+    # Get all chunks for this source audio
+    chunks = AudioChunk.objects.filter(source_audio_id=source_audio_id)
+    if not chunks.exists():
+        return f"Error: No audio chunks found for source_audio_id={source_audio_id}."
+    
+    # Find lines without translation
+    lines_to_translate = ScriptLine.objects.filter(
+        chunk__source_audio_id=source_audio_id
+    ).filter(
+        Q(text_zh__isnull=True) | Q(text_zh__exact='')
+    ).order_by('index')
+    
+    if not lines_to_translate.exists():
+        return f"All ScriptLines for source_audio_id={source_audio_id} already have translations. No action needed."
+    
+    # Get count before translation
+    total_lines = ScriptLine.objects.filter(chunk__source_audio_id=source_audio_id).count()
+    missing_count = lines_to_translate.count()
+    
+    # Batch translate
+    from ai_analysis.services import batch_translate_texts
+    
+    total_translated = 0
+    all_lines = list(lines_to_translate.values('id', 'text'))
+    
+    for i in range(0, len(all_lines), batch_size):
+        batch = all_lines[i:i + batch_size]
+        
+        try:
+            translations = batch_translate_texts(batch)
+            
+            for item in translations:
+                line_id = item.get('id')
+                translation = item.get('translation')
+                if line_id and translation:
+                    ScriptLine.objects.filter(id=line_id).update(text_zh=translation)
+                    total_translated += 1
+        except Exception as e:
+            return f"Error during translation batch {i//batch_size + 1}: {str(e)}. Successfully translated {total_translated} lines before error."
+    
+    return (
+        f"Successfully fixed translations for source_audio_id={source_audio_id}!\n"
+        f"  Total lines in episode: {total_lines}\n"
+        f"  Lines missing translation: {missing_count}\n"
+        f"  Lines translated: {total_translated}\n"
+        f"  Remaining missing: {missing_count - total_translated}"
+    )

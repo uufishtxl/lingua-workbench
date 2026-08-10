@@ -41,8 +41,8 @@
         </button>
       </div>
 
-      <!-- Current Card (Main) -->
-      <div class="flex-[2] max-w-3xl h-[70vh] max-h-[500px] min-h-[350px] flex flex-col">
+      <!-- Current Card (Main) max-w-3xl -->
+      <div class="flex-[2] h-[70vh] max-h-[500px] min-h-[350px] flex flex-col">
         <Transition :name="slideDirection" mode="out-in">
         <div :key="currentIndex" class="flex-1 bg-white rounded-3xl shadow-xl flex flex-col items-center p-6 gap-4 overflow-hidden">
           

@@ -13,7 +13,8 @@ from .state import AgentState
 from .tools import (
     get_surrounding_lines, insert_script_line, edit_script_line, split_script_line, delete_script_line,
     move_script_line, merge_script_lines,
-    get_reader_context, edit_reader_paragraph, edit_reader_annotation, delete_reader_annotation
+    get_reader_context, edit_reader_paragraph, edit_reader_annotation, delete_reader_annotation,
+    find_source_audio, fix_missing_translations
 )
 
 from ai_analysis.services import get_llm as _get_llm
@@ -34,6 +35,9 @@ correct script lines in the database (e.g. "在#100后面加一句", \
 "fix the speaker on line 50", "insert a line after #200").
 - READER_EDIT — if the user wants to resolve issues with reading materials, \
 e.g. edit a paragraph's content, fix translation in the reader, or modify/delete an annotation highlight.
+- TRANSLATION_FIX — if the user reports missing translations, incomplete translations, \
+or asks to fix/re-translate lines that are missing Chinese translations \
+(e.g. "有漏翻", "翻译缺失", "重新翻译", "修复翻译", "missing translations").
 - GENERAL — for English learning questions (idioms, pronunciation, grammar, vocabulary), \
 greetings, casual chat, or anything else.
 
@@ -65,6 +69,8 @@ def router_node(state: AgentState) -> dict:
         return {"next": "reader_editor"}
     elif "DOC" in decision:
         return {"next": "doc_qa"}
+    elif "TRANSLATION" in decision and "FIX" in decision:
+        return {"next": "translation_fixer"}
     else:
         return {"next": "general"}
 
@@ -219,6 +225,78 @@ def script_editor_node(state: AgentState) -> dict:
     return {"messages": [response]}
 
 
+# ── TranslationFixer Node ──────────────────────────────────────
+TRANSLATION_FIXER_SYSTEM_PROMPT = """\
+You are a translation repair assistant for Lingua Workbench. You help users \
+fix missing Chinese translations in their script lines.
+
+Available tools:
+1. find_source_audio — Find the source_audio_id by drama name/season/episode, \
+or by chunk_id. Use this FIRST to identify which episode to fix.
+2. fix_missing_translations — Find and translate all ScriptLines with missing \
+Chinese translations for a specific episode (source_audio).
+
+## IMPORTANT CONTEXT:
+The current conversation state includes:
+- current_chunk_id: The chunk the user is currently viewing (0 if not provided)
+- current_source_audio_id: The episode derived from current_chunk_id (0 if not provided)
+
+When the user says "这集" (this episode) or similar without specifying which episode:
+- If current_source_audio_id > 0, use it directly with fix_missing_translations
+- If current_chunk_id > 0 but current_source_audio_id is 0, call find_source_audio(chunk_id=current_chunk_id)
+- If both are 0, ask the user which episode they're referring to
+
+## CRITICAL RULES (MUST FOLLOW):
+
+### Rule 1: Use context when available
+When the user reports missing translations for "这集", check if current_chunk_id \
+or current_source_audio_id is available from the conversation context. Use them \
+directly instead of asking the user.
+
+### Rule 2: Always find the episode first (if no context)
+If no context is available, call find_source_audio to identify the episode:
+- "S08E04有漏翻" → call find_source_audio(season=8, episode=4)
+- "实习医生格蕾第8季第4集" → call find_source_audio(drama_name="实习医生格蕾", season=8, episode=4)
+
+### Rule 3: Always fix before confirming
+After finding the episode, ALWAYS call fix_missing_translations to actually \
+fix the problem. Don't just acknowledge the issue.
+
+### Rule 4: Provide feedback
+After performing the action, confirm what you did with a summary showing:
+- Which episode was fixed
+- How many lines were missing translations
+- How many were successfully translated
+- Any remaining issues
+
+### Rule 5: Trigger Refresh
+If translations were fixed, include the exact string `[REFRESH_SCRIPT]` \
+at the very end of your final response so the frontend knows to reload."""
+
+TRANSLATION_FIXER_TOOLS = [find_source_audio, fix_missing_translations]
+
+def translation_fixer_node(state: AgentState) -> dict:
+    """Handle translation fix requests with tool-calling."""
+    llm = _get_llm(feature="translation_fixer", temperature=0)
+    llm_with_tools = llm.bind_tools(TRANSLATION_FIXER_TOOLS)
+    
+    # Focus on the last AGENT_HISTORY_WINDOW messages for tool-calling
+    recent_messages = state["messages"][-AGENT_HISTORY_WINDOW:]
+    
+    # Inject context into the system prompt
+    chunk_id = state.get("current_chunk_id", 0)
+    source_audio_id = state.get("current_source_audio_id", 0)
+    
+    context_info = f"\n\n## CURRENT CONTEXT (auto-detected):\n- current_chunk_id: {chunk_id}\n- current_source_audio_id: {source_audio_id}\n\nIf user says 'this episode' and source_audio_id > 0, use it directly with fix_missing_translations(source_audio_id={source_audio_id})."
+    
+    response = llm_with_tools.invoke([
+        SystemMessage(content=TRANSLATION_FIXER_SYSTEM_PROMPT + context_info),
+        *recent_messages,
+    ])
+    
+    return {"messages": [response]}
+
+
 # ── ReaderEditor Node ─────────────────────────────────────────
 READER_EDITOR_SYSTEM_PROMPT = """\
 You are an intelligent reading assistant for Lingua Workbench. You help users \
@@ -347,8 +425,9 @@ def build_graph() -> StateGraph:
     graph.add_node("doc_qa", doc_qa_node)
     graph.add_node("script_editor", script_editor_node)
     graph.add_node("reader_editor", reader_editor_node)
+    graph.add_node("translation_fixer", translation_fixer_node)
     graph.add_node("general", general_node)
-    graph.add_node("tools", ToolNode(SCRIPT_TOOLS + READER_TOOLS))
+    graph.add_node("tools", ToolNode(SCRIPT_TOOLS + READER_TOOLS + TRANSLATION_FIXER_TOOLS))
     
     # Entry point
     graph.set_entry_point("router")
@@ -361,6 +440,7 @@ def build_graph() -> StateGraph:
             "doc_qa": "doc_qa",
             "script_editor": "script_editor",
             "reader_editor": "reader_editor",
+            "translation_fixer": "translation_fixer",
             "general": "general",
         }
     )
@@ -369,8 +449,8 @@ def build_graph() -> StateGraph:
     graph.add_edge("doc_qa", END)
     graph.add_edge("general", END)
     
-    # ScriptEditor and ReaderEditor → tool loop (ReAct pattern)
-    for node_name in ["script_editor", "reader_editor"]:
+    # ScriptEditor, ReaderEditor, and TranslationFixer → tool loop (ReAct pattern)
+    for node_name in ["script_editor", "reader_editor", "translation_fixer"]:
         graph.add_conditional_edges(
             node_name,
             should_continue_tools,

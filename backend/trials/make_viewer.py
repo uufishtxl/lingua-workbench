@@ -1,0 +1,458 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+临时脚本：把 outputs/unit_*.json 打包成查看器数据文件 + 静态网页。
+
+用法（在 backend/trials 下）：
+    python make_viewer.py                        # 扫描 outputs/unit_*.json（优先 .cleaned 版）
+    python make_viewer.py --unit 2               # 只包含 Unit 2
+    python make_viewer.py --json xxx.json        # 只包含指定文件
+
+输出：
+    outputs/unit_data.js    # 数据文件（每次提取/清理后重跑本脚本刷新它即可）
+    unit_viewer.html        # 静态网页（结构没变就不用重新生成）
+
+原理：网页通过 <script src="outputs/unit_data.js"> 引用数据（不用 fetch，
+因为双击打开 file:// 时 fetch 会被 CORS 拦截）。所以以后改数据只需要
+重跑 make_viewer.py 刷新 unit_data.js，unit_viewer.html 永远不用再动。
+"""
+import argparse
+import json
+import re
+import sys
+from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+OUTPUTS_DIR = SCRIPT_DIR / "outputs"
+
+UNIT_NAME_RE = re.compile(r"unit_(\d+)(\.cleaned)?\.json")
+
+HTML_TEMPLATE = r"""<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF 提取结果查看器</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --border: #e3e6eb;
+    --text: #2b3038;
+    --muted: #8a93a3;
+    --accent: #2f6fed;
+    --accent-soft: #eaf1ff;
+    --mark: #ffe066;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+    line-height: 1.7;
+  }
+  header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 28px 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  h1 { font-size: 22px; display: flex; align-items: baseline; gap: 10px; }
+  h1 small { font-size: 13px; color: var(--muted); font-weight: 400; }
+  .meta {
+    display: flex; flex-wrap: wrap; gap: 8px 22px;
+    margin: 10px 0 0; font-size: 13px; color: var(--muted);
+  }
+  .meta b { color: var(--text); font-weight: 600; }
+  .toolbar {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    margin-top: 12px; padding-bottom: 12px;
+  }
+  #unit-select {
+    border: 1px solid var(--border); background: var(--card); color: var(--text);
+    border-radius: 8px; padding: 7px 10px; font-size: 14px; cursor: pointer;
+    outline: none;
+  }
+  #unit-select:focus { border-color: var(--accent); }
+  .tabs { display: flex; gap: 4px; background: var(--bg); padding: 4px; border-radius: 10px; }
+  .tabs button {
+    border: 0; background: transparent; padding: 6px 16px; border-radius: 7px;
+    font-size: 14px; color: var(--muted); cursor: pointer;
+  }
+  .tabs button.active { background: var(--card); color: var(--accent); font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .searchbar {
+    flex: 1; display: flex; align-items: center; gap: 8px; min-width: 200px;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px;
+  }
+  .searchbar input { border: 0; background: transparent; outline: none; flex: 1; font-size: 14px; }
+  .searchbar .count { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  main { padding: 22px 28px 60px; max-width: 880px; margin: 0 auto; }
+  section { display: none; }
+  section.active { display: block; }
+
+  .p { margin: 0 0 14px; }
+  .page-break {
+    display: flex; align-items: center; gap: 10px; margin: 26px 0 16px;
+    color: var(--muted); font-size: 12px;
+  }
+  .page-break::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .page-break .badge {
+    background: var(--accent-soft); color: var(--accent);
+    padding: 2px 10px; border-radius: 999px; font-weight: 600;
+  }
+  mark { background: var(--mark); border-radius: 2px; padding: 0 1px; }
+
+  .page-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 20px; margin-bottom: 16px;
+  }
+  .page-card h3 {
+    font-size: 14px; color: var(--accent); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .page-card .num {
+    background: var(--accent); color: #fff; border-radius: 6px;
+    padding: 1px 8px; font-size: 12px;
+  }
+  .page-card pre {
+    font-family: inherit; font-size: 15px; white-space: pre-wrap; word-break: break-word;
+  }
+
+  .mod-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 20px; margin-bottom: 16px;
+  }
+  .mod-card h3 {
+    font-size: 14px; color: var(--accent); margin-bottom: 10px;
+    border-bottom: 1px solid var(--border); padding-bottom: 8px;
+  }
+  .mod-text { white-space: pre-wrap; word-break: break-word; font-size: 15px; }
+  .mod-missing { color: var(--muted); font-style: italic; font-size: 13px; }
+
+  .jsonbox { position: relative; }
+  .jsonbox pre {
+    background: #1f2430; color: #c9d1e8; border-radius: 12px;
+    padding: 20px; font-family: "SF Mono", Consolas, Menlo, monospace;
+    font-size: 12.5px; line-height: 1.55; overflow: auto; max-height: 70vh;
+  }
+  .copy-btn, .copy-page-btn {
+    border: 1px solid var(--border); background: var(--card); color: var(--text);
+    border-radius: 7px; padding: 5px 12px; font-size: 12.5px; cursor: pointer;
+  }
+  .copy-btn:hover, .copy-page-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .jsonbox .copy-btn { position: absolute; top: 12px; right: 12px; }
+  .toolbar .copy-btn { margin-left: auto; }
+  .done { color: #1a9e5e !important; border-color: #1a9e5e !important; }
+  .note {
+    font-size: 12.5px; color: var(--muted); margin-top: 30px;
+    border-top: 1px dashed var(--border); padding-top: 14px;
+  }
+  .note code { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 0 5px; }
+  .empty {
+    background: var(--card); border: 1px dashed var(--border); border-radius: 12px;
+    padding: 40px; text-align: center; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Unit <span id="h-unit">?</span> <small id="h-title">PDF 提取结果</small></h1>
+  <div class="meta">
+    <span>来源：<b id="m-pdf">-</b></span>
+    <span>页码：<b id="m-pages">-</b></span>
+    <span>共 <b id="m-pagecount">-</b> 页 · <b id="m-chars">-</b> 字符</span>
+    <span>范围：<b id="m-range">-</b></span>
+  </div>
+  <div class="toolbar">
+    <select id="unit-select"><option value="">选择 Unit…</option></select>
+    <div class="tabs">
+      <button data-tab="text" class="active">全文</button>
+      <button data-tab="pages">按页</button>
+      <button data-tab="analysis">结构化</button>
+      <button data-tab="json">原始 JSON</button>
+    </div>
+    <div class="searchbar">
+      <input id="q" type="text" placeholder="在正文中搜索…">
+      <span class="count" id="qcount"></span>
+    </div>
+    <button class="copy-btn" id="copy-text">复制全文</button>
+  </div>
+</header>
+
+<main>
+  <section id="tab-text" class="active">
+    <div id="text-body" style="white-space:pre-wrap"></div>
+  </section>
+
+  <section id="tab-pages">
+    <div id="pages-body"></div>
+  </section>
+
+  <section id="tab-analysis">
+    <div id="analysis-body"></div>
+  </section>
+
+  <section id="tab-json">
+    <div class="jsonbox">
+      <button class="copy-btn" id="copy-json">复制 JSON</button>
+      <pre id="json-body"></pre>
+    </div>
+  </section>
+
+  <p class="note">
+    数据文件：<code>outputs/unit_data.js</code>（网页通过 script 标签引用，无需服务器）。
+    更新流程：<code>python extract_unit.py --unit N</code> → <code>python clean_unit_json.py --unit N</code>
+    → <code>python extract_unit.py --words N</code>（可选，词表）→ <code>python analyze_unit.py --unit N</code>
+    → <code>python make_viewer.py</code>。网页本身不用再改。
+  </p>
+</main>
+
+<script src="outputs/unit_data.js"></script>
+<script>
+(function () {
+  const MAP = window.UNIT_DATA || {};
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  let D = null;
+
+  const MODULES = [
+    ["topic_words", "生词 · Topic Words"],
+    ["fun_time", "活动 · Fun Time"],
+    ["talking_time", "对话 · Talking Time"],
+    ["story_time", "故事 · Story Time"],
+    ["grammar_tip", "语法 · Grammar Tip"],
+    ["project", "范文 · Project"],
+    ["words_to_use", "词汇表 · Words to use"]
+  ];
+
+  function initMeta() {
+    $("h-unit").textContent = D.unit ?? "?";
+    $("h-title").textContent = (D.source_pdf || "") + " 提取结果";
+    document.title = "Unit " + (D.unit ?? "?") + " · " + (D.source_pdf || "PDF");
+    $("m-pdf").textContent = D.source_pdf || "-";
+    const first = D.start_page, last = D.end_page_exclusive ? D.end_page_exclusive - 1 : (D.included_pages || []).at(-1);
+    $("m-pages").textContent = first && last ? first + " – " + last : "-";
+    $("m-pagecount").textContent = (D.included_pages || []).length;
+    $("m-chars").textContent = D.total_chars ?? (D.text || "").length;
+    $("m-range").textContent = (D.start_marker || "") + " → " + (D.end_marker || "");
+  }
+
+  const pageBreak = (pageNo) =>
+    '<div class="page-break"><span class="badge">第 ' + pageNo + ' 页</span></div>';
+
+  function renderText(highlight) {
+    const pages = D.pages || [];
+    if (!pages.length) {
+      $("text-body").innerHTML = '<div class="empty">没有可显示的文本</div>';
+      return;
+    }
+    let html = "";
+    pages.forEach(function (p, idx) {
+      if (idx > 0) html += pageBreak(p.page);
+      let t = esc(p.text || "");
+      if (highlight) {
+        const rx = new RegExp("(" + highlight.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "gi");
+        t = t.replace(rx, "<mark>$1</mark>");
+      }
+      html += '<div class="p">' + t + "</div>";
+    });
+    $("text-body").innerHTML = html;
+  }
+
+  function renderPages() {
+    const pages = D.pages || [];
+    $("pages-body").innerHTML = pages.map(function (p) {
+      return '<div class="page-card"><h3><span class="num">P.' + p.page + "</span> 第 " + p.page +
+        ' 页</h3><pre>' + esc(p.text || "") + "</pre>" +
+        '<div style="margin-top:10px"><button class="copy-page-btn" data-text="' +
+        esc(p.text || "").replace(/"/g, "&quot;") + '">复制本页</button></div></div>';
+    }).join("") || '<div class="empty">没有按页数据</div>';
+  }
+
+  function renderJson() {
+    $("json-body").textContent = JSON.stringify(D, null, 2);
+  }
+
+  function renderAnalysis() {
+    const body = $("analysis-body");
+    const mods = (D && D.analysis && D.analysis.modules) ? D.analysis.modules : null;
+    if (!mods) {
+      body.innerHTML = '<div class="empty">尚未生成结构化分析。<br>运行 <code>python analyze_unit.py --unit ' +
+        (D ? D.unit : "N") + '</code>，再运行 <code>python make_viewer.py</code> 刷新数据。</div>';
+      return;
+    }
+    body.innerHTML = MODULES.map(function (m) {
+      const v = mods[m[0]];
+      const inner = (v === null || v === undefined || v === "")
+        ? '<div class="mod-missing">（本单元无此模块）</div>'
+        : '<div class="mod-text">' + esc(String(v)) + "</div>";
+      return '<div class="mod-card"><h3>' + m[1] + "</h3>" + inner + "</div>";
+    }).join("");
+  }
+
+  function render(unitKey) {
+    D = MAP[unitKey];
+    $("q").value = "";
+    $("qcount").textContent = "";
+    if (!D) {
+      $("text-body").innerHTML = '<div class="empty">没有数据。<br>请先运行 python extract_unit.py --unit N，再 python make_viewer.py 刷新 outputs/unit_data.js</div>';
+      $("pages-body").innerHTML = "";
+      $("analysis-body").innerHTML = "";
+      $("json-body").textContent = "";
+      $("h-unit").textContent = "?";
+      return;
+    }
+    initMeta();
+    renderText(null);
+    renderPages();
+    renderAnalysis();
+    renderJson();
+  }
+
+  // ---- tabs ----
+  document.querySelectorAll(".tabs button").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".tabs button").forEach(function (b) { b.classList.remove("active"); });
+      document.querySelectorAll("section").forEach(function (s) { s.classList.remove("active"); });
+      btn.classList.add("active");
+      $("tab-" + btn.dataset.tab).classList.add("active");
+    });
+  });
+
+  // ---- search ----
+  let lastQuery = "";
+  $("q").addEventListener("input", function () {
+    if (!D) return;
+    const q = this.value.trim();
+    if (q === lastQuery) return;
+    lastQuery = q;
+    renderText(q || null);
+    if (q) {
+      $("qcount").textContent = document.querySelectorAll("#text-body mark").length + " 处匹配";
+    } else {
+      $("qcount").textContent = "";
+    }
+  });
+
+  // ---- copy ----
+  $("copy-text").addEventListener("click", function () {
+    if (!D) { alert("没有数据"); return; }
+    navigator.clipboard.writeText(D.text || "").then(function () {
+      this.classList.add("done"); this.textContent = "已复制 ✓";
+      const b = this;
+      setTimeout(function () { b.classList.remove("done"); b.textContent = "复制全文"; }, 1200);
+    }.bind(this), function () { alert("复制失败，请手动选择复制"); });
+  });
+  $("copy-json").addEventListener("click", function () {
+    if (!D) { alert("没有数据"); return; }
+    navigator.clipboard.writeText(JSON.stringify(D, null, 2)).then(function () {
+      this.classList.add("done"); this.textContent = "已复制 ✓";
+      const b = this;
+      setTimeout(function () { b.classList.remove("done"); b.textContent = "复制 JSON"; }, 1200);
+    }.bind(this), function () { alert("复制失败"); });
+  });
+  document.addEventListener("click", function (e) {
+    const btn = e.target.closest(".copy-page-btn");
+    if (!btn) return;
+    navigator.clipboard.writeText(btn.dataset.text).then(function () {
+      btn.classList.add("done"); btn.textContent = "已复制 ✓";
+      setTimeout(function () { btn.classList.remove("done"); btn.textContent = "复制本页"; }, 1200);
+    });
+  });
+
+  // ---- unit selector ----
+  const sel = $("unit-select");
+  const keys = Object.keys(MAP).sort(function (a, b) { return Number(a) - Number(b); });
+  keys.forEach(function (k) {
+    const opt = document.createElement("option");
+    opt.value = k;
+    opt.textContent = "Unit " + k;
+    sel.appendChild(opt);
+  });
+  sel.addEventListener("change", function () { render(sel.value); });
+  if (keys.length) {
+    sel.value = keys[0];
+    render(keys[0]);
+  } else {
+    render(null);
+  }
+})();
+</script>
+</body>
+</html>
+"""
+
+
+def collect_data(unit: int | None, json_path: Path | None) -> dict:
+    """收集 {unit: data}，优先 .cleaned.json。"""
+    result = {}
+    if json_path is not None:
+        path = json_path.resolve()
+        data = json.loads(path.read_text(encoding="utf-8"))
+        result[data.get("unit", path.stem)] = data
+        return result
+
+    candidates: dict[str, list[Path]] = {}
+    for f in OUTPUTS_DIR.glob("unit_*.json"):
+        m = UNIT_NAME_RE.match(f.name)
+        if not m:
+            continue
+        key = m.group(1)
+        if unit is not None and int(key) != unit:
+            continue
+        candidates.setdefault(key, []).append(f)
+
+    for key, files in candidates.items():
+        cleaned = [f for f in files if f.name.endswith(".cleaned.json")]
+        chosen = (cleaned or files)[0]
+        data = json.loads(chosen.read_text(encoding="utf-8"))
+        result[data.get("unit", key)] = data
+
+    for key, data in result.items():
+        # 合并 DeepSeek 结构化分析结果（若有）
+        ana = OUTPUTS_DIR / f"unit_{key}.analysis.json"
+        if ana.exists():
+            data["analysis"] = json.loads(ana.read_text(encoding="utf-8"))
+        # 合并 Words to use 词表原始文本（若有）
+        words = OUTPUTS_DIR / f"unit_{key}.words.json"
+        if words.exists():
+            data["words"] = json.loads(words.read_text(encoding="utf-8"))
+    return result
+
+
+def main():
+    parser = argparse.ArgumentParser(description="生成查看器数据文件 + 静态网页")
+    parser.add_argument("--unit", type=int, default=None, help="只包含指定 Unit（默认扫描全部）")
+    parser.add_argument("--json", type=Path, default=None, help="只包含指定 JSON 文件")
+    args = parser.parse_args()
+
+    data_map = collect_data(args.unit, args.json)
+    if not data_map:
+        sys.exit(f"outputs/ 下没有找到 unit_*.json，请先运行 extract_unit.py --unit N")
+
+    data_js = (
+        "window.UNIT_DATA = "
+        + json.dumps(data_map, ensure_ascii=False, indent=2).replace("</", "<\\/")
+        + ";\n"
+    )
+
+    data_out = OUTPUTS_DIR / "unit_data.js"
+    data_out.write_text(data_js, encoding="utf-8")
+
+    html_out = SCRIPT_DIR / "unit_viewer.html"
+    html_out.write_text(HTML_TEMPLATE, encoding="utf-8")
+
+    print(f"数据文件：{data_out}（{data_out.stat().st_size} 字节）")
+    print(f"网页模板：{html_out}（结构不变则以后无需重新生成）")
+    for unit, d in sorted(data_map.items(), key=lambda kv: int(kv[0])):
+        pages = d.get("included_pages", [])
+        print(f"  - Unit {unit}: {d.get('source_pdf', '?')} · 页 {pages[0] if pages else '-'}"
+              f"~{pages[-1] if pages else '-'} · {len(pages)} 页 · {d.get('total_chars', 0)} 字符")
+    print("打开 unit_viewer.html 即可查看（含 Unit 下拉切换）。")
+
+
+if __name__ == "__main__":
+    main()

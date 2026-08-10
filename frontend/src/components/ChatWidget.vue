@@ -9,18 +9,32 @@
  * - SSE streaming for typewriter effect
  */
 import { ref, nextTick, computed, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import { streamChatMessage, type ChatSource, type AudienceType } from '@/api/chatApi';
 import { useChatStore } from '@/stores/chatStore';
 import { storeToRefs } from 'pinia';
 import MarkdownIt from 'markdown-it';
+import { CirclePlus } from '@element-plus/icons-vue';
+import { ElTooltip } from 'element-plus';
 
 const md = new MarkdownIt({
   breaks: true,
   linkify: true,
 });
 
+const route = useRoute();
 const chatStore = useChatStore();
 const { isExpanded, inputMessage, position } = storeToRefs(chatStore);
+
+// Get chunk_id from route if on workbench page
+const currentChunkId = computed(() => {
+  const id = route.params.id;
+  if (id && typeof id === 'string') {
+    const parsed = parseInt(id, 10);
+    return isNaN(parsed) ? undefined : parsed;
+  }
+  return undefined;
+});
 
 // Widget state
 // isExpanded moved to store
@@ -118,7 +132,8 @@ async function sendMessage() {
           assistantMessage.isStreaming = false;
           isLoading.value = false;
         },
-      }
+      },
+      currentChunkId.value
     );
   } catch (error) {
     assistantMessage.content = `❌ Error: ${error}`;
@@ -147,6 +162,12 @@ watch(inputMessage, () => {
         autoResize();
     });
 });
+
+// Extract lineId from current input (e.g., #123, 台词 #456)
+function getLineIdFromInput(): string {
+  const match = inputMessage.value.match(/#(\d+)/)
+  return match ? match[1] : '???'
+}
 
 function insertTextAtCursor(textToInsert: string) {
   const textarea = textareaRef.value;
@@ -261,6 +282,19 @@ defineExpose({ insertTextAtCursor });
             </span>
           </div>
         </div>
+      </div>
+
+      <!-- Quick Prompts -->
+      <div class="quick-prompts">
+        <el-tooltip content="插入新台词" placement="top">
+          <button 
+            class="quick-prompt-btn"
+            @click="chatStore.setInput(`我要插入新的台词，台词 #${getLineIdFromInput()}`)"
+          >
+            <el-icon><CirclePlus /></el-icon>
+            <span>插入台词</span>
+          </button>
+        </el-tooltip>
       </div>
 
       <!-- Input -->
@@ -580,6 +614,41 @@ defineExpose({ insertTextAtCursor });
   border-radius: 10px;
   font-size: 10px;
   color: #a0a0ff;
+}
+
+/* Quick Prompts */
+.quick-prompts {
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: #1a1a2e;
+  overflow-x: auto;
+}
+
+.quick-prompt-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: rgba(102, 126, 234, 0.15);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 16px;
+  color: #a0a0ff;
+  cursor: pointer;
+  font-size: 12px;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.quick-prompt-btn:hover {
+  background: rgba(102, 126, 234, 0.25);
+  border-color: rgba(102, 126, 234, 0.5);
+  color: #c0c0ff;
+}
+
+.quick-prompt-btn .el-icon {
+  font-size: 14px;
 }
 
 /* Input Area */

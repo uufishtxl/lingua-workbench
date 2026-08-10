@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'reader',
     'pomodoro',
     'english_corner',
+    'corpus',
 ]
 
 MIDDLEWARE = [
@@ -124,7 +125,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 15,
+    'PAGE_SIZE': 25,
 }
 
 # Simple JWT Configuration
@@ -212,7 +213,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 LLM_CONFIG = {
     "default": {
         "provider": "deepseek",
-        "model_name": "deepseek-chat",
+        "model_name": "deepseek-v4-flash",
         "temperature": 0.3,
         "api_key": os.getenv("DEEPSEEK_API_KEY"),
         "base_url": os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),
@@ -229,15 +230,9 @@ LLM_CONFIG = {
         "temperature": 0,
         "api_key": os.getenv("GOOGLE_API_KEY"),
     },
-    # "reader_copilot": {
-    #     "provider": "gemini",
-    #     "model_name": os.getenv("MODEL_NAME", "gemini-2.5-flash"),
-    #     "temperature": 0,
-    #     "api_key": os.getenv("GOOGLE_API_KEY"),
-    # },
     "english_corner": {
         "provider": "deepseek",
-        "model_name": "deepseek-chat",
+        "model_name": "deepseek-v4-flash",
         "temperature": 0.9,
         "api_key": os.getenv("DEEPSEEK_API_KEY"),
         "base_url": os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),

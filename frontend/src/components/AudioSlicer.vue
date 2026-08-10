@@ -66,7 +66,30 @@
                     isTransitioning ? 'transitioning-blur' : ''
                 ]"
             >
-                <h2 class="font-bold mb-2 border-b-[0.5px] border-blue-100/50 pb-0">Selected Regions</h2>
+                <div class="flex items-center justify-between mb-2 border-b-[0.5px] border-blue-100/50 pb-0">
+                    <h2 class="font-bold">Selected Regions</h2>
+                    <div class="flex items-center gap-1">
+                        <el-tooltip content="暂停所有播放" placement="top">
+                            <el-button 
+                                size="small" 
+                                circle 
+                                @click="pauseAllSlices"
+                            >
+                                <i-tabler-player-pause class="text-sm" />
+                            </el-button>
+                        </el-tooltip>
+                        <el-tooltip :content="isReviewMode ? '关闭复习模式' : '开启复习模式'" placement="top">
+                            <el-button 
+                                :type="isReviewMode ? 'primary' : 'default'"
+                                size="small" 
+                                circle 
+                                @click="toggleReviewMode"
+                            >
+                                <el-icon><EditPen /></el-icon>
+                            </el-button>
+                        </el-tooltip>
+                    </div>
+                </div>
                 
                 <div class="flex-1 overflow-y-auto min-h-0">
                     <div v-if="regionsList.length > 0" 
@@ -140,9 +163,13 @@
                         :current-index="props.currentIndex"
                         :total-chunks="props.totalChunks"
                         :script-panel-width="scriptPanelWidth"
+                        :next-episode-chunk-id="props.nextEpisodeChunkId"
+                        :next-season-chunk-id="props.nextSeasonChunkId"
                         @search-slice="handleSearchSlice"
                         @toggle-width="scriptPanelWidth = scriptPanelWidth === 'normal' ? 'wide' : 'normal'"
                         @trigger-save="() => saveRegions(true)"
+                        @completed="emit('completed', $event)"
+                        @rough-sliced="emit('rough-sliced')"
                     />
                 </el-card>
             </Transition>
@@ -160,17 +187,27 @@ import PlaybackSpeedControl from './PlaybackSpeedControl.vue';
 import { createBatchSlices, deleteSlice, type CreateSliceRequest, type AudioSliceResponse } from '@/api/slicerApi';
 import ScriptPanel from './ScriptPanel.vue';
 import { ElMessage } from 'element-plus';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
+import { EditPen } from '@element-plus/icons-vue';
 
 const router = useRouter();
+const route = useRoute();
 
 const emit = defineEmits<{
     (e: 'save-complete', success: boolean): void;
+    (e: 'completed', nextChunkId: number | null): void;
+    (e: 'rough-sliced'): void;
 }>()
 
 const baseWaveSurferRef = ref<InstanceType<typeof BaseWaveSurfer> | null>(null)
 const isPanelExpanded = ref<boolean>(false)
-const scriptPanelWidth = ref<'normal' | 'wide'>('wide')  // normal: 22rem, wide: 44rem
+// Persist scriptPanelWidth to localStorage
+const scriptPanelWidth = ref<'normal' | 'wide'>(
+  (localStorage.getItem('scriptPanelWidth') as 'normal' | 'wide') || 'wide'
+)  // normal: 22rem, wide: 44rem
+watch(scriptPanelWidth, (newVal) => {
+  localStorage.setItem('scriptPanelWidth', newVal)
+})
 const isTransitioning = ref<boolean>(false)  // For blur effect during transition
 const loopRegion = ref<boolean>(true)
 const isPlaying = ref<boolean>(false)
@@ -190,6 +227,18 @@ const togglePanel = () => {
   }, 350)
 }
 
+// Review mode toggle via URL
+const isReviewMode = computed(() => route.query.mode === 'review')
+const toggleReviewMode = () => {
+  const newQuery = { ...route.query }
+  if (isReviewMode.value) {
+    delete newQuery.mode
+  } else {
+    newQuery.mode = 'review'
+  }
+  router.replace({ query: newQuery })
+}
+
 // ↓↓↓↓↓↓↓↓↓ Depreciated! Replaced by watch mechanism
 // const handleSpeedChange = (rate: number) => {
 //     currentPlaybackRate.value = rate;
@@ -207,6 +256,8 @@ const props = defineProps<{
     currentIndex?: number;
     totalChunks?: number;
     reviewMode?: boolean;
+    nextEpisodeChunkId?: number | null;
+    nextSeasonChunkId?: number | null;
 }>()
 
 // Watch for review mode changes to adjust defaults
@@ -289,6 +340,17 @@ const setSliceCardRef = (index: number, el: any) => {
     }
 }
 
+// Pause all playing SliceCards
+const pauseAllSlices = () => {
+    console.log('[pauseAllSlices] Pausing all slices, count:', sliceCardRefs.value.size)
+    sliceCardRefs.value.forEach((sliceCard, index) => {
+        if (sliceCard) {
+            console.log('[pauseAllSlices] Pausing slice at index:', index)
+            sliceCard.pause()
+        }
+    })
+}
+
 // Flag to prevent dirty state during initialization
 const isInitialized = ref(false)
 const isWaveSurferReady = ref(false)
@@ -341,6 +403,13 @@ onMounted(() => {
     window.addEventListener('save-before-expiration', handleSaveBeforeExpiration)
     // Warn before page unload
     window.addEventListener('beforeunload', handleBeforeUnload)
+    
+    // Auto-pause any auto-playing slices after mount
+    nextTick(() => {
+        setTimeout(() => {
+            pauseAllSlices()
+        }, 500)
+    })
 })
 
 onUnmounted(() => {
@@ -373,6 +442,10 @@ watch(() => props.initialSlices, (newSlices) => {
         // Try to sync to WaveSurfer if it's already ready
         nextTick(() => {
             syncRegionsToWaveSurfer()
+            // Auto-pause any auto-playing slices after data load
+            setTimeout(() => {
+                pauseAllSlices()
+            }, 500)
         })
     }
     // Mark as initialized after first load attempt

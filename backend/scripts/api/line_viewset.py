@@ -15,6 +15,54 @@ class ScriptLineViewSet(viewsets.ViewSet):
     """
     permission_classes = [IsAuthenticated]
 
+    def _get_chunk(self, chunk_pk):
+        """返回授权可见的 chunk；不存在或非本人时返回 None。"""
+        chunk = get_object_or_404(AudioChunk, pk=chunk_pk)
+        if chunk.source_audio.user != self.request.user:
+            return None
+        return chunk
+
+    @action(detail=False, methods=['post'], url_path='rough-slice')
+    def rough_slice(self, request, chunk_pk=None):
+        """
+        POST /api/scripts/chunk/{chunk_id}/rough-slice/
+        入队 Huey 任务：whisper 转写该 chunk 音频 → 按脚本对齐生成 rough AudioSlices。
+        """
+        from ..tasks import rough_slice_chunk_task
+
+        chunk = self._get_chunk(chunk_pk)
+        if chunk is None:
+            return Response({'error': 'Unauthorized'}, status=status.HTTP_403_FORBIDDEN)
+        result = rough_slice_chunk_task(chunk.id)
+        return Response({
+            'status': 'queued',
+            'task_id': result.id if result is not None else None,
+            'chunk_id': chunk.id,
+        }, status=status.HTTP_202_ACCEPTED)
+
+    @action(detail=False, methods=['get'], url_path='rough-slice-status')
+    def rough_slice_status(self, request, chunk_pk=None):
+        """
+        GET /api/scripts/chunk/{chunk_id}/rough-slice-status/
+        返回该 chunk 最近一次 rough 切割任务的状态。
+        """
+        from ..models import RoughSliceTask
+
+        chunk = self._get_chunk(chunk_pk)
+        if chunk is None:
+            return Response({'error': 'Unauthorized'}, status=status.HTTP_403_FORBIDDEN)
+        task_obj = RoughSliceTask.objects.filter(chunk=chunk).first()
+        if not task_obj:
+            return Response({'status': 'idle', 'message': 'No rough slice task yet'})
+        return Response({
+            'id': task_obj.id,
+            'status': task_obj.status,
+            'message': task_obj.message,
+            'slice_count': task_obj.slice_count,
+            'created_at': task_obj.created_at.isoformat(),
+            'updated_at': task_obj.updated_at.isoformat(),
+        })
+
     def partial_update(self, request, pk=None):
         """
         PATCH /api/scripts/lines/{id}/

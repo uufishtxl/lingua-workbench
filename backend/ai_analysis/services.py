@@ -4,8 +4,11 @@ Contains the LCEL chains for different analysis types.
 """
 import os
 import json
+import logging
 from typing import List, Dict
 from dotenv import load_dotenv
+
+logger = logging.getLogger(__name__)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -95,39 +98,54 @@ def analyze_sound_script(
 
 _dictionary_chain = None
 
-def get_dictionary_chain():
+def get_dictionary_llm():
     """
-    Get the singleton LCEL chain for dictionary lookup (Uses DeepSeek).
+    Get the LLM for dictionary lookup (Uses DeepSeek).
+    Uses raw LLM + manual JSON parsing instead of with_structured_output
+    to avoid DeepSeek v4 thinking mode / tool_choice conflicts.
     """
     global _dictionary_chain
     if _dictionary_chain is None:
-        llm = get_llm(feature="dictionary")
-        structured_llm = llm.with_structured_output(
-            DictionaryResponse,
-            method="function_calling" # DeepSeek supports tool calling? If not, might need JSON mode.
-            # Fallback: If deepseek-chat doesn't support structured_output via tool/function calling perfectly via LangChain yet,
-            # we might need standard JSON parsing. Assuming it works or using JSON mode.
-            # DeepSeek V3/V2 supports function calling.
-        )
-        # Note: ChatOpenAI driver with DeepSeek usually handles this.
-        
-        prompt = ChatPromptTemplate.from_messages([
-            ("system", DICTIONARY_SYSTEM_PROMPT),
-            ("human", DICTIONARY_HUMAN_PROMPT),
-        ])
-        _dictionary_chain = prompt | structured_llm
-    
+        _dictionary_chain = get_llm(feature="dictionary")
     return _dictionary_chain
 
 def lookup_dictionary(
     full_context: str,
     word_or_phrase: str
 ) -> DictionaryResponse:
-    chain = get_dictionary_chain()
-    return chain.invoke({
-        "full_context": full_context,
-        "word_or_phrase": word_or_phrase
-    })
+    try:
+        llm = get_dictionary_llm()
+        
+        # Build messages directly to avoid ChatPromptTemplate escaping issues with JSON braces
+        system_msg = (
+            DICTIONARY_SYSTEM_PROMPT
+            + '\n\nOUTPUT FORMAT: Return ONLY valid JSON, no markdown, no explanation. '
+            + 'Schema: {"card_type": "dictionary", "word_or_phrase": "...", "part_of_speech": "...", '
+            + '"definition_en": "...", "definition_cn": "...", "examples": [{"english": "...", "chinese": "..."}], '
+            + '"usage_note": "..."}'
+        )
+        human_msg = f'Full Context: "{full_context}"\nWord/Phrase to look up: "{word_or_phrase}"\n\nPlease provide the dictionary entry as JSON.'
+        
+        from langchain_core.messages import SystemMessage, HumanMessage
+        messages = [SystemMessage(content=system_msg), HumanMessage(content=human_msg)]
+        response = llm.invoke(messages)
+        
+        # Parse JSON from response
+        content = response.content.strip()
+        # Remove markdown code blocks if present
+        if content.startswith("```"):
+            content = content.split("\n", 1)[1] if "\n" in content else content[3:]
+        if content.endswith("```"):
+            content = content[:-3]
+        content = content.strip()
+        
+        data = json.loads(content)
+        result = DictionaryResponse(**data)
+        logger.info(f"Dictionary lookup succeeded for '{word_or_phrase}'")
+        return result
+    except Exception as e:
+        logger.error(f"Dictionary lookup failed for '{word_or_phrase}': {type(e).__name__}: {e}")
+        raise
 
 
 # ============ Refresh Example (Gemini or DeepSeek? User said "Dictionary and this LLM use DeepSeek") ============
@@ -140,20 +158,10 @@ def lookup_dictionary(
 
 _refresh_example_chain = None
 
-def get_refresh_example_chain():
+def get_refresh_example_llm():
     global _refresh_example_chain
     if _refresh_example_chain is None:
-        llm = get_llm(feature="refresh_example")
-        structured_llm = llm.with_structured_output(
-            RefreshExampleResponse,
-            method="function_calling"
-        )
-        prompt = ChatPromptTemplate.from_messages([
-            ("system", REFRESH_EXAMPLE_SYSTEM_PROMPT),
-            ("human", REFRESH_EXAMPLE_HUMAN_PROMPT),
-        ])
-        _refresh_example_chain = prompt | structured_llm
-    
+        _refresh_example_chain = get_llm(feature="refresh_example")
     return _refresh_example_chain
 
 def refresh_example(
@@ -162,13 +170,39 @@ def refresh_example(
     original_context: str,
     current_example: str
 ) -> RefreshExampleResponse:
-    chain = get_refresh_example_chain()
-    return chain.invoke({
-        "word_or_phrase": word_or_phrase,
-        "definition": definition,
-        "original_context": original_context,
-        "current_example": current_example
-    })
+    try:
+        llm = get_refresh_example_llm()
+        
+        system_msg = (
+            REFRESH_EXAMPLE_SYSTEM_PROMPT
+            + '\n\nOUTPUT FORMAT: Return ONLY valid JSON, no markdown, no explanation. '
+            + 'Schema: {"word_or_phrase": "...", "example": {"english": "...", "chinese": "..."}}'
+        )
+        human_msg = REFRESH_EXAMPLE_HUMAN_PROMPT.format(
+            word_or_phrase=word_or_phrase,
+            definition=definition,
+            original_context=original_context,
+            current_example=current_example
+        ) + "\n\nReturn the result as JSON."
+        
+        from langchain_core.messages import SystemMessage, HumanMessage
+        messages = [SystemMessage(content=system_msg), HumanMessage(content=human_msg)]
+        response = llm.invoke(messages)
+        
+        content = response.content.strip()
+        if content.startswith("```"):
+            content = content.split("\n", 1)[1] if "\n" in content else content[3:]
+        if content.endswith("```"):
+            content = content[:-3]
+        content = content.strip()
+        
+        data = json.loads(content)
+        result = RefreshExampleResponse(**data)
+        logger.info(f"Refresh example succeeded for '{word_or_phrase}'")
+        return result
+    except Exception as e:
+        logger.error(f"Refresh example failed for '{word_or_phrase}': {type(e).__name__}: {e}")
+        raise
 
 
 # ============ Batch Translation (DeepSeek) ============

@@ -101,15 +101,22 @@ onMounted(() => {
       waveColor: '#409EFF',
       progressColor: 'rgb(198, 226, 255)',
       cursorColor: 'rgb(160, 207, 255)',
-      url: props.url,
+      // 不在此处传入 url，防止自动播放
       barWidth: 2,
       barRadius: 3,
       barGap: 1,
       height: props.height,
+      autoplay: false,
     })
 
-    wavesurfer.value.on('play', () => emit('play')) // 通过 on 监听 wavesurfer 的特定事件
-    wavesurfer.value.on('pause', () => emit('pause'))
+    wavesurfer.value.on('play', () => {
+      console.log('[BaseWaveSurfer] Play event fired')
+      emit('play')
+    }) // 通过 on 监听 wavesurfer 的特定事件
+    wavesurfer.value.on('pause', () => {
+      console.log('[BaseWaveSurfer] Pause event fired')
+      emit('pause')
+    })
 
     // Manual looping logic
     wavesurfer.value.on('audioprocess', (currentTime) => {
@@ -122,6 +129,13 @@ onMounted(() => {
 
     wavesurfer.value.on('ready', () => {
       if (!wavesurfer.value) return
+
+      console.log('[BaseWaveSurfer] Ready event fired, isPlaying:', wavesurfer.value.isPlaying())
+      // 立即暂停，防止自动播放
+      if (wavesurfer.value.isPlaying()) {
+        console.log('[BaseWaveSurfer] Pausing in ready event')
+        wavesurfer.value.pause()
+      }
 
       wsRegions.value = wavesurfer.value.registerPlugin(RegionsPlugin.create())
       if (props.allowSelection) {
@@ -149,6 +163,26 @@ onMounted(() => {
     })
 
     wavesurfer.value.on('error', (err) => console.error('Wavesurfer error:', err))
+    
+    // 禁用自动播放
+    const media = wavesurfer.value.getMediaElement()
+    if (media && 'autoplay' in media) {
+      (media as any).autoplay = false
+      console.log('[BaseWaveSurfer] Set media.autoplay = false')
+    }
+    
+    // 延迟加载音频，防止自动播放
+    if (props.url) {
+      console.log('[BaseWaveSurfer] Loading URL:', props.url)
+      wavesurfer.value.load(props.url)
+      // 立即暂停，防止自动播放
+      setTimeout(() => {
+        if (wavesurfer.value?.isPlaying()) {
+          console.log('[BaseWaveSurfer] Auto-playing detected, pausing...')
+          wavesurfer.value.pause()
+        }
+      }, 100)
+    }
   }
 })
 

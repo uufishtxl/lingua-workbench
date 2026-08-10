@@ -428,6 +428,8 @@ class AudioChunkViewSet(viewsets.ReadOnlyModelViewSet):
         - is_last: true if this was the final chunk in the episode
         - total_chunks: total number of chunks in this episode
         - current_index: current chunk's index (0-based)
+        - next_episode_chunk_id: ID of first chunk in next episode (if exists)
+        - next_season_chunk_id: ID of first chunk in next season (if exists)
         """
         chunk = self.get_object()
         
@@ -447,6 +449,43 @@ class AudioChunkViewSet(viewsets.ReadOnlyModelViewSet):
             source_audio=chunk.source_audio
         ).count()
         
+        # Initialize next episode/season chunk IDs
+        next_episode_chunk_id = None
+        next_season_chunk_id = None
+        
+        # If this is the last chunk in the episode, find next episode in same season
+        if next_chunk is None:
+            source_audio = chunk.source_audio
+            next_episode = SourceAudio.objects.filter(
+                drama=source_audio.drama,
+                season=source_audio.season,
+                episode__gt=source_audio.episode
+            ).order_by('episode').first()
+            
+            if next_episode:
+                # Get first chunk of next episode
+                first_chunk = AudioChunk.objects.filter(
+                    source_audio=next_episode
+                ).order_by('chunk_index').first()
+                
+                if first_chunk:
+                    next_episode_chunk_id = first_chunk.id
+            else:
+                # If no next episode in same season, try next season
+                next_season = SourceAudio.objects.filter(
+                    drama=source_audio.drama,
+                    season__gt=source_audio.season
+                ).order_by('season', 'episode').first()
+                
+                if next_season:
+                    # Get first chunk of first episode in next season
+                    first_chunk = AudioChunk.objects.filter(
+                        source_audio=next_season
+                    ).order_by('chunk_index').first()
+                    
+                    if first_chunk:
+                        next_season_chunk_id = first_chunk.id
+        
         return Response({
             'success': True,
             'current_chunk_id': chunk.id,
@@ -454,6 +493,8 @@ class AudioChunkViewSet(viewsets.ReadOnlyModelViewSet):
             'next_chunk_id': next_chunk.id if next_chunk else None,
             'is_last': next_chunk is None,
             'total_chunks': total_chunks,
+            'next_episode_chunk_id': next_episode_chunk_id,
+            'next_season_chunk_id': next_season_chunk_id,
             'message': 'Chunk marked as complete!'
         })
 

@@ -27,3 +27,5 @@ google-generativeai
 # --- Multi-Agent ---
 langgraph
 numpy
+# --- pdf handler ---
+pdfplumber

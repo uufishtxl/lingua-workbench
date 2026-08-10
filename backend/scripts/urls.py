@@ -28,5 +28,12 @@ urlpatterns = [
     path('chunk/<int:chunk_pk>/undo-split/', ScriptLineViewSet.as_view({
         'post': 'undo_split',
     }), name='script-undo-split'),
+    # Rough slicing: whisper transcribe + align script → rough AudioSlices
+    path('chunk/<int:chunk_pk>/rough-slice/', ScriptLineViewSet.as_view({
+        'post': 'rough_slice',
+    }), name='script-rough-slice'),
+    path('chunk/<int:chunk_pk>/rough-slice-status/', ScriptLineViewSet.as_view({
+        'get': 'rough_slice_status',
+    }), name='script-rough-slice-status'),
 ]
 

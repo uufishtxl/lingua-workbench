@@ -188,6 +188,7 @@ def generate_tts_audio(text: str, conversation_id: int, message_id: int) -> str:
     client = genai.Client()
 
     tts_response = client.models.generate_content(
+        # 'gemini-2.5-flash-preview-tts',
         model='gemini-2.5-flash-preview-tts',
         contents=text,
         config=types.GenerateContentConfig(
@@ -214,7 +215,8 @@ def generate_tts_audio(text: str, conversation_id: int, message_id: int) -> str:
 
             filename = f"{message_id}.wav"
             abs_path = os.path.join(abs_dir, filename)
-            rel_url = f"{rel_dir}/{filename}"
+            # Use forward slashes for URL (even on Windows)
+            rel_url = f"english_corner/tts/{conversation_id}/{filename}"
 
             # Write WAV with proper RIFF header
             with wave.open(abs_path, "wb") as wav_file:

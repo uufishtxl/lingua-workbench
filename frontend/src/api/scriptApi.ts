@@ -149,6 +149,45 @@ export const bindSlice = async (
 
 export type ScriptTaskStatus = 'pending' | 'ingesting' | 'translating' | 'completed' | 'failed'
 
+// --- Rough Slicing (whisper 转写 + 按脚本粗切) ---
+
+export interface RoughSliceQueuedResponse {
+    status: 'queued'
+    task_id: number | null
+    chunk_id: number
+}
+
+export type RoughSliceStatus = 'idle' | 'pending' | 'running' | 'completed' | 'failed'
+
+export interface RoughSliceStatusResponse {
+    id?: number
+    status: RoughSliceStatus
+    message: string
+    slice_count?: number
+    created_at?: string
+    updated_at?: string
+}
+
+/**
+ * 入队 whisper rough 切割任务（转写 chunk 音频 + 按脚本对齐生成 rough AudioSlices）。
+ */
+export const roughSliceChunk = async (
+    chunkId: number
+): Promise<RoughSliceQueuedResponse> => {
+    const response = await apiClient.post(`/scripts/chunk/${chunkId}/rough-slice/`)
+    return response.data
+}
+
+/**
+ * 查询 chunk 最近一次 rough 切割任务状态。
+ */
+export const getRoughSliceStatus = async (
+    chunkId: number
+): Promise<RoughSliceStatusResponse> => {
+    const response = await apiClient.get(`/scripts/chunk/${chunkId}/rough-slice-status/`)
+    return response.data
+}
+
 export interface ScriptTaskResponse {
     id: number
     status: ScriptTaskStatus

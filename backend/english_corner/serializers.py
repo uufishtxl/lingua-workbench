@@ -12,12 +12,35 @@ class ScenarioSerializer(serializers.ModelSerializer):
 
 
 class PracticeMessageSerializer(serializers.ModelSerializer):
+    # 前端期望的嵌套结构
+    tutor_feedback = serializers.SerializerMethodField()
+    character_reply = serializers.SerializerMethodField()
+    timestamp = serializers.DateTimeField(source='created_at', read_only=True)
+
     class Meta:
         model = PracticeMessage
         fields = [
-            'id', 'role', 'user_content', 'tutor_polished_text',
-            'tutor_explanation_cn', 'character_content', 'created_at'
+            'id', 'role', 'status', 'is_processed', 'user_content',
+            'tutor_feedback', 'character_reply', 'timestamp'
         ]
+
+    def get_tutor_feedback(self, obj):
+        """返回 tutor 反馈的嵌套结构"""
+        if obj.role == 'user' and (obj.tutor_polished_text or obj.tutor_explanation_cn):
+            return {
+                'polished_text': obj.tutor_polished_text or '',
+                'explanation_cn': obj.tutor_explanation_cn or ''
+            }
+        return None
+
+    def get_character_reply(self, obj):
+        """返回 AI 角色回复的嵌套结构"""
+        if obj.role == 'assistant' and obj.character_content:
+            return {
+                'content': obj.character_content,
+                'audio_url': obj.audio_url or None
+            }
+        return None
 
 
 class ConversationSerializer(serializers.ModelSerializer):

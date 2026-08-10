@@ -23,11 +23,13 @@ export type AudienceType = 'user' | 'developer';
  */
 export async function sendChatMessage(
     message: string,
-    audience: AudienceType = 'user'
+    audience: AudienceType = 'user',
+    chunkId?: number
 ): Promise<ChatResponse> {
     const response = await apiClient.post('/doc-assistant/chat/', {
         message,
         audience,
+        ...(chunkId ? { chunk_id: chunkId } : {}),
     });
     return response.data;
 }
@@ -73,7 +75,8 @@ export interface StreamCallbacks {
 export async function streamChatMessage(
     message: string,
     audience: AudienceType = 'user',
-    callbacks: StreamCallbacks
+    callbacks: StreamCallbacks,
+    chunkId?: number
 ): Promise<void> {
     // Get the access token for authentication
     const authStore = await import('@/stores/authStore').then(m => m.useAuthStore());
@@ -86,7 +89,7 @@ export async function streamChatMessage(
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ message, audience }),
+        body: JSON.stringify({ message, audience, ...(chunkId ? { chunk_id: chunkId } : {}) }),
         credentials: 'include',
     });
 

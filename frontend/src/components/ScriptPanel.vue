@@ -26,6 +26,11 @@
           {{ lines.length }} / {{ totalCount }} lines
         </span>
         <el-button circle size="small" @click="() => loadLines()" :disabled="loading"><i-tabler-refresh /></el-button>
+        <el-button circle size="small" :loading="roughSlicing" :disabled="!props.chunkId || roughSlicing || loading"
+          :type="hasRoughSlices ? 'success' : 'default'" title="Whisper 转写并按脚本生成 rough 切片（连接）"
+          @click="handleRoughSlice">
+          <i-tabler-link />
+        </el-button>
       </div>
     </div>
 
@@ -76,7 +81,7 @@
     <div class="shrink-0 min-h-[80px] w-full flex items-end">
       <!-- Review Mode: Complete & Continue Bar -->
       <ChunkCompleteBar v-if="reviewMode" class="w-full mb-2" :chunk-id="chunkId" :next-chunk-id="nextChunkId" :is-last-chunk="!nextChunkId && (totalChunks ?? 0) > 0 && currentIndex === (totalChunks ?? 0) - 1"
-        :current-index="currentIndex" :total-chunks="totalChunks" @trigger-save="$emit('trigger-save')" />
+        :current-index="currentIndex" :total-chunks="totalChunks" :next-episode-chunk-id="nextEpisodeChunkId" :next-season-chunk-id="nextSeasonChunkId" @completed="$emit('completed', $event)" @trigger-save="$emit('trigger-save')" />
     </div>
 
     <!-- Slice Search Dialog -->
@@ -133,6 +138,8 @@ import {
   undoSplit,
   searchSlices,
   bindSlice,
+  roughSliceChunk,
+  getRoughSliceStatus,
   type ScriptLine,
   type SliceMatch,
 } from '@/api/scriptApi'
@@ -149,6 +156,8 @@ const props = defineProps<{
   reviewMode?: boolean
   currentIndex?: number
   totalChunks?: number
+  nextEpisodeChunkId?: number | null
+  nextSeasonChunkId?: number | null
   // Width control from parent
   scriptPanelWidth?: 'normal' | 'wide'
 }>()
@@ -157,6 +166,8 @@ const emit = defineEmits<{
   ingest: []
   toggleWidth: []
   'trigger-save': []
+  'completed': [nextChunkId: number | null]
+  'rough-sliced': []
 }>()
 
 // State
@@ -191,6 +202,54 @@ const loadLines = async (append = false) => {
     ElMessage.error('Failed to load script')
   } finally {
     loading.value = false
+  }
+}
+
+// --- Rough slicing (whisper 转写 + 按脚本粗切) ---
+const roughSlicing = ref(false)
+const hasRoughSlices = ref(false)
+
+// 该 chunk 是否有已生成的 rough slices（用于按钮高亮）
+const refreshRoughSliceState = async () => {
+  if (!props.chunkId) return
+  try {
+    const st = await getRoughSliceStatus(props.chunkId)
+    hasRoughSlices.value = st.status === 'completed' && (st.slice_count ?? 0) > 0
+  } catch {
+    hasRoughSlices.value = false
+  }
+}
+
+const handleRoughSlice = async () => {
+  if (!props.chunkId || roughSlicing.value) return
+  roughSlicing.value = true
+  try {
+    await roughSliceChunk(props.chunkId)
+    ElMessage.info('Rough 切割已入队（whisper 转写 + 脚本对齐），请稍候...')
+
+    // 轮询状态直到完成/失败（3s * 100 ≈ 5 分钟）
+    for (let i = 0; i < 100; i++) {
+      await new Promise(resolve => setTimeout(resolve, 3000))
+      const st = await getRoughSliceStatus(props.chunkId)
+      if (st.status === 'completed') {
+        hasRoughSlices.value = true
+        ElMessage.success(st.message || 'Rough slices 已生成')
+        await loadLines()  // 刷新行，展示绿色连接图标
+        emit('rough-sliced')
+        return
+      }
+      if (st.status === 'failed') {
+        ElMessage.error(st.message || 'Rough 切割失败')
+        return
+      }
+      // idle / pending / running：继续等待
+    }
+    ElMessage.warning('Rough 切割超时（约 5 分钟），可稍后重新点击连接按钮重试')
+  } catch (error) {
+    console.error('Failed to start rough slicing:', error)
+    ElMessage.error('启动 rough 切割失败')
+  } finally {
+    roughSlicing.value = false
   }
 }
 
@@ -307,6 +366,7 @@ const handleLineUpdated = (updatedLine: ScriptLine) => {
 // Watch chunk changes
 watch(() => props.chunkId, () => {
   loadLines()
+  refreshRoughSliceState()
 }, { immediate: true })
 
 watch(() => chatStore.refreshScriptTrigger, () => {

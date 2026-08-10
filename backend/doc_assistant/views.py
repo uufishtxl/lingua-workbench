@@ -22,7 +22,8 @@ class ChatView(APIView):
     Request body:
     {
         "message": "如何创建 slice?",
-        "audience": "user"  // or "developer"
+        "audience": "user",  // or "developer"
+        "chunk_id": 123  // optional: current chunk user is viewing
     }
     
     Response:
@@ -38,6 +39,7 @@ class ChatView(APIView):
     def post(self, request):
         message = request.data.get('message')
         audience = request.data.get('audience', 'user')
+        chunk_id = request.data.get('chunk_id')
         
         if not message:
             return Response(
@@ -53,6 +55,7 @@ class ChatView(APIView):
             result = service.get_answer(
                 question=message,
                 audience=audience,
+                chunk_id=chunk_id,
             )
             return Response(result)
             
@@ -72,7 +75,8 @@ class ChatStreamView(APIView):
     Request body:
     {
         "message": "如何创建 slice?",
-        "audience": "user"
+        "audience": "user",
+        "chunk_id": 123  // optional: current chunk user is viewing
     }
     
     Response: Server-Sent Events stream
@@ -87,6 +91,7 @@ class ChatStreamView(APIView):
     def post(self, request):
         message = request.data.get('message')
         audience = request.data.get('audience', 'user')
+        chunk_id = request.data.get('chunk_id')
         
         if not message:
             return Response(
@@ -106,6 +111,7 @@ class ChatStreamView(APIView):
                 for token in service.stream_answer(
                     question=message,
                     audience=audience,
+                    chunk_id=chunk_id,
                 ):
                     event_data = json.dumps({
                         "type": "token",

@@ -111,6 +111,28 @@ const menuItems = [
     icon: Calendar,
     title: 'Daily Phrases',
   },
+  {
+    index: 'corpus',
+    icon: IconMenu,
+    title: 'Corpus 语料加工',
+    children: [
+      {
+        index: '/corpus/dashboard',
+        icon: GoldMedal,
+        title: '任务仪表盘',
+      },
+      {
+        index: '/corpus/extract',
+        icon: Document,
+        title: '新建任务',
+      },
+      {
+        index: '/corpus/learn',
+        icon: VideoPlay,
+        title: '教材学习',
+      },
+    ],
+  },
 ]
 </script>
 

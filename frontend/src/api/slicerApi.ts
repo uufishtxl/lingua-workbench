@@ -110,6 +110,8 @@ export interface ChunkCompleteResponse {
     is_last: boolean
     total_chunks: number
     message: string
+    next_episode_chunk_id: number | null
+    next_season_chunk_id: number | null
 }
 
 /**

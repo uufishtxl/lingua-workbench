@@ -76,6 +76,8 @@ def parse_script(html: str) -> list[dict]:
             next_sib = element.find_next_sibling()
             if next_sib and next_sib.name == 'b':
                 speaker = next_sib.get_text(strip=True).rstrip(':')
+                # Normalize curly quotes
+                speaker = speaker.replace('\u2018', "'").replace('\u2019', "'")
                 # Get all text nodes between this <b> and the next block element
                 dialogue_parts = []
                 for sib in next_sib.next_siblings:
@@ -106,10 +108,14 @@ def parse_script(html: str) -> list[dict]:
             b_tag = element.find('b')
             if b_tag:
                 speaker = b_tag.get_text(strip=True)
+                # Normalize Chinese curly quotes to standard ASCII for consistent matching
+                speaker = speaker.replace('\u2018', "'").replace('\u2019', "'")
                 
                 # Get the rest of the text after the speaker name
                 # Normalize whitespace in full text too
                 full_text = ' '.join(element.get_text().split())
+                # Also normalize curly quotes in full_text to match speaker
+                full_text = full_text.replace('\u2018', "'").replace('\u2019', "'")
                 # The text after speaker usually starts with : or ;
                 content_match = re.match(rf'^{re.escape(speaker)}[;:]\s*(.*)$', full_text, re.DOTALL)
                 
@@ -145,8 +151,9 @@ def parse_script(html: str) -> list[dict]:
         
         # Fallback: try regex matching for dialogue pattern
         # This handles cases where the HTML structure is different
-        # Pattern supports: multi-word names "Mr Zelner", hyphenated "Phoebe-Estelle"
-        dialogue_match = re.match(r'^([A-Za-z][A-Za-z\s\-]*?)[;:]\s*(.+)$', raw_text, re.DOTALL)
+        # Pattern supports: multi-word names "Mr Zelner", hyphenated "Phoebe-Estelle", apostrophes "Joey's"
+        # Also handle Chinese single quotes \u2018 \u2019 (' ') that fanfr.com sometimes uses
+        dialogue_match = re.match(r"^([A-Za-z][A-Za-z\s\-'\u2018\u2019]*?)[;:]\s*(.+)$", raw_text, re.DOTALL)
         if dialogue_match:
             speaker = dialogue_match.group(1).strip()
             content = dialogue_match.group(2)
